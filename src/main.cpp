@@ -19,6 +19,7 @@ int main() {
   // Initialize GLFW
   if (!glfwInit()) {
     fprintf(stderr, "Failed to initiaize GLFW\n");
+    getchar(); // Wait for key before quit
     return -1;
   }
 
@@ -28,8 +29,6 @@ int main() {
 
   Viewer viewer;
   Input::viewer = &viewer;
-  viewer.scene.loadJSON(sceneJSON);
-  viewer.wireShader = new ShaderProgram(wireVShader, wireFShader);
 
   // Set a few settings/modes in OpenGL rendering
   glEnable(GL_DEPTH_TEST);
@@ -48,6 +47,10 @@ int main() {
   GLuint vaoID;
   glGenVertexArrays(1, &vaoID);
   glBindVertexArray(vaoID);
+
+  // After vao init
+  viewer.wireShader = new ShaderProgram(wireVShader, wireFShader);
+  viewer.scene.loadJSON(sceneJSON);
 
   viewer.run();
 
