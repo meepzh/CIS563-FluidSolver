@@ -30,12 +30,15 @@ Viewer::Viewer(int width, int height) : _hasError(false) {
     _hasError = true;
     return;
   }
+
+  // Ensure key capture
+  glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 }
 
 void Viewer::run() {
-  // Ensure key capture
-  glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
   do {
+    glClear(GL_COLOR_BUFFER_BIT);
+
     // Swap buffers
     glfwSwapBuffers(window);
     glfwPollEvents();

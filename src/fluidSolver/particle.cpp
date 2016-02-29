@@ -24,18 +24,18 @@ void Particle::update() {
   state.acceleration = glm::vec3(0);
 }
 
-float Particle::mass() {
+float Particle::mass() const {
   return state.mass;
 }
-glm::vec3 Particle::position() {
+glm::vec3 Particle::position() const {
   return state.position;
 }
-glm::vec3 Particle::velocity() {
+glm::vec3 Particle::velocity() const {
   return state.velocity;
 }
-glm::vec3 Particle::acceleration() {
+glm::vec3 Particle::acceleration() const {
   return state.acceleration;
 }
-glm::vec3 Particle::force() {
+glm::vec3 Particle::force() const {
   return state.acceleration * state.mass;
 }

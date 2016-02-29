@@ -25,6 +25,10 @@ int main() {
   if (viewer.hasError()) {
     return -1;
   }
+
+  // Set background color
+  glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
+
   viewer.run();
 
   return 0;
