@@ -14,7 +14,7 @@ Camera::Camera(unsigned int width, unsigned int height,
  : nearClip(0.1f), farClip(1000.f),
    _width(width), _height(height),
    _eye(eye), _ref(ref), _worldUp(worldUp),
-   _fovy(45.f),
+   _fovy(45.f), arcballZoom(1.f),
    panSpeed(0.01f), zoomSpeed(0.0005f) {
   arcballRotationMat = glm::mat4(1.f);
   recomputeAttributes();
@@ -23,8 +23,9 @@ Camera::Camera(unsigned int width, unsigned int height,
 }
 
 glm::mat4 Camera::getViewProjection() {
-  return glm::perspective(glm::radians(_fovy), _aspect, nearClip, farClip) *
-           glm::lookAt(glm::vec3(arcballEye), glm::vec3(arcballRef), glm::vec3(arcballUp));
+  glm::mat4 perpMat = glm::perspective(glm::radians(_fovy), _aspect, nearClip, farClip);
+  glm::mat4 lookMat = glm::lookAt(glm::vec3(arcballEye), glm::vec3(arcballRef), glm::vec3(arcballUp));
+  return perpMat * lookMat;
 }
 
 void Camera::recomputeAttributes() {
