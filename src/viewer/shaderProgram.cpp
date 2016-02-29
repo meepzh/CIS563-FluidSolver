@@ -23,7 +23,7 @@ ShaderProgram::ShaderProgram(const std::string &vertexShader, const std::string 
   std::ifstream vsStream(vertexShader);
   std::string vsText((std::istreambuf_iterator<char>(vsStream)), std::istreambuf_iterator<char>());
   std::ifstream fsStream(fragmentShader);
-  std::string fsText((std::istreambuf_iterator<char>(vsStream)), std::istreambuf_iterator<char>());
+  std::string fsText((std::istreambuf_iterator<char>(fsStream)), std::istreambuf_iterator<char>());
 
   // Compile
   GLint compileResult = GL_FALSE;
@@ -58,7 +58,7 @@ ShaderProgram::ShaderProgram(const std::string &vertexShader, const std::string 
   glLinkProgram(programID);
   glGetProgramiv(programID, GL_LINK_STATUS, &compileResult);
   glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &compileLogLen);
-  if (compileLogLen > 0 ){
+  if (compileLogLen > 1){
     std::vector<char> programErrMessage(compileLogLen + 1);
     glGetProgramInfoLog(programID, compileLogLen, NULL, &programErrMessage[0]);
     printf("Error linking program (VS:%s, FS:%s): %s\n", vertexShader.c_str(), fragmentShader.c_str(), &programErrMessage[0]);

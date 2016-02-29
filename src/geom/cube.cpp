@@ -57,6 +57,10 @@ Cube::Cube(const glm::vec3 &color) : _color(color) {
   glBufferData(GL_ARRAY_BUFFER, VERT_COUNT * sizeof(glm::vec3), vert_col, GL_STATIC_DRAW);
 }
 
+GLenum Cube::drawMode() {
+  return GL_LINES;
+}
+
 bool Cube::intersects(const glm::vec3 &point) const {
   glm::vec3 localPos = glm::vec3(transform.invT() * glm::vec4(point, 1.f));
   if (localPos.x >= -0.5f && localPos.x <= 0.5f &&
