@@ -34,6 +34,7 @@ None
 ### Credits ###
 - GLFW Window adapted from [opengl-tutorial.org](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-1-opening-a-window/).
 - Compiling GLSL shaders from [opengl-tutorial.org](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/).
+- Some OpenGL specifics on rendering particles from [opengl-tutorial.org](http://www.opengl-tutorial.org/intermediate-tutorials/billboards-particles/particles-instancing/)
 - Implementation for reading text files from [Tyler McHenry](http://stackoverflow.com/questions/2602013/read-whole-ascii-file-into-c-stdstring).
 - Organization of the camera class from CIS460 staff.
 - Transform class adapted from CIS460 staff.

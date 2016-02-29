@@ -9,6 +9,7 @@
 #include <GLFW/glfw3.h>
 
 #include "../camera/camera.hpp"
+#include "../fluidSolver/fluidSolver.hpp"
 #include "../scene/scene.hpp"
 #include "shaderProgram.hpp"
 
@@ -20,9 +21,11 @@ public:
   void run();
 
   Camera camera;
+  FluidSolver solver;
   GLFWwindow *window;
   Scene scene;
   ShaderProgram *wireShader;
+
 private:
   int leftState, rightState;
   int oldLeftState, oldRightState;

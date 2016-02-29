@@ -10,11 +10,13 @@
 
 class FluidSolver {
 public:
+  FluidSolver();
   ~FluidSolver();
 
-  void update();
+  void update(double deltaT);
 
   std::vector<Particle *> particles;
+  unsigned int maxParticles;
 
   void setGravity(float g);
   float gravity();

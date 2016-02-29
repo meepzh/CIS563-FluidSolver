@@ -18,16 +18,20 @@ public:
   void setModelMat(const glm::mat4 &modelMat);
   void setViewProjectionMat(const glm::mat4 &viewProjectionMat);
 
-private:
-  GLuint programID;
+// Required for derived classes
+  void compile();
 
+  GLuint programID;
   GLuint vertexShaderID;
   GLuint fragmentShaderID;
-
   GLuint aVertexColorArrID;
   GLuint aVertexPositionArrID;
-  GLuint uModelMatID;
   GLuint uViewProjectionMatID;
+
+  std::string _vertexShader, _fragmentShader;
+
+private:
+  GLuint uModelMatID;
 };
 
 #endif /* MFLUIDSOLVER_VIEWER_SHADERPROGRAM_HPP_ */
