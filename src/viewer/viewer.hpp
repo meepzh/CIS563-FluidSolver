@@ -15,14 +15,12 @@ class Viewer {
 public:
   Viewer() : Viewer(1024, 768){}
   Viewer(int width, int height);
-  bool hasError();
   void run();
+
 private:
   Camera camera;
   GLFWwindow *window;
   Scene scene;
-
-  bool _hasError;
 };
 
 #endif /* MFLUIDSOLVER_VIEWER_HPP_ */

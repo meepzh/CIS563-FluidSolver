@@ -94,9 +94,11 @@ set(CORE_SRC
         src/camera/camera.cpp
         src/fluidSolver/fluidSolver.cpp
         src/fluidSolver/particle.cpp
-        src/geom/geom.cpp
         src/geom/cube.cpp
+        src/geom/drawable.cpp
+        src/geom/geom.cpp
         src/scene/scene.cpp
+        src/viewer/shaderProgram.cpp
         src/viewer/viewer.cpp
         src/main.cpp
 )

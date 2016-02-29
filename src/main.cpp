@@ -11,6 +11,7 @@
 #include "MFluidSolverConfig.hpp"
 #include "main.hpp"
 #include "viewer/viewer.hpp"
+#include "viewer/shaderProgram.hpp"
 
 int main() {
   std::fprintf(stdout,"Version %d.%d\n", MFluidSolver_VERSION_MAJOR, MFluidSolver_VERSION_MINOR);
@@ -22,14 +23,23 @@ int main() {
   }
 
   Viewer viewer;
-  if (viewer.hasError()) {
-    return -1;
-  }
 
   // Set background color
   glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
 
+  // Bind vertex array object
+  GLuint vaoID;
+  glGenVertexArrays(1, &vaoID);
+  glBindVertexArray(vaoID);
+
+  // Create shader
+  ShaderProgram shader("wire.vert.glsl", "wire.frag.glsl");
+
   viewer.run();
+
+  // Cleanup
+  shader.glDelete();
+  glDeleteVertexArrays(1, &vaoID);
 
   return 0;
 }

@@ -6,7 +6,7 @@
 
 #include <cstdio>
 
-Viewer::Viewer(int width, int height) : _hasError(false) {
+Viewer::Viewer(int width, int height) {
   // http://www.opengl-tutorial.org/beginners-tutorials/tutorial-1-opening-a-window/
   glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // We want OpenGL 3.3
@@ -18,8 +18,7 @@ Viewer::Viewer(int width, int height) : _hasError(false) {
   if (window == NULL) {
     std::fprintf(stderr, "Failed to open GLFW window.\n");
     glfwTerminate();
-    _hasError = true;
-    return;
+    throw -1;
   }
 
   glfwMakeContextCurrent(window); // Initialize GLEW
@@ -27,8 +26,7 @@ Viewer::Viewer(int width, int height) : _hasError(false) {
   if (glewInit() != GLEW_OK) {
     std::fprintf(stderr, "Failed to initialize GLEW.\n");
     glfwTerminate();
-    _hasError = true;
-    return;
+    throw -1;
   }
 
   // Ensure key capture
@@ -44,8 +42,4 @@ void Viewer::run() {
     glfwPollEvents();
   } while (glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
            glfwWindowShouldClose(window) == 0);
-}
-
-bool Viewer::hasError() {
-  return _hasError;
 }
