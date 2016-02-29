@@ -34,6 +34,6 @@ GLenum Drawable::drawMode() {
   return GL_TRIANGLES;
 }
 
-GLenum Drawable::elementCount() {
-  return _elementCount;
+GLenum Drawable::idxCount() {
+  return _idxCount;
 }

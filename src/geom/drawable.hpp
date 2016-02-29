@@ -15,13 +15,13 @@ public:
   bool bindColorBuffer();
   bool bindPositionBuffer();
   virtual GLenum drawMode();
-  GLenum elementCount();
+  GLenum idxCount();
 
 protected:
   GLuint vertexIndexArrBufferID;
   GLuint vertexColorArrBufferID;
   GLuint vertexPositionArrBufferID;
-  int _elementCount;
+  int _idxCount;
 };
 
 #endif /* MFLUIDSOLVER_GEOM_DRAWABLE_HPP_ */

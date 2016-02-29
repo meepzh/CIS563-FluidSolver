@@ -3,3 +3,65 @@
 //  MFluidSolver
 
 #include "cube.hpp"
+
+Cube::Cube(const glm::vec3 &color) : _color(color) {
+  const unsigned int IDX_COUNT = 24;
+  const unsigned int VERT_COUNT = 8;
+
+  // Indices
+  GLuint idx[IDX_COUNT];
+  idx[0] = 0; idx[1] = 1; // Draw 2 squares
+  idx[2] = 1; idx[3] = 3;
+  idx[4] = 3; idx[5] = 2;
+  idx[6] = 2; idx[7] = 0;
+  idx[8] = 4; idx[9] = 5;
+  idx[10] = 5; idx[11] = 7;
+  idx[12] = 7; idx[13] = 6;
+  idx[14] = 6; idx[15] = 4;
+  for (unsigned int i = 0; i < 4; ++i) {
+    // Connect sides
+    idx[i * 2 + 16] = i;
+    idx[i * 2 + 17] = i + 4;
+  }
+
+  // Vertices
+  glm::vec3 vert_pos[VERT_COUNT];
+  vert_pos[0] = glm::vec3(0.5f, 0.5f, 0.5f);
+  vert_pos[1] = glm::vec3(-0.5f, 0.5f, 0.5f);
+  vert_pos[2] = glm::vec3(0.5f, -0.5f, 0.5f);
+  vert_pos[3] = glm::vec3(-0.5f, -0.5f, 0.5f);
+  vert_pos[4] = glm::vec3(0.5f, 0.5f, -0.5f);
+  vert_pos[5] = glm::vec3(-0.5f, 0.5f, -0.5f);
+  vert_pos[6] = glm::vec3(0.5f, -0.5f, -0.5f);
+  vert_pos[7] = glm::vec3(-0.5f, -0.5f, -0.5f);
+
+  // Color
+  glm::vec3 vert_col[VERT_COUNT];
+  for (unsigned int i = 0; i < VERT_COUNT; ++i) {
+    vert_col[i] = _color;
+  }
+
+  _idxCount = IDX_COUNT;
+
+  // Bind
+  glGenBuffers(1, &vertexIndexArrBufferID);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexIndexArrBufferID);
+  glBufferData(GL_ARRAY_BUFFER, IDX_COUNT * sizeof(GLuint), idx, GL_STATIC_DRAW);
+
+  glGenBuffers(1, &vertexPositionArrBufferID);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexPositionArrBufferID);
+  glBufferData(GL_ARRAY_BUFFER, VERT_COUNT * sizeof(glm::vec3), vert_pos, GL_STATIC_DRAW);
+
+  glGenBuffers(1, &vertexColorArrBufferID);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexColorArrBufferID);
+  glBufferData(GL_ARRAY_BUFFER, VERT_COUNT * sizeof(glm::vec3), vert_col, GL_STATIC_DRAW);
+}
+
+bool Cube::intersects(const glm::vec3 &point) const {
+  glm::vec3 localPos = glm::vec3(transform.invT() * glm::vec4(point, 1.f));
+  if (localPos.x >= -0.5f && localPos.x <= 0.5f &&
+      localPos.y >= -0.5f && localPos.y <= 0.5f &&
+      localPos.z >= -0.5f && localPos.z <= 0.5f)
+    return true;
+  return false;
+}

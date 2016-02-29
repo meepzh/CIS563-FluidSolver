@@ -97,6 +97,7 @@ set(CORE_SRC
         src/geom/cube.cpp
         src/geom/drawable.cpp
         src/geom/geom.cpp
+        src/geom/transform.cpp
         src/scene/scene.cpp
         src/viewer/shaderProgram.cpp
         src/viewer/viewer.cpp
