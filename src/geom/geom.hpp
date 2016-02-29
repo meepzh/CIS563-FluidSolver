@@ -1,6 +1,6 @@
 //
 //  geom.hpp
-//  Thanda
+//  MFluidSolver
 
 #ifndef geom_hpp
 #define geom_hpp

@@ -1,6 +1,6 @@
 //
 //  scene.hpp
-//  Thanda
+//  MFluidSolver
 
 #ifndef scene_hpp
 #define scene_hpp

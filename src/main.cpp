@@ -1,6 +1,6 @@
 //
 //  main.cpp
-//  Thanda
+//  MFluidSolver
 
 #include "main.hpp"
 

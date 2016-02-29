@@ -1,6 +1,6 @@
 //
 //  camera.hpp
-//  Thanda
+//  MFluidSolver
 
 #ifndef camera_hpp
 #define camera_hpp

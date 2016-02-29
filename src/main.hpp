@@ -1,6 +1,6 @@
 //
 //  main.hpp
-//  Thanda
+//  MFluidSolver
 
 #ifndef main_hpp
 #define main_hpp

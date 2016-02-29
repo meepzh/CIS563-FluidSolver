@@ -1,5 +1,5 @@
 //
 //  fluidSolver.cpp
-//  Thanda
+//  MFluidSolver
 
 #include "fluidSolver.hpp"

@@ -1,5 +1,5 @@
 //
 //  camera.cpp
-//  Thanda
+//  MFluidSolver
 
 #include "camera.hpp"

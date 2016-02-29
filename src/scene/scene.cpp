@@ -1,5 +1,5 @@
 //
 //  scene.cpp
-//  Thanda
+//  MFluidSolver
 
 #include "scene.hpp"

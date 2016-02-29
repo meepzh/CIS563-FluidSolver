@@ -1,6 +1,6 @@
 //
 //  viewer.hpp
-//  Thanda
+//  MFluidSolver
 
 #ifndef viewer_hpp
 #define viewer_hpp

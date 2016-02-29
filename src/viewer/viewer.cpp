@@ -1,5 +1,5 @@
 //
 //  viewer.cpp
-//  Thanda
+//  MFluidSolver
 
 #include "viewer.hpp"

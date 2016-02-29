@@ -1,6 +1,6 @@
 //
 //  fluidSolver.hpp
-//  Thanda
+//  MFluidSolver
 
 #ifndef fluidSolver_hpp
 #define fluidSolver_hpp

@@ -1,11 +1,11 @@
 ##################
-#     Thanda     #
+#     MFluidSolver     #
 ##################
 
 # credit - base CMake config : Yining Karl Li , edited CMake config: Akshay Shah & Debanshu Singh
 
 #name your project
-project(Thanda)
+project(MFluidSolver)
 cmake_minimum_required(VERSION 2.8)
 
 # set creates a variable
@@ -33,7 +33,7 @@ set(GLFW_LIBRARY_DIR ${CMAKE_LIBRARY_PATH})
 set(GLEW_LIBRARY_DIR ${CMAKE_LIBRARY_PATH})
 
 # Use find_package & find_library to link with
-find_package(OPENGL REQUIRED)
+find_package(OpenGL REQUIRED)
 find_package(GLEW)
 find_library(GLFW_LIBRARY "glfw3" HINTS ${GLFW_LIBRARY_DIR})
 find_library(JSONCPP "jsoncpp")
@@ -90,5 +90,5 @@ set(CORE_SRC
         src/geom/geom.cpp
 )
 
-add_executable(Thanda ${CORE_SRC})
-target_link_libraries(Thanda ${CORE_LIBS})
+add_executable(MFluidSolver ${CORE_SRC})
+target_link_libraries(MFluidSolver ${CORE_LIBS})
