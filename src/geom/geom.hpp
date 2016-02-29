@@ -2,8 +2,8 @@
 //  geom.hpp
 //  MFluidSolver
 
-#ifndef geom_hpp
-#define geom_hpp
+#ifndef MFLUIDSOLVER_GEOM_HPP_
+#define MFLUIDSOLVER_GEOM_HPP_
 
 
-#endif /* geom_hpp */
+#endif /* MFLUIDSOLVER_GEOM_HPP_ */

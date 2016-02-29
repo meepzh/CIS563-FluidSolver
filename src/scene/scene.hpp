@@ -2,8 +2,8 @@
 //  scene.hpp
 //  MFluidSolver
 
-#ifndef scene_hpp
-#define scene_hpp
+#ifndef MFLUIDSOLVER_SCENE_HPP_
+#define MFLUIDSOLVER_SCENE_HPP_
 
 
-#endif /* scene_hpp */
+#endif /* MFLUIDSOLVER_SCENE_HPP_ */

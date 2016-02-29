@@ -2,7 +2,7 @@
 //  main.hpp
 //  MFluidSolver
 
-#ifndef main_hpp
-#define main_hpp
+#ifndef MFLUIDSOLVER_MAIN_HPP_
+#define MFLUIDSOLVER_MAIN_HPP_
 
-#endif /* main_hpp */
+#endif /* MFLUIDSOLVER_MAIN_HPP_ */

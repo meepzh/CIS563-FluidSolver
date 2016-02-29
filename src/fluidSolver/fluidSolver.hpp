@@ -2,8 +2,8 @@
 //  fluidSolver.hpp
 //  MFluidSolver
 
-#ifndef fluidSolver_hpp
-#define fluidSolver_hpp
+#ifndef MFLUIDSOLVER_FLUIDSOLVER_HPP_
+#define MFLUIDSOLVER_FLUIDSOLVER_HPP_
 
 
-#endif /* fluidSolver_hpp */
+#endif /* MFLUIDSOLVER_FLUIDSOLVER_HPP_ */

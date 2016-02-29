@@ -2,8 +2,8 @@
 //  camera.hpp
 //  MFluidSolver
 
-#ifndef camera_hpp
-#define camera_hpp
+#ifndef MFLUIDSOLVER_CAMERA_HPP_
+#define MFLUIDSOLVER_CAMERA_HPP_
 
 
-#endif /* camera_hpp */
+#endif /* MFLUIDSOLVER_CAMERA_HPP_ */

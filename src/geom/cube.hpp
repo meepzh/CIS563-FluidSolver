@@ -2,9 +2,9 @@
 //  cube.hpp
 //  MFluidSolver
 
-#ifndef cube_hpp
-#define cube_hpp
+#ifndef MFLUIDSOLVER_GEOM_CUBE_HPP_
+#define MFLUIDSOLVER_GEOM_CUBE_HPP_
 
 #include "geom.hpp"
 
-#endif /* cube_hpp */
+#endif /* MFLUIDSOLVER_GEOM_CUBE_HPP_ */
