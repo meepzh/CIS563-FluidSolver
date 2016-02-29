@@ -7,24 +7,33 @@
 
 #include <glm/glm.hpp>
 
+struct State {
+  float mass;
+  glm::vec3 position;
+  glm::vec3 velocity;
+  glm::vec3 acceleration;
+};
+
 class Particle {
 public:
+  // Constructors/Destructors
   Particle() : Particle(1) {};
   Particle(float mass);
 
+  // Force
   void addForce(glm::vec3 force);
   void update();
 
-  glm::vec3 force();
+  // Properties
+  glm::vec3 color;
   float mass();
   glm::vec3 position();
   glm::vec3 velocity();
+  glm::vec3 acceleration();
+  glm::vec3 force();
 
 private:
-  glm::vec3 currentForce;
-  float _mass;
-  glm::vec3 _position;
-  glm::vec3 _velocity;
+  State state;
 };
 
 #endif /* MFLUIDSOLVER_FLUIDSOLVER_PARTICLE_HPP_ */

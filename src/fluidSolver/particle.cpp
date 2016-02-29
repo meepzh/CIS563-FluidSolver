@@ -4,30 +4,38 @@
 
 #include "particle.hpp"
 
-Particle::Particle(float mass) : _mass(mass), currentForce(0) {}
+Particle::Particle(float mass) : color(0, 0, 1) {
+  // State
+  state.mass = 1;
+  state.position = glm::vec3(0);
+  state.velocity = glm::vec3(0);
+  state.acceleration = glm::vec3(0);
+}
 
 void Particle::addForce(glm::vec3 force) {
-  currentForce += force;
+  state.acceleration += force / state.mass;
 }
 
 void Particle::update() {
-  currentForce /= _mass;
+  state.velocity += state.acceleration;
+  state.position += state.velocity;
 
-  _velocity += currentForce;
-  _position += _velocity;
-
-  currentForce = glm::vec3(0);
+  // Reset forces
+  state.acceleration = glm::vec3(0);
 }
 
-glm::vec3 Particle::force() {
-  return currentForce;
-}
 float Particle::mass() {
-  return _mass;
+  return state.mass;
 }
 glm::vec3 Particle::position() {
-  return _position;
+  return state.position;
 }
 glm::vec3 Particle::velocity() {
-  return _velocity;
+  return state.velocity;
+}
+glm::vec3 Particle::acceleration() {
+  return state.acceleration;
+}
+glm::vec3 Particle::force() {
+  return state.acceleration * state.mass;
 }
