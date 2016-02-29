@@ -16,9 +16,9 @@ void Particle::addForce(glm::vec3 force) {
   state.acceleration += force / state.mass;
 }
 
-void Particle::update() {
-  state.velocity += state.acceleration;
-  state.position += state.velocity;
+void Particle::update(double deltaT) {
+  state.velocity += state.acceleration * (float)deltaT;
+  state.position += state.velocity * (float)deltaT;
 
   // Reset forces
   state.acceleration = glm::vec3(0);

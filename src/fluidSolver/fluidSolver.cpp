@@ -20,7 +20,7 @@ void FluidSolver::update(double deltaT) {
   }
 
   for (Particle *p : particles) {
-    p->update();
+    p->update(deltaT);
   }
 }
 

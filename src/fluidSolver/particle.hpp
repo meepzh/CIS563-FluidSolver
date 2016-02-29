@@ -22,7 +22,7 @@ public:
 
   // Force
   void addForce(glm::vec3 force);
-  void update();
+  void update(double deltaT);
 
   // Properties
   glm::vec3 color;

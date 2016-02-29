@@ -44,9 +44,20 @@ Viewer::Viewer(int width, int height)
 }
 
 void Viewer::run() {
+  double oldTime = glfwGetTime();
+  double currTime, deltaT;
   do {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // Get elapsed time
+    currTime = glfwGetTime();
+    deltaT = currTime - oldTime;
+    oldTime = currTime;
+
+    // Update and render particles
+    solver.update(deltaT);
+
+    // Render boxes
     wireShader->setViewProjectionMat(camera.getViewProjection());
     for (Geometry *g : scene.objects) {
       wireShader->setModelMat(g->transform.T());
