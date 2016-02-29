@@ -38,7 +38,6 @@ int main() {
   viewer.run();
 
   // Cleanup
-  shader.glDelete();
   glDeleteVertexArrays(1, &vaoID);
 
   return 0;

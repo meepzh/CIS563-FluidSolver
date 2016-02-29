@@ -5,7 +5,9 @@
 #ifndef MFLUIDSOLVER_GEOM_HPP_
 #define MFLUIDSOLVER_GEOM_HPP_
 
-class Geometry {
+#include "drawable.hpp"
+
+class Geometry : public Drawable {
 
 };
 

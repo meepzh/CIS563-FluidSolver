@@ -9,7 +9,11 @@
 #include <streambuf>
 #include <vector>
 
-ShaderProgram::ShaderProgram(const std::string &vertexShader, const std::string &fragmentShader) {
+ShaderProgram::ShaderProgram(const std::string &vertexShader, const std::string &fragmentShader)
+ : programID(-1),
+   vertexShaderID(-1), fragmentShaderID(-1),
+   aVertexColorArrID(-1), aVertexPositionArrID(-1),
+   uModelMatID(-1), uViewProjectionMatID(-1) {
   vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
   fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
@@ -57,7 +61,7 @@ ShaderProgram::ShaderProgram(const std::string &vertexShader, const std::string 
   if (compileLogLen > 0 ){
     std::vector<char> programErrMessage(compileLogLen + 1);
     glGetProgramInfoLog(programID, compileLogLen, NULL, &programErrMessage[0]);
-    printf("Error linking program with %s and %s: %s\n", vertexShader, fragmentShader, &programErrMessage[0]);
+    printf("Error linking program (VS:%s, FS:%s): %s\n", vertexShader, fragmentShader, &programErrMessage[0]);
   }
 
   // Free space: http://gamedev.stackexchange.com/questions/47910/after-a-succesful-gllinkprogram-should-i-delete-detach-my-shaders
@@ -67,18 +71,56 @@ ShaderProgram::ShaderProgram(const std::string &vertexShader, const std::string 
   glDeleteShader(fragmentShaderID);
 
   // Get vertex buffer IDs
+  aVertexColorArrID = glGetAttribLocation(programID, "afs_Color");
   aVertexPositionArrID = glGetAttribLocation(programID, "avs_Position");
 
   // Get uniform IDs
-  uColorVecID = glGetUniformLocation(programID, "u_Color");
   uModelMatID = glGetUniformLocation(programID, "u_Model");
   uViewProjectionMatID = glGetUniformLocation(programID, "u_ViewProjection");
 }
 
-void ShaderProgram::draw(Drawable *d) {
-
+ShaderProgram::~ShaderProgram() {
+  glDeleteProgram(programID);
 }
 
-void ShaderProgram::glDelete() {
-  glDeleteProgram(programID);
+void ShaderProgram::draw(Drawable *d) {
+  glUseProgram(programID);
+
+  // Insert data to attribute variables
+  if (aVertexColorArrID != -1 && d->bindPositionBuffer()) {
+    glEnableVertexAttribArray(aVertexColorArrID);
+    glVertexAttribPointer(aVertexColorArrID, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+  }
+  if (aVertexPositionArrID != -1 && d->bindPositionBuffer()) {
+    glEnableVertexAttribArray(aVertexPositionArrID);
+    glVertexAttribPointer(aVertexPositionArrID, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+  }
+
+  // Draw (indices)
+  d->bindIndexBuffer();
+  glDrawArrays(d->drawMode(), 0, d->elementCount());
+
+  // Disable attributes
+  if (aVertexColorArrID != -1)
+    glDisableVertexAttribArray(aVertexColorArrID);
+  if (aVertexPositionArrID != -1)
+    glDisableVertexAttribArray(aVertexPositionArrID);
+}
+
+void ShaderProgram::setModelMat(const glm::mat4 &modelMat) {
+  glUseProgram(programID);
+
+  if (uModelMatID != -1) {
+    // http://glm.g-truc.net/0.9.2/api/a00001.html
+    glUniformMatrix4fv(uModelMatID, 1, GL_FALSE, &modelMat[0][0]);
+  }
+}
+
+void ShaderProgram::setViewProjectionMat(const glm::mat4 &viewProjectionMat) {
+  glUseProgram(programID);
+
+  if (uViewProjectionMatID != -1) {
+    // http://glm.g-truc.net/0.9.2/api/a00001.html
+    glUniformMatrix4fv(uViewProjectionMatID, 1, GL_FALSE, &viewProjectionMat[0][0]);
+  }
 }

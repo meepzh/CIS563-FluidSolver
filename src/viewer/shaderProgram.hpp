@@ -7,13 +7,16 @@
 
 #include <string>
 #include <GL/glew.h>
-#include "../geom/drawable.hpp"
+#include <glm/glm.hpp>
+#include "../geom/geom.hpp"
 
 class ShaderProgram {
 public:
   ShaderProgram(const std::string &vertexShader, const std::string &fragmentShader);
+  ~ShaderProgram();
   void draw(Drawable *d);
-  void glDelete();
+  void setModelMat(const glm::mat4 &modelMat);
+  void setViewProjectionMat(const glm::mat4 &viewProjectionMat);
 
 private:
   GLuint programID;
@@ -21,8 +24,8 @@ private:
   GLuint vertexShaderID;
   GLuint fragmentShaderID;
 
+  GLuint aVertexColorArrID;
   GLuint aVertexPositionArrID;
-  GLuint uColorVecID;
   GLuint uModelMatID;
   GLuint uViewProjectionMatID;
 };
