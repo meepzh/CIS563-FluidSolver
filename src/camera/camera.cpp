@@ -4,8 +4,109 @@
 
 #include "camera.hpp"
 
+#define GLM_FORCE_RADIANS
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 Camera::Camera(unsigned int width, unsigned int height,
                const glm::vec3 &eye, const glm::vec3 &ref, const glm::vec3 &worldUp)
- : _width(width), _height(height),
-   _eye(eye), _ref(ref), _worldUp(worldUp) {
+ : nearClip(0.1f), farClip(1000.f),
+   _width(width), _height(height),
+   _eye(eye), _ref(ref), _worldUp(worldUp),
+   _fovy(45.f),
+   panSpeed(0.01f), zoomSpeed(0.0005f) {
+  arcballRotationMat = glm::mat4(1.f);
+  recomputeAttributes();
+  recomputeLocalAxes();
+  recomputeEyeAndRef();
+}
+
+glm::mat4 Camera::getViewProjection() {
+  return glm::perspective(glm::radians(_fovy), _width / (float)_height, nearClip, farClip) *
+           glm::lookAt(glm::vec3(arcballEye), glm::vec3(arcballRef), glm::vec3(arcballUp));
+}
+
+void Camera::recomputeAttributes() {
+  // Vectors
+  _look = glm::normalize(_ref - _eye);
+  _right = glm::normalize(glm::cross(_look, _worldUp));
+  _up = glm::normalize(glm::cross(_right, _look));
+
+  // Other
+  _aspect = _width / _height;
+
+  // Arcball
+  centerX = _width / 2.f;
+  centerY = _height / 2.f;
+  arcballRadius = _width * 0.30; // Arbitrary radius
+}
+
+void Camera::recomputeLocalAxes() {
+  arcballLook = glm::normalize(arcballRotationMat * glm::vec4(_look, 0));
+  arcballUp = glm::normalize(arcballRotationMat * glm::vec4(_up, 0));
+  arcballRight = glm::normalize(arcballRotationMat * glm::vec4(_right, 0));
+}
+
+void Camera::recomputeEyeAndRef() {
+  arcballEye = arcballRotationMat * glm::vec4(_eye, 0);
+  arcballEye += arcballPan;
+  arcballRef = glm::vec4(_ref, 1.f) + arcballPan;
+
+  // Apply zoom
+  glm::vec4 difference = arcballEye - arcballRef;
+  difference *= arcballZoom;
+  arcballEye = arcballRef + difference;
+}
+
+void Camera::arcball(const glm::vec2 &p1, const glm::vec2 &p2) {
+  glm::vec3 pt1 = computeSpherePoint(p1);
+  glm::vec3 pt2 = computeSpherePoint(p2);
+
+  glm::vec3 ptCross = glm::cross(pt1, pt2);
+  glm::quat dq = glm::quat(glm::dot(pt1, pt2), ptCross.x, ptCross.y, ptCross.z);
+
+  arcballRotationMat *= glm::mat4_cast(dq * glm::quat(1.f, 0, 0, 0));
+
+  recomputeLocalAxes();
+  recomputeEyeAndRef();
+}
+
+glm::vec3 Camera::computeSpherePoint(const glm::vec2 &p) const {
+  glm::vec3 p2(0);
+  p2.x = (p.x - centerX) / arcballRadius;
+  p2.y = (p.y - centerY) / arcballRadius;
+
+  float r = (p2.x * p2.x) + (p2.y * p2.y);
+  if (r > 1) {
+    p2 = glm::normalize(p2);
+  } else {
+    p2.x *= -1; // Reverse x position
+    p2.z = sqrt(1 - r);
+  }
+
+  return p2;
+}
+
+void Camera::pan(const glm::vec2 &p1, const glm::vec2 &p2) {
+  float dx = p2.x - p1.x;
+  float dy = p2.y - p1.y;
+
+  arcballPan -= dx * panSpeed * arcballRight;
+  arcballPan += dy * panSpeed * arcballUp;
+
+  recomputeEyeAndRef();
+}
+
+void Camera::zoom(int delta) {
+  // A typical mouse has 15 * 8 delta (eigth-degrees) per scroll wheel tick
+
+  arcballZoom += delta * zoomSpeed;
+
+  // Prevent zooming past ref
+  if (arcballZoom < 0) {
+    arcballZoom = 0;
+  }
+
+  recomputeEyeAndRef();
 }

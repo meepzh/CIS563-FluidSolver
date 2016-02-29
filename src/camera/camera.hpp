@@ -14,6 +14,18 @@ public:
    : Camera(width, height, glm::vec3(1, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)) {}
   Camera(unsigned int width, unsigned int height, const glm::vec3 &eye, const glm::vec3 &ref, const glm::vec3 &worldUp);
 
+  // Matrices
+  glm::mat4 getViewProjection();
+
+  void recomputeAttributes();
+  void recomputeLocalAxes();
+  void recomputeEyeAndRef();
+
+  // Arcball
+  void arcball(const glm::vec2 &p1, const glm::vec2 &p2); // Rotation interface for the mouse
+  void pan(const glm::vec2 &p1, const glm::vec2 &p2); // Panning interface for the mouse
+  void zoom(int delta); // Zooming interface for the scroll wheel
+
   // Properties
   float nearClip,
         farClip;
@@ -33,9 +45,26 @@ private:
             _V,
             _H;
 
+  // Arcball
+  float centerX,
+        centerY,
+        arcballRadius,
+        panSpeed,
+        zoomSpeed;
+  glm::mat4 arcballRotationMat;
+  glm::vec4 arcballEye,
+            arcballRef,
+            arcballLook,
+            arcballUp,
+            arcballRight;
+  glm::vec4 arcballPan;
+  float arcballZoom;
+  glm::vec3 computeSpherePoint(const glm::vec2 &p) const;
+
   // Other properties
   float _fovy,
         _aspect;
+
 };
 
 #endif /* MFLUIDSOLVER_CAMERA_HPP_ */
