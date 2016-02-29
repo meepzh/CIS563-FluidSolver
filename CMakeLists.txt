@@ -90,16 +90,15 @@ if(MSVC)
 endif()
 
 # Add source files you want to compile (.cpp)
-# set(CORE_SRC
-#         src/main.cpp
-#         src/camera/camera.cpp
-#         src/viewer/viewer.cpp
-#         src/fluidSolver/fluidSolver.cpp
-#         src/scene/scene.cpp
-#         src/geom/geom.cpp
-# )
-# Easier: http://derekmolloy.ie/hello-world-introductions-to-cmake/
-file(GLOB CORE_SRC "src/*.cpp")
+set(CORE_SRC
+        src/main.cpp
+        src/camera/camera.cpp
+        src/viewer/viewer.cpp
+        src/fluidSolver/fluidSolver.cpp
+        src/scene/scene.cpp
+        src/geom/geom.cpp
+        src/geom/cube.cpp
+)
 
 add_executable(MFluidSolver ${CORE_SRC})
 target_link_libraries(MFluidSolver ${CORE_LIBS})
