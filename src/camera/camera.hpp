@@ -11,7 +11,7 @@ class Camera {
 public:
   Camera() : Camera(1024, 768) {}
   Camera(unsigned int width, unsigned int height)
-   : Camera(width, height, glm::vec3(10, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)) {}
+   : Camera(width, height, glm::vec3(0, 0, 10), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)) {}
   Camera(unsigned int width, unsigned int height, const glm::vec3 &eye, const glm::vec3 &ref, const glm::vec3 &worldUp);
 
   // Matrices
@@ -64,7 +64,6 @@ private:
   // Other properties
   float _fovy,
         _aspect;
-
 };
 
 #endif /* MFLUIDSOLVER_CAMERA_HPP_ */

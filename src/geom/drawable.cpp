@@ -4,11 +4,12 @@
 
 #include "drawable.hpp"
 
-Drawable::Drawable() : vertexIndexArrBufferID(-1), vertexPositionArrBufferID(-1) {
+Drawable::Drawable() : vertexIndexArrBufferID(-1), vertexColorArrBufferID(-1), vertexPositionArrBufferID(-1) {
 }
 
 Drawable::~Drawable() {
   if (vertexIndexArrBufferID != -1) glDeleteBuffers(1, &vertexIndexArrBufferID);
+  if (vertexColorArrBufferID != -1) glDeleteBuffers(1, &vertexColorArrBufferID);
   if (vertexPositionArrBufferID != -1) glDeleteBuffers(1, &vertexPositionArrBufferID);
 }
 

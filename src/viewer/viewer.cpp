@@ -72,7 +72,7 @@ void Viewer::run() {
       }
     }
     if (rightState == GLFW_PRESS) {
-      if (oldLeftState == GLFW_RELEASE) {
+      if (oldRightState == GLFW_RELEASE) {
         glfwGetCursorPos(window, &oldPos.x, &oldPos.y);
       } else {
         glfwGetCursorPos(window, &newPos.x, &newPos.y);

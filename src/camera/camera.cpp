@@ -15,7 +15,7 @@ Camera::Camera(unsigned int width, unsigned int height,
    _width(width), _height(height),
    _eye(eye), _ref(ref), _worldUp(worldUp),
    _fovy(45.f), arcballZoom(1.f),
-   panSpeed(0.01f), zoomSpeed(0.0005f) {
+   panSpeed(0.01f), zoomSpeed(0.005f) {
   arcballRotationMat = glm::mat4(1.f);
   recomputeAttributes();
   recomputeLocalAxes();
