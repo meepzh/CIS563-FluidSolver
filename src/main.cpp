@@ -23,6 +23,7 @@ int main() {
   }
 
   Viewer viewer;
+  viewer.scene.loadJSON("scene.json");
 
   // Set background color
   glClearColor(0.3f, 0.3f, 0.3f, 0.0f);

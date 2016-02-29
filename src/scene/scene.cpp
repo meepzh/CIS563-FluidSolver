@@ -17,7 +17,7 @@ Scene::~Scene() {
   }
 }
 
-void Scene::loadScene(std::string file) {
+void Scene::loadJSON(std::string file) {
   // Read JSON file
   Json::Reader reader;
   Json::Value root;

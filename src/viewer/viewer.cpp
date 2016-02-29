@@ -23,6 +23,7 @@ Viewer::Viewer(int width, int height) {
 
   glfwMakeContextCurrent(window); // Initialize GLEW
 
+  glewExperimental = GL_TRUE;
   if (glewInit() != GLEW_OK) {
     std::fprintf(stderr, "Failed to initialize GLEW.\n");
     glfwTerminate();

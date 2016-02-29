@@ -17,10 +17,11 @@ public:
   Viewer(int width, int height);
   void run();
 
-private:
   Camera camera;
-  GLFWwindow *window;
   Scene scene;
+
+private:
+  GLFWwindow *window;
 };
 
 #endif /* MFLUIDSOLVER_VIEWER_HPP_ */

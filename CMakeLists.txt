@@ -17,6 +17,12 @@ configure_file(
 )
 include_directories("${PROJECT_BINARY_DIR}")
 
+# Copy GLSL and JSON files
+file(GLOB JSON_SRC "${PROJECT_SOURCE_DIR}/src/scene/*.json")
+file(COPY ${JSON_SRC} DESTINATION "${PROJECT_BINARY_DIR}/")
+file(GLOB GLSL_SRC "${PROJECT_SOURCE_DIR}/glsl/*.glsl")
+file(COPY ${GLSL_SRC} DESTINATION "${PROJECT_BINARY_DIR}/")
+
 # Set creates a variable
 set(NUPARU "nuparu")
 # Add include and src directories to path
