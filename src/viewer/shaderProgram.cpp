@@ -14,6 +14,8 @@ ShaderProgram::ShaderProgram(const std::string &vertexShader, const std::string 
    vertexShaderID(-1), fragmentShaderID(-1),
    aVertexColorArrID(-1), aVertexPositionArrID(-1),
    uModelMatID(-1), uViewProjectionMatID(-1) {
+  std::printf("Loading shader program (VS:%s, FS:%s)\n", vertexShader.c_str(), fragmentShader.c_str());
+
   vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
   fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
@@ -25,17 +27,17 @@ ShaderProgram::ShaderProgram(const std::string &vertexShader, const std::string 
 
   // Compile
   GLint compileResult = GL_FALSE;
-  int compileLogLen;
+  int compileLogLen = 0;
 
   char const *vsTextPtr = vsText.c_str();
   glShaderSource(vertexShaderID, 1, &(vsTextPtr), NULL);
   glCompileShader(vertexShaderID);
   glGetShaderiv(vertexShaderID, GL_COMPILE_STATUS, &compileResult);
   glGetShaderiv(vertexShaderID, GL_INFO_LOG_LENGTH, &compileLogLen);
-  if (compileLogLen > 0) {
+  if (compileLogLen > 1) {
     std::vector<char> vsErrMessage(compileLogLen + 1);
     glGetShaderInfoLog(vertexShaderID, compileLogLen, NULL, &vsErrMessage[0]);
-    printf("Error compiling vertex shader %s: %s\n", vertexShader, &vsErrMessage[0]);
+    printf("Error compiling vertex shader %s %d: %s\n", vertexShader.c_str(), &vsErrMessage[0]);
   }
 
   char const *fsTextPtr = fsText.c_str();
@@ -43,10 +45,10 @@ ShaderProgram::ShaderProgram(const std::string &vertexShader, const std::string 
   glCompileShader(fragmentShaderID);
   glGetShaderiv(fragmentShaderID, GL_COMPILE_STATUS, &compileResult);
   glGetShaderiv(fragmentShaderID, GL_INFO_LOG_LENGTH, &compileLogLen);
-  if (compileLogLen > 0) {
+  if (compileLogLen > 1) {
     std::vector<char> fsErrMessage(compileLogLen + 1);
     glGetShaderInfoLog(fragmentShaderID, compileLogLen, NULL, &fsErrMessage[0]);
-    printf("Error compiling fragment shader %s: %s\n", fragmentShader, &fsErrMessage[0]);
+    printf("Error compiling fragment shader %s: %s\n", fragmentShader.c_str(), &fsErrMessage[0]);
   }
 
   // Link the two programs
@@ -59,7 +61,7 @@ ShaderProgram::ShaderProgram(const std::string &vertexShader, const std::string 
   if (compileLogLen > 0 ){
     std::vector<char> programErrMessage(compileLogLen + 1);
     glGetProgramInfoLog(programID, compileLogLen, NULL, &programErrMessage[0]);
-    printf("Error linking program (VS:%s, FS:%s): %s\n", vertexShader, fragmentShader, &programErrMessage[0]);
+    printf("Error linking program (VS:%s, FS:%s): %s\n", vertexShader.c_str(), fragmentShader.c_str(), &programErrMessage[0]);
   }
 
   // Free space: http://gamedev.stackexchange.com/questions/47910/after-a-succesful-gllinkprogram-should-i-delete-detach-my-shaders
@@ -69,7 +71,7 @@ ShaderProgram::ShaderProgram(const std::string &vertexShader, const std::string 
   glDeleteShader(fragmentShaderID);
 
   // Get vertex buffer IDs
-  aVertexColorArrID = glGetAttribLocation(programID, "afs_Color");
+  aVertexColorArrID = glGetAttribLocation(programID, "avs_Color");
   aVertexPositionArrID = glGetAttribLocation(programID, "avs_Position");
 
   // Get uniform IDs

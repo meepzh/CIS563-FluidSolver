@@ -18,13 +18,17 @@ int main() {
 
   // Initialize GLFW
   if (!glfwInit()) {
-    fprintf(stderr, "Failed to initiaize GLFW.\n");
+    fprintf(stderr, "Failed to initiaize GLFW\n");
     return -1;
   }
 
+  std::string sceneJSON = "scene.json";
+  std::string wireVShader = "wire.vert.glsl";
+  std::string wireFShader = "wire.frag.glsl";
+
   Viewer viewer;
-  viewer.scene.loadJSON("scene.json");
-  viewer.wireShader = new ShaderProgram("wire.vert.glsl", "wire.frag.glsl");
+  viewer.scene.loadJSON(sceneJSON);
+  viewer.wireShader = new ShaderProgram(wireVShader, wireFShader);
 
   // Set background color
   glClearColor(0.3f, 0.3f, 0.3f, 0.0f);

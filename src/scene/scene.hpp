@@ -13,7 +13,7 @@ class Scene {
 public:
   Scene();
   ~Scene();
-  void loadJSON(std::string file);
+  void loadJSON(const std::string &file);
 
   std::vector<Geometry *> objects;
   Geometry *fluidSource;

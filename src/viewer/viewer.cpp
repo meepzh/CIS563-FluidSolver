@@ -17,7 +17,7 @@ Viewer::Viewer(int width, int height)
 
   window = glfwCreateWindow(width, height, "MFluidSolver", NULL, NULL);
   if (window == NULL) {
-    std::fprintf(stderr, "Failed to open GLFW window.\n");
+    std::fprintf(stderr, "Failed to open GLFW window\n");
     glfwTerminate();
     throw -1;
   }
@@ -26,7 +26,7 @@ Viewer::Viewer(int width, int height)
 
   glewExperimental = GL_TRUE;
   if (glewInit() != GLEW_OK) {
-    std::fprintf(stderr, "Failed to initialize GLEW.\n");
+    std::fprintf(stderr, "Failed to initialize GLEW\n");
     glfwTerminate();
     throw -1;
   }
