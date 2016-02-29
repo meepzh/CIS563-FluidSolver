@@ -53,8 +53,6 @@ void Viewer::run() {
       wireShader->draw(g);
     }
 
-
-
     // Swap buffers
     glfwSwapBuffers(window);
     glfwPollEvents();

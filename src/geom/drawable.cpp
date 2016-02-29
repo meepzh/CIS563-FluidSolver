@@ -15,7 +15,7 @@ Drawable::~Drawable() {
 
 bool Drawable::bindIndexBuffer() {
   if (vertexIndexArrBufferID == -1) return false;
-  glBindBuffer(GL_ARRAY_BUFFER, vertexIndexArrBufferID);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexIndexArrBufferID);
   return true;
 }
 

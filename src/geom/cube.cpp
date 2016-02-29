@@ -4,13 +4,16 @@
 
 #include "cube.hpp"
 
+#define GLM_FORCE_RADIANS
+#include <glm/gtx/norm.hpp>
+
 Cube::Cube(const glm::vec3 &color) : _color(color) {
   const unsigned int IDX_COUNT = 24;
   const unsigned int VERT_COUNT = 8;
 
   // Indices
   GLuint idx[IDX_COUNT];
-  idx[0] = 0; idx[1] = 1; // Draw 2 squares
+  /*idx[0] = 0; idx[1] = 1; // Draw 2 squares
   idx[2] = 1; idx[3] = 3;
   idx[4] = 3; idx[5] = 2;
   idx[6] = 2; idx[7] = 0;
@@ -22,7 +25,7 @@ Cube::Cube(const glm::vec3 &color) : _color(color) {
     // Connect sides
     idx[i * 2 + 16] = i;
     idx[i * 2 + 17] = i + 4;
-  }
+  }*/
 
   // Vertices
   glm::vec3 vert_pos[VERT_COUNT];
@@ -35,6 +38,20 @@ Cube::Cube(const glm::vec3 &color) : _color(color) {
   vert_pos[6] = glm::vec3(0.5f, -0.5f, -0.5f);
   vert_pos[7] = glm::vec3(-0.5f, -0.5f, -0.5f);
 
+  unsigned int counter = 0;
+  unsigned int idxCount = 0;
+  for (unsigned int i = 0; i < VERT_COUNT; ++i) {
+    for (unsigned int j = i + 1; j < VERT_COUNT; ++j) {
+      if (idxCount == IDX_COUNT) break;
+      if (glm::distance(vert_pos[i], vert_pos[j]) < 1.0001f && glm::distance2(vert_pos[i], vert_pos[j]) > 0.999f) {
+        idx[idxCount++] = i;
+        idx[idxCount++] = j;
+        counter++;
+      }
+    }
+    if (idxCount == IDX_COUNT) break;
+  }
+
   // Color
   glm::vec3 vert_col[VERT_COUNT];
   for (unsigned int i = 0; i < VERT_COUNT; ++i) {
@@ -46,7 +63,7 @@ Cube::Cube(const glm::vec3 &color) : _color(color) {
   // Bind
   glGenBuffers(1, &vertexIndexArrBufferID);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexIndexArrBufferID);
-  glBufferData(GL_ARRAY_BUFFER, IDX_COUNT * sizeof(GLuint), idx, GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, IDX_COUNT * sizeof(GLuint), idx, GL_STATIC_DRAW);
 
   glGenBuffers(1, &vertexPositionArrBufferID);
   glBindBuffer(GL_ARRAY_BUFFER, vertexPositionArrBufferID);

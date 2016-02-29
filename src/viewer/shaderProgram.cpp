@@ -87,7 +87,7 @@ void ShaderProgram::draw(Drawable *d) {
   glUseProgram(programID);
 
   // Insert data to attribute variables
-  if (aVertexColorArrID != -1 && d->bindPositionBuffer()) {
+  if (aVertexColorArrID != -1 && d->bindColorBuffer()) {
     glEnableVertexAttribArray(aVertexColorArrID);
     glVertexAttribPointer(aVertexColorArrID, 3, GL_FLOAT, GL_FALSE, 0, NULL);
   }
@@ -98,7 +98,7 @@ void ShaderProgram::draw(Drawable *d) {
 
   // Draw (indices)
   d->bindIndexBuffer();
-  glDrawArrays(d->drawMode(), 0, d->idxCount());
+  glDrawElements(d->drawMode(), d->idxCount(), GL_UNSIGNED_INT, NULL);
 
   // Disable attributes
   if (aVertexColorArrID != -1)
