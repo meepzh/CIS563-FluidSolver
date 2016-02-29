@@ -1,0 +1,6 @@
+//
+//  MFluidSolverConfig.hpp
+//  MFluidSolver
+
+#define MFluidSolver_VERSION_MAJOR @MFluidSolver_VERSION_MAJOR@
+#define MFluidSolver_VERSION_MINOR @MFluidSolver_VERSION_MINOR@
