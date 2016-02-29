@@ -91,13 +91,14 @@ endif()
 
 # Add source files you want to compile (.cpp)
 set(CORE_SRC
-        src/main.cpp
         src/camera/camera.cpp
-        src/viewer/viewer.cpp
         src/fluidSolver/fluidSolver.cpp
-        src/scene/scene.cpp
+        src/fluidSolver/particle.cpp
         src/geom/geom.cpp
         src/geom/cube.cpp
+        src/scene/scene.cpp
+        src/viewer/viewer.cpp
+        src/main.cpp
 )
 
 add_executable(MFluidSolver ${CORE_SRC})

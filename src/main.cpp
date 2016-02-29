@@ -2,8 +2,7 @@
 //  main.cpp
 //  MFluidSolver
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -14,7 +13,7 @@
 #include "viewer/viewer.hpp"
 
 int main() {
-  fprintf(stdout,"Version %d.%d\n", MFluidSolver_VERSION_MAJOR, MFluidSolver_VERSION_MINOR);
+  std::fprintf(stdout,"Version %d.%d\n", MFluidSolver_VERSION_MAJOR, MFluidSolver_VERSION_MINOR);
 
   // Initialize GLFW
   if (!glfwInit()) {

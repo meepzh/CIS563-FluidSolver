@@ -8,6 +8,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "../camera/camera.hpp"
+#include "../scene/scene.hpp"
+
 class Viewer {
 public:
   Viewer() : Viewer(1024, 768){}
@@ -15,7 +18,10 @@ public:
   bool hasError();
   void run();
 private:
+  Camera camera;
   GLFWwindow *window;
+  Scene scene;
+
   bool _hasError;
 };
 

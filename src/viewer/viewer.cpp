@@ -2,9 +2,9 @@
 //  viewer.cpp
 //  MFluidSolver
 
-#include <stdio.h>
-
 #include "viewer.hpp"
+
+#include <cstdio>
 
 Viewer::Viewer(int width, int height) : _hasError(false) {
   // http://www.opengl-tutorial.org/beginners-tutorials/tutorial-1-opening-a-window/
@@ -16,7 +16,7 @@ Viewer::Viewer(int width, int height) : _hasError(false) {
 
   window = glfwCreateWindow(width, height, "MFluidSolver", NULL, NULL);
   if (window == NULL) {
-    fprintf(stderr, "Failed to open GLFW window.\n");
+    std::fprintf(stderr, "Failed to open GLFW window.\n");
     glfwTerminate();
     _hasError = true;
     return;
@@ -25,7 +25,7 @@ Viewer::Viewer(int width, int height) : _hasError(false) {
   glfwMakeContextCurrent(window); // Initialize GLEW
 
   if (glewInit() != GLEW_OK) {
-    fprintf(stderr, "Failed to initialize GLEW.\n");
+    std::fprintf(stderr, "Failed to initialize GLEW.\n");
     glfwTerminate();
     _hasError = true;
     return;
