@@ -7,11 +7,17 @@
 
 #include <string>
 #include <vector>
-#include "../geom/geom.hpp"
+#include "../geom/cube.hpp"
 
 class Scene {
-  std::vector<Geometry *> geometry;
+public:
+  Scene();
+  ~Scene();
   void loadScene(std::string file);
+
+  std::vector<Geometry *> geometry;
+  Geometry *fluidSource;
+  Geometry *fluidContainer;
 };
 
 #endif /* MFLUIDSOLVER_SCENE_HPP_ */

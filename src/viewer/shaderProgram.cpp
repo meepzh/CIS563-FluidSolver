@@ -98,7 +98,7 @@ void ShaderProgram::draw(Drawable *d) {
 
   // Draw (indices)
   d->bindIndexBuffer();
-  glDrawArrays(d->drawMode(), 0, d->elementCount());
+  glDrawArrays(d->drawMode(), 0, d->idxCount());
 
   // Disable attributes
   if (aVertexColorArrID != -1)
