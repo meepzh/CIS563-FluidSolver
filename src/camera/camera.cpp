@@ -23,7 +23,7 @@ Camera::Camera(unsigned int width, unsigned int height,
 }
 
 glm::mat4 Camera::getViewProjection() {
-  return glm::perspective(glm::radians(_fovy), _width / (float)_height, nearClip, farClip) *
+  return glm::perspective(glm::radians(_fovy), _aspect, nearClip, farClip) *
            glm::lookAt(glm::vec3(arcballEye), glm::vec3(arcballRef), glm::vec3(arcballUp));
 }
 
@@ -34,7 +34,7 @@ void Camera::recomputeAttributes() {
   _up = glm::normalize(glm::cross(_right, _look));
 
   // Other
-  _aspect = _width / _height;
+  _aspect = (float)_width / (float)_height;
 
   // Arcball
   centerX = _width / 2.f;
@@ -59,7 +59,7 @@ void Camera::recomputeEyeAndRef() {
   arcballEye = arcballRef + difference;
 }
 
-void Camera::arcball(const glm::vec2 &p1, const glm::vec2 &p2) {
+void Camera::arcball(const glm::dvec2 &p1, const glm::dvec2 &p2) {
   glm::vec3 pt1 = computeSpherePoint(p1);
   glm::vec3 pt2 = computeSpherePoint(p2);
 
@@ -72,7 +72,7 @@ void Camera::arcball(const glm::vec2 &p1, const glm::vec2 &p2) {
   recomputeEyeAndRef();
 }
 
-glm::vec3 Camera::computeSpherePoint(const glm::vec2 &p) const {
+glm::vec3 Camera::computeSpherePoint(const glm::dvec2 &p) const {
   glm::vec3 p2(0);
   p2.x = (p.x - centerX) / arcballRadius;
   p2.y = (p.y - centerY) / arcballRadius;
@@ -88,7 +88,7 @@ glm::vec3 Camera::computeSpherePoint(const glm::vec2 &p) const {
   return p2;
 }
 
-void Camera::pan(const glm::vec2 &p1, const glm::vec2 &p2) {
+void Camera::pan(const glm::dvec2 &p1, const glm::dvec2 &p2) {
   float dx = p2.x - p1.x;
   float dy = p2.y - p1.y;
 
@@ -98,7 +98,7 @@ void Camera::pan(const glm::vec2 &p1, const glm::vec2 &p2) {
   recomputeEyeAndRef();
 }
 
-void Camera::zoom(int delta) {
+void Camera::zoom(double delta) {
   // A typical mouse has 15 * 8 delta (eigth-degrees) per scroll wheel tick
 
   arcballZoom += delta * zoomSpeed;

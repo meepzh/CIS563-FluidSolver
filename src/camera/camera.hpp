@@ -22,9 +22,9 @@ public:
   void recomputeEyeAndRef();
 
   // Arcball
-  void arcball(const glm::vec2 &p1, const glm::vec2 &p2); // Rotation interface for the mouse
-  void pan(const glm::vec2 &p1, const glm::vec2 &p2); // Panning interface for the mouse
-  void zoom(int delta); // Zooming interface for the scroll wheel
+  void arcball(const glm::dvec2 &p1, const glm::dvec2 &p2); // Rotation interface for the mouse
+  void pan(const glm::dvec2 &p1, const glm::dvec2 &p2); // Panning interface for the mouse
+  void zoom(double delta); // Zooming interface for the scroll wheel
 
   // Properties
   float nearClip,
@@ -59,7 +59,7 @@ private:
             arcballRight;
   glm::vec4 arcballPan;
   float arcballZoom;
-  glm::vec3 computeSpherePoint(const glm::vec2 &p) const;
+  glm::vec3 computeSpherePoint(const glm::dvec2 &p) const;
 
   // Other properties
   float _fovy,

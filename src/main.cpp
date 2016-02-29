@@ -10,7 +10,7 @@
 
 #include "MFluidSolverConfig.hpp"
 #include "main.hpp"
-#include "viewer/viewer.hpp"
+#include "viewer/input.hpp"
 #include "viewer/shaderProgram.hpp"
 
 int main() {
@@ -27,8 +27,19 @@ int main() {
   std::string wireFShader = "wire.frag.glsl";
 
   Viewer viewer;
+  Input::viewer = &viewer;
   viewer.scene.loadJSON(sceneJSON);
   viewer.wireShader = new ShaderProgram(wireVShader, wireFShader);
+
+  // Set a few settings/modes in OpenGL rendering
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_LINE_SMOOTH);
+  glEnable(GL_POLYGON_SMOOTH);
+  glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+  glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+
+  // Set the size with which points should be rendered
+  glPointSize(5);
 
   // Set background color
   glClearColor(0.3f, 0.3f, 0.3f, 0.0f);

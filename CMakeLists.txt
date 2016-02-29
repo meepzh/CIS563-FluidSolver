@@ -105,6 +105,7 @@ set(CORE_SRC
         src/geom/geom.cpp
         src/geom/transform.cpp
         src/scene/scene.cpp
+        src/viewer/input.cpp
         src/viewer/shaderProgram.cpp
         src/viewer/viewer.cpp
         src/main.cpp

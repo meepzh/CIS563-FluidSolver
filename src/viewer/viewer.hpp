@@ -20,11 +20,13 @@ public:
   void run();
 
   Camera camera;
+  GLFWwindow *window;
   Scene scene;
   ShaderProgram *wireShader;
-
 private:
-  GLFWwindow *window;
+  int leftState, rightState;
+  int oldLeftState, oldRightState;
+  glm::dvec2 oldPos, newPos;
 };
 
 #endif /* MFLUIDSOLVER_VIEWER_HPP_ */

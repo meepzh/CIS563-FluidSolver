@@ -5,9 +5,11 @@
 #include "viewer.hpp"
 
 #include <cstdio>
+#include "input.hpp"
 
 Viewer::Viewer(int width, int height)
-: wireShader(nullptr) {
+: wireShader(nullptr),
+  oldLeftState(GLFW_RELEASE), oldRightState(GLFW_RELEASE) {
   // http://www.opengl-tutorial.org/beginners-tutorials/tutorial-1-opening-a-window/
   glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // We want OpenGL 3.3
@@ -31,13 +33,17 @@ Viewer::Viewer(int width, int height)
     throw -1;
   }
 
-  // Ensure key capture
+  // Sticky keys and mouse buttons
   glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+  glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, GL_TRUE);
+
+  // Mouse callbacks
+  glfwSetScrollCallback(window, Input::computeArcballScrollCb);
 }
 
 void Viewer::run() {
   do {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     wireShader->setViewProjectionMat(camera.getViewProjection());
     for (Geometry *g : scene.objects) {
@@ -45,9 +51,35 @@ void Viewer::run() {
       wireShader->draw(g);
     }
 
+
+
     // Swap buffers
     glfwSwapBuffers(window);
     glfwPollEvents();
+
+    // Parse mouse button input
+    leftState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+    rightState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
+    if (leftState == GLFW_PRESS) {
+      if (oldLeftState == GLFW_RELEASE) {
+        glfwGetCursorPos(window, &oldPos.x, &oldPos.y);
+      } else {
+        glfwGetCursorPos(window, &newPos.x, &newPos.y);
+        camera.arcball(oldPos, newPos);
+        oldPos = glm::vec2(newPos);
+      }
+    }
+    if (rightState == GLFW_PRESS) {
+      if (oldLeftState == GLFW_RELEASE) {
+        glfwGetCursorPos(window, &oldPos.x, &oldPos.y);
+      } else {
+        glfwGetCursorPos(window, &newPos.x, &newPos.y);
+        camera.pan(oldPos, newPos);
+        oldPos = glm::vec2(newPos);
+      }
+    }
+    oldLeftState = leftState;
+    oldRightState = rightState;
   } while (glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
            glfwWindowShouldClose(window) == 0);
 }
