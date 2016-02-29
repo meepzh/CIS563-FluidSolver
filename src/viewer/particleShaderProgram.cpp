@@ -44,6 +44,9 @@ ParticleShaderProgram::~ParticleShaderProgram() {
   if (billboardVertexArrBufferID != -1) glDeleteBuffers(1, &billboardVertexArrBufferID);
   if (particleColorArrBufferID != -1) glDeleteBuffers(1, &particleColorArrBufferID);
   if (particlePositionArrBufferID != -1) glDeleteBuffers(1, &particlePositionArrBufferID);
+
+  delete particleColorArray;
+  delete particlePositionArray;
 }
 
 void ParticleShaderProgram::setCameraVectors(const glm::vec3 &right, const glm::vec3 &up) {

@@ -8,7 +8,7 @@
 #include "input.hpp"
 
 Viewer::Viewer(int width, int height)
-: wireShader(nullptr),
+: wireShader(nullptr), particleShader(nullptr),
   oldLeftState(GLFW_RELEASE), oldRightState(GLFW_RELEASE) {
   // http://www.opengl-tutorial.org/beginners-tutorials/tutorial-1-opening-a-window/
   glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing

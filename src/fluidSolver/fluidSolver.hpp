@@ -19,10 +19,14 @@ public:
   unsigned int maxParticles;
 
   void setGravity(float g);
-  float gravity();
+  float gravity() const;
+
+  void setParticleSeparation(float ps);
+  float particleSeparation() const;
 
 private:
   float _gravity;
+  float _particleSeparation;
 };
 
 #endif /* MFLUIDSOLVER_FLUIDSOLVER_HPP_ */

@@ -11,7 +11,7 @@
 #include "../camera/camera.hpp"
 #include "../fluidSolver/fluidSolver.hpp"
 #include "../scene/scene.hpp"
-#include "shaderProgram.hpp"
+#include "particleShaderProgram.hpp"
 
 class Viewer {
 public:
@@ -25,6 +25,7 @@ public:
   GLFWwindow *window;
   Scene scene;
   ShaderProgram *wireShader;
+  ParticleShaderProgram *particleShader;
 
 private:
   int leftState, rightState;

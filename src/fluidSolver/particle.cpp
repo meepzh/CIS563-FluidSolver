@@ -4,10 +4,10 @@
 
 #include "particle.hpp"
 
-Particle::Particle(float mass) : color(0, 0, 1) {
+Particle::Particle(float mass, const glm::vec3 &position) : color(0, 0, 1) {
   // State
   state.mass = 1;
-  state.position = glm::vec3(0);
+  state.position = position;
   state.velocity = glm::vec3(0);
   state.acceleration = glm::vec3(0);
 }

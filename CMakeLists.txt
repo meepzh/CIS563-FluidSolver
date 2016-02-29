@@ -99,6 +99,7 @@ endif()
 set(CORE_SRC
         src/camera/camera.cpp
         src/fluidSolver/fluidSolver.cpp
+        src/fluidSolver/integrator.cpp
         src/fluidSolver/particle.cpp
         src/geom/cube.cpp
         src/geom/drawable.cpp

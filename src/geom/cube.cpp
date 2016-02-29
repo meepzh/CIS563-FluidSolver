@@ -86,3 +86,19 @@ bool Cube::intersects(const glm::vec3 &point) const {
     return true;
   return false;
 }
+
+void Cube::spawnParticlesInVolume(FluidSolver *solver) const {
+  glm::vec3 minBound, maxBound;
+  getBoundsByTransformedMinMax(glm::vec3(-0.5f), glm::vec3(0.5f), minBound, maxBound);
+
+  double particleSeparation = solver->particleSeparation();
+  minBound += particleSeparation / 2.f;
+  maxBound -= particleSeparation / 2.f;
+  for (double i = minBound.x; i <= maxBound.x; i += particleSeparation) {
+    for (double j = minBound.y; j <= maxBound.y; j += particleSeparation) {
+      for (double k = minBound.z; k <= maxBound.z; k += particleSeparation) {
+        solver->particles.push_back(new Particle(glm::vec3(i, j, k)));
+      }
+    }
+  }
+}

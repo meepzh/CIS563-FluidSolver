@@ -17,8 +17,9 @@ struct State {
 class Particle {
 public:
   // Constructors/Destructors
-  Particle() : Particle(1) {};
-  Particle(float mass);
+  Particle() : Particle(1, glm::vec3(0)) {}
+  Particle(const glm::vec3 &position) : Particle(1, position) {}
+  Particle(float mass, const glm::vec3 &position);
 
   // Force
   void addForce(glm::vec3 force);

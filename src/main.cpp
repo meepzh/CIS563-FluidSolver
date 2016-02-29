@@ -11,7 +11,7 @@
 #include "MFluidSolverConfig.hpp"
 #include "main.hpp"
 #include "viewer/input.hpp"
-#include "viewer/shaderProgram.hpp"
+#include "viewer/particleShaderProgram.hpp"
 
 int main() {
   std::fprintf(stdout,"Version %d.%d\n", MFluidSolver_VERSION_MAJOR, MFluidSolver_VERSION_MINOR);
@@ -26,6 +26,8 @@ int main() {
   std::string sceneJSON = "scene.json";
   std::string wireVShader = "wire.vert.glsl";
   std::string wireFShader = "wire.frag.glsl";
+  std::string particleVShader = "particle.vert.glsl";
+  std::string particleFShader = "particle.frag.glsl";
 
   Viewer viewer;
   Input::viewer = &viewer;
@@ -50,6 +52,7 @@ int main() {
 
   // After vao init
   viewer.wireShader = new ShaderProgram(wireVShader, wireFShader);
+  viewer.particleShader = new ParticleShaderProgram(&(viewer.solver), particleVShader, particleFShader);
   viewer.scene.loadJSON(sceneJSON);
 
   viewer.run();

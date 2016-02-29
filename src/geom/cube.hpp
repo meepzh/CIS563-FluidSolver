@@ -14,6 +14,7 @@ public:
 
   virtual GLenum drawMode();
   virtual bool intersects(const glm::vec3 &point) const;
+  virtual void spawnParticlesInVolume(FluidSolver *solver) const;
 
 private:
   glm::vec3 _color;
