@@ -24,6 +24,7 @@ int main() {
 
   Viewer viewer;
   viewer.scene.loadJSON("scene.json");
+  viewer.wireShader = new ShaderProgram("wire.vert.glsl", "wire.frag.glsl");
 
   // Set background color
   glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
@@ -32,9 +33,6 @@ int main() {
   GLuint vaoID;
   glGenVertexArrays(1, &vaoID);
   glBindVertexArray(vaoID);
-
-  // Create shader
-  ShaderProgram shader("wire.vert.glsl", "wire.frag.glsl");
 
   viewer.run();
 

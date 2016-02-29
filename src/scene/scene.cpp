@@ -4,6 +4,7 @@
 
 #include "scene.hpp"
 
+#include <cstdio>
 #include <fstream>
 #include <json/json.h>
 
@@ -12,8 +13,8 @@ Scene::Scene()
 }
 
 Scene::~Scene() {
-  for (std::vector<Geometry *>::iterator it = geometry.begin(); it != geometry.end(); ++it) {
-    delete (*it);
+  for (Geometry *g : objects) {
+    delete g;
   }
 }
 
@@ -25,6 +26,7 @@ void Scene::loadJSON(std::string file) {
 
   bool success = reader.parse(sceneStream, root, false);
   if (!success) {
+    std::printf("Failed to parse scene file %s.", file);
     return;
   }
 
@@ -37,15 +39,14 @@ void Scene::loadJSON(std::string file) {
   particleDim.x = root["particleDim"].get("boundX", 0.5f).asFloat();
   particleDim.y = root["particleDim"].get("boundY", 0.5f).asFloat();
   particleDim.z = root["particleDim"].get("boundZ", 0.5f).asFloat();
-  particleDim *= 2;
 
   float particleSeparation = root.get("particleSeparation", 0.1f).asFloat();
 
   // Create geometry
   fluidContainer = new Cube(glm::vec3(0));
   fluidSource = new Cube(glm::vec3(0));
-  geometry.push_back(fluidContainer);
-  geometry.push_back(fluidSource);
+  objects.push_back(fluidContainer);
+  objects.push_back(fluidSource);
 
   // Change geometry scale
   fluidContainer->transform.setScale(containerDim);

@@ -5,18 +5,18 @@
 #include "fluidSolver.hpp"
 
 FluidSolver::~FluidSolver() {
-  for (std::vector<Particle *>::iterator it = particles.begin(); it != particles.end(); ++it) {
-    delete *it;
+  for (Particle *p : particles) {
+    delete p;
   }
 }
 
 void FluidSolver::update() {
-  for (std::vector<Particle *>::iterator it = particles.begin(); it != particles.end(); ++it) {
-    (*it)->addForce(glm::vec3(0, _gravity, 0));
+  for (Particle *p : particles) {
+    p->addForce(glm::vec3(0, _gravity, 0));
   }
 
-  for (std::vector<Particle *>::iterator it = particles.begin(); it != particles.end(); ++it) {
-    (*it)->update();
+  for (Particle *p : particles) {
+    p->update();
   }
 }
 

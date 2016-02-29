@@ -10,15 +10,18 @@
 
 #include "../camera/camera.hpp"
 #include "../scene/scene.hpp"
+#include "shaderProgram.hpp"
 
 class Viewer {
 public:
   Viewer() : Viewer(1024, 768){}
   Viewer(int width, int height);
+  ~Viewer();
   void run();
 
   Camera camera;
   Scene scene;
+  ShaderProgram *wireShader;
 
 private:
   GLFWwindow *window;

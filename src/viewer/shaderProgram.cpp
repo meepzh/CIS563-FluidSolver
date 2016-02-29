@@ -23,8 +23,6 @@ ShaderProgram::ShaderProgram(const std::string &vertexShader, const std::string 
   std::ifstream fsStream(fragmentShader);
   std::string fsText((std::istreambuf_iterator<char>(vsStream)), std::istreambuf_iterator<char>());
 
-  // TODO: What happens if files don't exist or are empty???
-
   // Compile
   GLint compileResult = GL_FALSE;
   int compileLogLen;

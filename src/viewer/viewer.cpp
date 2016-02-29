@@ -6,7 +6,8 @@
 
 #include <cstdio>
 
-Viewer::Viewer(int width, int height) {
+Viewer::Viewer(int width, int height)
+: wireShader(nullptr) {
   // http://www.opengl-tutorial.org/beginners-tutorials/tutorial-1-opening-a-window/
   glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // We want OpenGL 3.3
@@ -38,9 +39,19 @@ void Viewer::run() {
   do {
     glClear(GL_COLOR_BUFFER_BIT);
 
+    wireShader->setViewProjectionMat(camera.getViewProjection());
+    for (Geometry *g : scene.objects) {
+      wireShader->setModelMat(g->transform.T());
+      wireShader->draw(g);
+    }
+
     // Swap buffers
     glfwSwapBuffers(window);
     glfwPollEvents();
   } while (glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
            glfwWindowShouldClose(window) == 0);
+}
+
+Viewer::~Viewer() {
+  delete wireShader;
 }

@@ -15,7 +15,7 @@ public:
   ~Scene();
   void loadJSON(std::string file);
 
-  std::vector<Geometry *> geometry;
+  std::vector<Geometry *> objects;
   Geometry *fluidSource;
   Geometry *fluidContainer;
 };
