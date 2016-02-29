@@ -1,8 +1,8 @@
 # CIS563-FluidSolver #
-### How Does It Work? ###
+### How Does It Work ###
 
 
-### How To Use? ###
+### How To Use ###
 The camera uses the arcball interface and can be controlled with the left and
 right mouse buttons and the scroll wheel.
 
@@ -20,10 +20,10 @@ The right mouse button pans the camera. This changes both the camera's and its
 focus point's position. Right-click and drag to move the camera in the opposite
 direction of the mouse. It will look like you're dragging the scene with you.
 
-### Missing Required Features? ###
+### Missing Required Features ###
 
 
-### Extra Features? ###
+### Extra Features ###
 
 
 ### Credits ###

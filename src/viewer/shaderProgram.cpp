@@ -70,9 +70,9 @@ ShaderProgram::ShaderProgram(const std::string &vertexShader, const std::string 
   aVertexPositionArrID = glGetAttribLocation(programID, "avs_Position");
 
   // Get uniform IDs
-  uColorVecID = glGetUniformLocation(programID, "uColor");
-  uModelMatID = glGetUniformLocation(programID, "uModel");
-  uViewProjectionMatID = glGetUniformLocation(programID, "uViewProjection");
+  uColorVecID = glGetUniformLocation(programID, "u_Color");
+  uModelMatID = glGetUniformLocation(programID, "u_Model");
+  uViewProjectionMatID = glGetUniformLocation(programID, "u_ViewProjection");
 }
 
 void ShaderProgram::draw(Drawable *d) {
