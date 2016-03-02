@@ -29,7 +29,9 @@ focus point's position. Right-click and drag to move the camera in the opposite
 direction of the mouse. It will look like you're dragging the scene with you.
 
 ### Missing Required Features ###
-Sanity
+For some reason, when I enable color, the box wireframes just disappear. If you
+take out the `in_Color` from particle.frag.glsl, the wireframe will appear
+again.
 
 ### Extra Features ###
 None
