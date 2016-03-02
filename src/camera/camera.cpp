@@ -111,3 +111,11 @@ void Camera::zoom(double delta) {
 
   recomputeEyeAndRef();
 }
+
+const glm::vec3 Camera::right() const {
+  return glm::vec3(arcballRight);
+}
+
+const glm::vec3 Camera::up() const {
+  return glm::vec3(arcballUp);
+}

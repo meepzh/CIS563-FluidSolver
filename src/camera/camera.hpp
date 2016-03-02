@@ -30,6 +30,9 @@ public:
   float nearClip,
         farClip;
 
+  const glm::vec3 right() const;
+  const glm::vec3 up() const;
+
 private:
   // Dimensions
   unsigned int _width,

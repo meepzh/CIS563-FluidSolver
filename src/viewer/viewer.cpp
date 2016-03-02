@@ -65,7 +65,9 @@ void Viewer::run() {
     }
 
     // Render particles
-    //particleShader->draw();
+    particleShader->setViewProjectionMat(camera.getViewProjection());
+    particleShader->setCameraVectors(camera.right(), camera.up());
+    particleShader->draw();
 
     // Swap buffers
     glfwSwapBuffers(window);
