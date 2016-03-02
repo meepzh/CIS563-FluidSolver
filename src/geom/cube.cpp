@@ -97,7 +97,7 @@ void Cube::spawnParticlesInVolume(FluidSolver *solver) const {
   for (double i = minBound.x; i <= maxBound.x; i += particleSeparation) {
     for (double j = minBound.y; j <= maxBound.y; j += particleSeparation) {
       for (double k = minBound.z; k <= maxBound.z; k += particleSeparation) {
-        solver->particles.push_back(new Particle(glm::vec3(i, j, k)));
+        solver->addParticle(new Particle(glm::vec3(i, j, k)));
       }
     }
   }

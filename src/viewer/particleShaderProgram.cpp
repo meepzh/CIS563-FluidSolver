@@ -73,9 +73,10 @@ void ParticleShaderProgram::draw() {
   glUseProgram(programID);
 
   // Copy data from particles to RAM buffers
-  for (unsigned int i = 0; i < solver->particles.size(); ++i) {
-    particleColorArray[i] = solver->particles.at(i)->color;
-    particlePositionArray[i] = solver->particles.at(i)->position();
+  auto particles = solver->particles();
+  for (unsigned int i = 0; i < particles->size(); ++i) {
+    particleColorArray[i] = particles->at(i)->color;
+    particlePositionArray[i] = particles->at(i)->position();
   }
 
   // Set billboard texture to texture unit 0
@@ -89,12 +90,12 @@ void ParticleShaderProgram::draw() {
   if (particleColorArrBufferID != -1) {
     glBindBuffer(GL_ARRAY_BUFFER, particleColorArrBufferID);
     glBufferData(GL_ARRAY_BUFFER, solver->maxParticles * sizeof(glm::vec3), NULL, GL_STREAM_DRAW); // Buffer orphaning for performance
-    glBufferSubData(GL_ARRAY_BUFFER, 0, solver->particles.size() * sizeof(glm::vec3), particleColorArray);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, solver->numParticles() * sizeof(glm::vec3), particleColorArray);
   }
   if (particlePositionArrBufferID != -1) {
     glBindBuffer(GL_ARRAY_BUFFER, particlePositionArrBufferID);
     glBufferData(GL_ARRAY_BUFFER, solver->maxParticles * sizeof(glm::vec3), NULL, GL_STREAM_DRAW); // Buffer orphaning for performance
-    glBufferSubData(GL_ARRAY_BUFFER, 0, solver->particles.size() * sizeof(glm::vec3), particlePositionArray);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, solver->numParticles() * sizeof(glm::vec3), particlePositionArray);
   }
 
   // Insert data to attribute variables
@@ -120,7 +121,7 @@ void ParticleShaderProgram::draw() {
   glVertexAttribDivisor(aVertexPositionArrID, 1);
 
   // Draw billboards on all them particles!
-  glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, solver->particles.size());
+  glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, solver->numParticles());
 
   // Disable attributes
   if (aBillboardVertexArrID != -1) glDisableVertexAttribArray(aBillboardVertexArrID);

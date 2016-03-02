@@ -15,7 +15,9 @@ public:
 
   void update(double deltaT);
 
-  std::vector<Particle *> particles;
+  void addParticle(Particle *p);
+  const std::vector<Particle *> *particles() const;
+  unsigned int numParticles() const;
   unsigned int maxParticles;
 
   void setGravity(float g);
@@ -25,6 +27,7 @@ public:
   float particleSeparation() const;
 
 private:
+  std::vector<Particle *> *_particles;
   float _gravity;
   float _particleSeparation;
 };
