@@ -84,7 +84,7 @@ GLuint ShaderProgram::loadDDS(const std::string &file) {
   // Try to open the file
   fp = fopen(file.c_str(), "rb");
   if (fp == NULL){
-    printf("%s could not be opened.\n", file); getchar();
+    printf("%s could not be opened.\n", file.c_str()); getchar();
     return 0;
   }
 
@@ -99,17 +99,17 @@ GLuint ShaderProgram::loadDDS(const std::string &file) {
   // Get the surface desc
   fread(&header, 124, 1, fp);
 
-  unsigned int height      = *(unsigned int*)&(header[8 ]);
-  unsigned int width       = *(unsigned int*)&(header[12]);
-  unsigned int linearSize  = *(unsigned int*)&(header[16]);
-  unsigned int mipMapCount = *(unsigned int*)&(header[24]);
-  unsigned int fourCC      = *(unsigned int*)&(header[80]);
+  unsigned int height      = *(unsigned int *)&(header[8 ]);
+  unsigned int width       = *(unsigned int *)&(header[12]);
+  unsigned int linearSize  = *(unsigned int *)&(header[16]);
+  unsigned int mipMapCount = *(unsigned int *)&(header[24]);
+  unsigned int fourCC      = *(unsigned int *)&(header[80]);
 
   unsigned char * buffer;
   unsigned int bufsize;
   // How big is it going to be including all mipmaps?
   bufsize = mipMapCount > 1 ? linearSize * 2 : linearSize;
-  buffer = (unsigned char*)malloc(bufsize * sizeof(unsigned char));
+  buffer = (unsigned char *) malloc(bufsize * sizeof(unsigned char));
   fread(buffer, 1, bufsize, fp);
   // Close the file pointer
   fclose(fp);

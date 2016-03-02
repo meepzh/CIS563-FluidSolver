@@ -1,11 +1,14 @@
 #version 150
 // ^ Change this to version 130 if you have compatibility issues
 
-in vec3 afs_Color;
+uniform sampler2D u_BillboardTextureSampler;
 
-out vec3 out_Color;
+in vec3 afs_Color;
+out vec2 afs_UV;
+
+out vec4 out_Color;
 
 void main()
 {
-    out_Color = afs_Color;
+    out_Color = texture(u_BillboardTextureSampler, afs_UV) * vec4(afs_Color, 1.f);
 }

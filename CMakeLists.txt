@@ -22,6 +22,8 @@ file(GLOB JSON_SRC "${PROJECT_SOURCE_DIR}/src/scene/*.json")
 file(COPY ${JSON_SRC} DESTINATION "${PROJECT_BINARY_DIR}/")
 file(GLOB GLSL_SRC "${PROJECT_SOURCE_DIR}/glsl/*.glsl")
 file(COPY ${GLSL_SRC} DESTINATION "${PROJECT_BINARY_DIR}/")
+file(GLOB TEXTURE_SRC "${PROJECT_SOURCE_DIR}/texture/*")
+file(COPY ${TEXTURE_SRC} DESTINATION "${PROJECT_BINARY_DIR}/")
 
 # Set creates a variable
 set(NUPARU "nuparu")
