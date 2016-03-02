@@ -4,7 +4,9 @@
 
 #include "particleShaderProgram.hpp"
 
-ParticleShaderProgram::ParticleShaderProgram(FluidSolver *solver, const std::string &vertexShader, const std::string &fragmentShader)
+ParticleShaderProgram::ParticleShaderProgram(FluidSolver *solver,
+  const std::string &vertexShader, const std::string &fragmentShader,
+  const std::string &billboardDDS)
  : ShaderProgram(vertexShader, fragmentShader), solver(solver),
    aBillboardVertexArrID(-1), billboardVertexArrBufferID(-1),
    uCameraRightVecID(-1), uCameraUpVecID(-1) {
@@ -14,8 +16,12 @@ ParticleShaderProgram::ParticleShaderProgram(FluidSolver *solver, const std::str
   // Get uniform IDs
   uCameraRightVecID = glGetUniformLocation(programID, "u_CameraRight");
   uCameraUpVecID = glGetUniformLocation(programID, "u_CameraUp");
+  uBillboardTextureSamplerID = glGetUniformLocation(programID, "u_BillboardTextureSampler");
 
-  // Fill billboard with standard data
+  // Load billboard texture
+  billboardTextureID = ShaderProgram::loadDDS(billboardDDS);
+
+  // Fill billboard vertex buffer
   glm::vec3 billboardData[] = {
     glm::vec3(-0.5f, -0.5f, 0),
     glm::vec3(0.5f, -0.5f, 0),
@@ -72,6 +78,13 @@ void ParticleShaderProgram::draw() {
     particlePositionArray[i] = solver->particles.at(i)->position();
   }
 
+  // Set billboard texture to texture unit 0
+  if (billboardTextureID != -1) {
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, billboardTextureID);
+    glUniform1i(billboardTextureID, 0);
+  }
+
   // Update buffers
   if (particleColorArrBufferID != -1) {
     glBindBuffer(GL_ARRAY_BUFFER, particleColorArrBufferID);
@@ -106,7 +119,7 @@ void ParticleShaderProgram::draw() {
   glVertexAttribDivisor(aVertexColorArrID, 1);
   glVertexAttribDivisor(aVertexPositionArrID, 1);
 
-  // Draw!
+  // Draw billboards on all them particles!
   glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, solver->particles.size());
 
   // Disable attributes

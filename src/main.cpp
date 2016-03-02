@@ -28,6 +28,7 @@ int main() {
   std::string wireFShader = "wire.frag.glsl";
   std::string particleVShader = "particle.vert.glsl";
   std::string particleFShader = "particle.frag.glsl";
+  std::string particleTexture = "particle.dds";
 
   Viewer viewer;
   Input::viewer = &viewer;
@@ -52,7 +53,7 @@ int main() {
 
   // After vao init
   viewer.wireShader = new ShaderProgram(wireVShader, wireFShader);
-  viewer.particleShader = new ParticleShaderProgram(&(viewer.solver), particleVShader, particleFShader);
+  viewer.particleShader = new ParticleShaderProgram(&(viewer.solver), particleVShader, particleFShader, particleTexture);
   viewer.scene.loadJSON(sceneJSON);
 
   viewer.run();

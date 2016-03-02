@@ -11,7 +11,9 @@
 
 class ParticleShaderProgram : public ShaderProgram {
 public:
-  ParticleShaderProgram(FluidSolver *solver, const std::string &vertexShader, const std::string &fragmentShader);
+  ParticleShaderProgram(FluidSolver *solver,
+    const std::string &vertexShader, const std::string &fragmentShader,
+    const std::string &billboardDDS);
   ~ParticleShaderProgram();
   void draw();
   void setCameraVectors(const glm::vec3 &right, const glm::vec3 &up);
@@ -21,8 +23,10 @@ public:
 
 private:
   FluidSolver *solver;
+  GLuint billboardTextureID;
 
   // Variable IDs
+  GLuint uBillboardTextureSamplerID;
   GLuint aBillboardVertexArrID;
   GLuint uCameraRightVecID;
   GLuint uCameraUpVecID;

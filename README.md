@@ -32,10 +32,11 @@ Sanity
 None
 
 ### Credits ###
-- GLFW Window adapted from [opengl-tutorial.org](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-1-opening-a-window/).
-- Compiling GLSL shaders from [opengl-tutorial.org](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/).
-- Some OpenGL specifics on rendering particles from [opengl-tutorial.org](http://www.opengl-tutorial.org/intermediate-tutorials/billboards-particles/particles-instancing/)
-- Implementation for reading text files from [Tyler McHenry](http://stackoverflow.com/questions/2602013/read-whole-ascii-file-into-c-stdstring).
+- GLFW Window adapted from [opengl-tutorial.org](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-1-opening-a-window/) [(WTF Public License)](http://www.wtfpl.net/).
+- Compiling GLSL shaders from [opengl-tutorial.org](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/) [(WTF Public License)](http://www.wtfpl.net/).
+- Some OpenGL specifics on rendering particles from [opengl-tutorial.org](http://www.opengl-tutorial.org/intermediate-tutorials/billboards-particles/particles-instancing/) [(WTF Public License)](http://www.wtfpl.net/).
+- DDS File Loader adapted from [opengl-tutorial.org](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-5-a-textured-cube/) [(WTF Public License)](http://www.wtfpl.net/).
+- 2-line implementation for reading text files from [Tyler McHenry](http://stackoverflow.com/questions/2602013/read-whole-ascii-file-into-c-stdstring).
 - Organization of the camera class from CIS460 staff.
 - Transform class adapted from CIS460 staff.
 - Organization of shaderProgram/drawable classes from CIS277 staff.

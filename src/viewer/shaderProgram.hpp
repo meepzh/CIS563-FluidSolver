@@ -18,6 +18,8 @@ public:
   void setModelMat(const glm::mat4 &modelMat);
   void setViewProjectionMat(const glm::mat4 &viewProjectionMat);
 
+  static GLuint loadDDS(const std::string &file);
+
 // Required for derived classes
   void compile();
 
