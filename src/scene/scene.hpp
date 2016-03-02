@@ -7,6 +7,7 @@
 
 #include <string>
 #include <vector>
+#include "../fluidSolver/fluidSolver.hpp"
 #include "../geom/cube.hpp"
 
 class Scene {
@@ -15,6 +16,7 @@ public:
   ~Scene();
   void loadJSON(const std::string &file);
 
+  FluidSolver solver;
   std::vector<Geometry *> objects;
   Geometry *fluidSource;
   Geometry *fluidContainer;

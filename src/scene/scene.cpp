@@ -43,6 +43,7 @@ void Scene::loadJSON(const std::string &file) {
   particleDim.z = root["particleDim"].get("boundZ", 0.5f).asFloat();
 
   float particleSeparation = root.get("particleSeparation", 0.1f).asFloat();
+  solver.setParticleSeparation(particleSeparation);
 
   // Create geometry
   fluidContainer = new Cube(glm::vec3(0));
@@ -53,4 +54,6 @@ void Scene::loadJSON(const std::string &file) {
   // Change geometry scale
   fluidContainer->transform.setScale(containerDim);
   fluidSource->transform.setScale(particleDim);
+
+  fluidSource->spawnParticlesInVolume(&solver);
 }

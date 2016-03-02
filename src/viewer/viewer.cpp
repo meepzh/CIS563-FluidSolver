@@ -55,7 +55,7 @@ void Viewer::run() {
     oldTime = currTime;
 
     // Update and render particles
-    solver.update(deltaT);
+    //scene.solver.update(deltaT);
 
     // Render boxes
     wireShader->setViewProjectionMat(camera.getViewProjection());
@@ -63,6 +63,9 @@ void Viewer::run() {
       wireShader->setModelMat(g->transform.T());
       wireShader->draw(g);
     }
+
+    // Render particles
+    //particleShader->draw();
 
     // Swap buffers
     glfwSwapBuffers(window);

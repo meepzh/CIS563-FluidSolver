@@ -53,7 +53,7 @@ int main() {
 
   // After vao init
   viewer.wireShader = new ShaderProgram(wireVShader, wireFShader);
-  viewer.particleShader = new ParticleShaderProgram(&(viewer.solver), particleVShader, particleFShader, particleTexture);
+  viewer.particleShader = new ParticleShaderProgram(&(viewer.scene.solver), particleVShader, particleFShader, particleTexture);
   viewer.scene.loadJSON(sceneJSON);
 
   viewer.run();
