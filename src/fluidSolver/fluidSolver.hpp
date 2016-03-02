@@ -6,9 +6,8 @@
 #define MFLUIDSOLVER_FLUIDSOLVER_HPP_
 
 #include <vector>
+#include "../geom/geom.hpp"
 #include "particle.hpp"
-
-class Geometry;
 
 class FluidSolver {
 public:

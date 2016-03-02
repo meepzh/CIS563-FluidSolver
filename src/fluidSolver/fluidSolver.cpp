@@ -24,6 +24,9 @@ void FluidSolver::update(double deltaT) {
 
   for (Particle *p : *_particles) {
     p->update(deltaT);
+    if (!fluidContainer->intersects(p->position())) {
+      p->color = glm::vec3(1, 0, 0);
+    }
   }
 }
 

@@ -5,6 +5,9 @@
 #ifndef MFLUIDSOLVER_GEOM_HPP_
 #define MFLUIDSOLVER_GEOM_HPP_
 
+class Geometry;
+class FluidSolver;
+
 #include <glm/glm.hpp>
 #include <string>
 #include <vector>
