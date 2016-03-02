@@ -20,7 +20,7 @@ ParticleShaderProgram::ParticleShaderProgram(FluidSolver *solver,
   uParticleSizeFloatID = glGetUniformLocation(programID, "u_ParticleSize");
 
   // Load default particle size
-  setParticleSize(0.01f);
+  setParticleSize(0.1f);
 
   // Load billboard texture
   billboardTextureID = ShaderProgram::loadDDS(billboardDDS);
@@ -86,7 +86,7 @@ void ParticleShaderProgram::draw() {
   // Copy data from particles to RAM buffers
   auto particles = solver->particles();
   for (unsigned int i = 0; i < particles->size(); ++i) {
-    particleColorArray[i] = particles->at(i)->color;
+    particleColorArray[i] = glm::vec3(particles->at(i)->color);
     particlePositionArray[i] = particles->at(i)->position();
   }
 
