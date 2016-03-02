@@ -8,6 +8,14 @@ detection system which colors the particles appropriately. The scene is
 initially paused. The camera is controlled by a standard arcball interface
 described below.
 
+### Build Instructions (*nix) ###
+
+    mkdir build
+    cd build
+    cmake ..
+    make
+    ./MFluidSolver
+
 ### How To Use ###
 Press P to toggle pausing.
 
