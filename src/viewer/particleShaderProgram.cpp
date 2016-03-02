@@ -39,11 +39,11 @@ ParticleShaderProgram::ParticleShaderProgram(FluidSolver *solver,
   // Pre-allocate particle buffers
   glGenBuffers(1, &particleColorArrBufferID);
   glBindBuffer(GL_ARRAY_BUFFER, particleColorArrBufferID);
-  glBufferData(GL_ARRAY_BUFFER, solver->maxParticles * sizeof(glm::vec3), NULL, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, solver->maxParticles * sizeof(glm::vec3), NULL, GL_STREAM_DRAW);
 
   glGenBuffers(1, &particlePositionArrBufferID);
   glBindBuffer(GL_ARRAY_BUFFER, particlePositionArrBufferID);
-  glBufferData(GL_ARRAY_BUFFER, solver->maxParticles * sizeof(glm::vec3), NULL, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, solver->maxParticles * sizeof(glm::vec3), NULL, GL_STREAM_DRAW);
 
   // Allocate particle space on RAM
   particleColorArray = new glm::vec3[solver->maxParticles];
@@ -81,6 +81,9 @@ void ParticleShaderProgram::setParticleSize(float size) {
 }
 
 void ParticleShaderProgram::draw() {
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   glUseProgram(programID);
 
   // Copy data from particles to RAM buffers
