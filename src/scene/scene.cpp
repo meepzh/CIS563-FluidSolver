@@ -7,9 +7,9 @@
 #include <cstdio>
 #include <fstream>
 #include <json/json.h>
+#include "../geom/cube.hpp"
 
-Scene::Scene()
- : fluidSource(nullptr), fluidContainer(nullptr) {
+Scene::Scene() {
 }
 
 Scene::~Scene() {
@@ -46,14 +46,14 @@ void Scene::loadJSON(const std::string &file) {
   solver.setParticleSeparation(particleSeparation);
 
   // Create geometry
-  fluidContainer = new Cube(glm::vec3(0));
-  fluidSource = new Cube(glm::vec3(0));
-  objects.push_back(fluidContainer);
-  objects.push_back(fluidSource);
+  solver.fluidContainer = new Cube(glm::vec3(0));
+  solver.fluidSource = new Cube(glm::vec3(0));
+  objects.push_back(solver.fluidContainer);
+  objects.push_back(solver.fluidSource);
 
   // Change geometry scale
-  fluidContainer->transform.setScale(containerDim);
-  fluidSource->transform.setScale(particleDim);
+  solver.fluidContainer->transform.setScale(containerDim);
+  solver.fluidSource->transform.setScale(particleDim);
 
-  fluidSource->spawnParticlesInVolume(&solver);
+  solver.fluidSource->spawnParticlesInVolume(&solver);
 }

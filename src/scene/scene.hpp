@@ -8,7 +8,6 @@
 #include <string>
 #include <vector>
 #include "../fluidSolver/fluidSolver.hpp"
-#include "../geom/cube.hpp"
 
 class Scene {
 public:
@@ -18,8 +17,6 @@ public:
 
   FluidSolver solver;
   std::vector<Geometry *> objects;
-  Geometry *fluidSource;
-  Geometry *fluidContainer;
 };
 
 #endif /* MFLUIDSOLVER_SCENE_HPP_ */

@@ -5,7 +5,8 @@
 #include "fluidSolver.hpp"
 
 FluidSolver::FluidSolver()
- : maxParticles(100000), _gravity(-9.8), _particleSeparation(0.1f) {
+ : maxParticles(100000), _gravity(-9.8), _particleSeparation(0.1f),
+  fluidSource(nullptr), fluidContainer(nullptr) {
   _particles = new std::vector<Particle *>();
 }
 

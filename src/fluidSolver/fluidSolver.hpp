@@ -8,6 +8,8 @@
 #include <vector>
 #include "particle.hpp"
 
+class Geometry;
+
 class FluidSolver {
 public:
   FluidSolver();
@@ -25,6 +27,9 @@ public:
 
   void setParticleSeparation(float ps);
   float particleSeparation() const;
+
+  Geometry *fluidSource;
+  Geometry *fluidContainer;
 
 private:
   std::vector<Particle *> *_particles;

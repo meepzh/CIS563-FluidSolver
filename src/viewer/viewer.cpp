@@ -55,7 +55,7 @@ void Viewer::run() {
     oldTime = currTime;
 
     // Update and render particles
-    //scene.solver.update(deltaT);
+    scene.solver.update(deltaT);
 
     // Render boxes
     wireShader->setViewProjectionMat(camera.getViewProjection());
