@@ -9,7 +9,8 @@
 
 Viewer::Viewer(int width, int height)
 : wireShader(nullptr), particleShader(nullptr),
-  oldLeftState(GLFW_RELEASE), oldRightState(GLFW_RELEASE) {
+  oldLeftState(GLFW_RELEASE), oldRightState(GLFW_RELEASE),
+  paused(true), shouldStop(false) {
   // http://www.opengl-tutorial.org/beginners-tutorials/tutorial-1-opening-a-window/
   glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -36,8 +37,10 @@ Viewer::Viewer(int width, int height)
   }
 
   // Sticky keys and mouse buttons
-  glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
   glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, GL_TRUE);
+
+  // Key callback
+  glfwSetKeyCallback(window, Input::checkKeys);
 
   // Mouse callbacks
   glfwSetScrollCallback(window, Input::computeArcballScrollCb);
@@ -55,7 +58,9 @@ void Viewer::run() {
     oldTime = currTime;
 
     // Update and render particles
-    scene.solver.update(deltaT);
+    if (!paused) {
+      scene.solver.update(deltaT);
+    }
 
     // Render boxes
     wireShader->setViewProjectionMat(camera.getViewProjection());
@@ -96,8 +101,16 @@ void Viewer::run() {
     }
     oldLeftState = leftState;
     oldRightState = rightState;
-  } while (glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
+  } while (!shouldStop &&
            glfwWindowShouldClose(window) == 0);
+}
+
+void Viewer::togglePause() {
+  paused = !paused;
+}
+
+void Viewer::stop() {
+  shouldStop = true;
 }
 
 Viewer::~Viewer() {

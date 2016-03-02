@@ -4,10 +4,13 @@ This fluid solver uses GLFW, GLM, and GLEW. It reads a JSON scene file,
 creating a fluid container and a fluid source. The fluid generates particles
 once, then all the particles are subject to fluid forces (currently gravity).
 Upon exiting the fluid container, particles are detected by a collision
-detection system which colors the particles appropriately. The camera is
-controlled by a standard arcball interface described below.
+detection system which colors the particles appropriately. The scene is
+initially paused. The camera is controlled by a standard arcball interface
+described below.
 
 ### How To Use ###
+Press P to toggle pausing.
+
 The camera uses the arcball interface and can be controlled with the left and
 right mouse buttons and the scroll wheel.
 

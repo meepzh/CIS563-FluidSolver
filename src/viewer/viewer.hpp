@@ -18,6 +18,8 @@ public:
   Viewer(int width, int height);
   ~Viewer();
   void run();
+  void togglePause();
+  void stop();
 
   Camera camera;
   GLFWwindow *window;
@@ -29,6 +31,7 @@ private:
   int leftState, rightState;
   int oldLeftState, oldRightState;
   glm::dvec2 oldPos, newPos;
+  bool paused, shouldStop;
 };
 
 #endif /* MFLUIDSOLVER_VIEWER_HPP_ */
