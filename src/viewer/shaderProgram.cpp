@@ -105,7 +105,7 @@ GLuint ShaderProgram::loadDDS(const std::string &file) {
   unsigned int mipMapCount = *(unsigned int *)&(header[24]);
   unsigned int fourCC      = *(unsigned int *)&(header[80]);
 
-  unsigned char * buffer;
+  unsigned char *buffer;
   unsigned int bufsize;
   // How big is it going to be including all mipmaps?
   bufsize = mipMapCount > 1 ? linearSize * 2 : linearSize;

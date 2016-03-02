@@ -62,21 +62,17 @@ void Viewer::run() {
       scene.solver.update(deltaT);
     }
 
+    // Render particles
+    particleShader->setViewProjectionMat(camera.getViewProjection());
+    particleShader->setCameraVectors(camera.right(), camera.up());
+    particleShader->draw();
+
     // Render boxes
     wireShader->setViewProjectionMat(camera.getViewProjection());
     for (Geometry *g : scene.objects) {
       wireShader->setModelMat(g->transform.T());
       wireShader->draw(g);
     }
-
-    // Render particles
-    particleShader->setViewProjectionMat(camera.getViewProjection());
-    particleShader->setCameraVectors(camera.right(), camera.up());
-    particleShader->draw();
-
-    // Swap buffers
-    glfwSwapBuffers(window);
-    glfwPollEvents();
 
     // Parse mouse button input
     leftState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
@@ -101,6 +97,10 @@ void Viewer::run() {
     }
     oldLeftState = leftState;
     oldRightState = rightState;
+
+    // Swap buffers
+    glfwSwapBuffers(window);
+    glfwPollEvents();
   } while (!shouldStop &&
            glfwWindowShouldClose(window) == 0);
 }

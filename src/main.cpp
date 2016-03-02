@@ -36,13 +36,15 @@ int main() {
   // Set a few settings/modes in OpenGL rendering
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
-  // glEnable(GL_LINE_SMOOTH);
-  // glEnable(GL_POLYGON_SMOOTH);
-  // glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-  // glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+  glEnable(GL_LINE_SMOOTH);
+  glEnable(GL_POLYGON_SMOOTH);
+  glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+  glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
   // Set the size with which points should be rendered
   glPointSize(5);
+
+  glLineWidth(5);
 
   // Set background color
   glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
