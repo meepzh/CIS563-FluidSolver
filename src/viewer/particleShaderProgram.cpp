@@ -14,9 +14,13 @@ ParticleShaderProgram::ParticleShaderProgram(FluidSolver *solver,
   aBillboardVertexArrID = glGetAttribLocation(programID, "avs_Billboard");
 
   // Get uniform IDs
+  uBillboardTextureSamplerID = glGetUniformLocation(programID, "u_BillboardTextureSampler");
   uCameraRightVecID = glGetUniformLocation(programID, "u_CameraRight");
   uCameraUpVecID = glGetUniformLocation(programID, "u_CameraUp");
-  uBillboardTextureSamplerID = glGetUniformLocation(programID, "u_BillboardTextureSampler");
+  uParticleSizeFloatID = glGetUniformLocation(programID, "u_ParticleSize");
+
+  // Load default particle size
+  setParticleSize(0.01f);
 
   // Load billboard texture
   billboardTextureID = ShaderProgram::loadDDS(billboardDDS);
@@ -66,6 +70,13 @@ void ParticleShaderProgram::setCameraVectors(const glm::vec3 &right, const glm::
   if (uCameraUpVecID != -1) {
     // http://glm.g-truc.net/0.9.2/api/a00001.html
     glUniform3f(uCameraUpVecID, up.x, up.y, up.z);
+  }
+}
+
+void ParticleShaderProgram::setParticleSize(float size) {
+  glUseProgram(programID);
+  if (uParticleSizeFloatID != -1) {
+    glUniform1f(uParticleSizeFloatID, size);
   }
 }
 

@@ -17,6 +17,7 @@ public:
   ~ParticleShaderProgram();
   void draw();
   void setCameraVectors(const glm::vec3 &right, const glm::vec3 &up);
+  void setParticleSize(float size);
 
   glm::vec3 *particleColorArray;
   glm::vec3 *particlePositionArray;
@@ -30,6 +31,7 @@ private:
   GLuint aBillboardVertexArrID;
   GLuint uCameraRightVecID;
   GLuint uCameraUpVecID;
+  GLuint uParticleSizeFloatID;
 
   // Buffer IDs
   GLuint billboardVertexArrBufferID;
