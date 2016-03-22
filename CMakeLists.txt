@@ -131,7 +131,10 @@ target_link_libraries(MFluidSolver ${CORE_LIBS})
 add_subdirectory(src/unittest)
 
 # Libraries
-add_library(MNeighborSearch src/fluidSolver/sphSolver/neighborSearch.cpp)
+set(MNEIGHBORSEARCH_LIB
+        src/fluidSolver/sphSolver/neighborSearch.cpp
+)
+add_library(MNeighborSearch ${MNEIGHBORSEARCH_LIB})
 
 # Tests
 enable_testing()

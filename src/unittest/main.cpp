@@ -2,8 +2,6 @@
 //  main.cpp
 //  MFluidSolver
 
-#include "testNeighborSearch.cpp"
+#define BOOST_NORETURN
 
-int main() {
-  return 0;
-}
+#include "testNeighborSearch.cpp"
