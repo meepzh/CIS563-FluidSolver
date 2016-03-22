@@ -136,25 +136,24 @@ void ParticleShaderProgram::draw() {
     glEnableVertexAttribArray(aBillboardVertexArrID);
     glBindBuffer(GL_ARRAY_BUFFER, billboardVertexArrBufferID);
     glVertexAttribPointer(aBillboardVertexArrID, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+    //glVertexAttribDivisor(aBillboardVertexArrID, 0);
   }
   if (aVertexColorArrID != -1 && particleColorArrBufferID != -1) {
     glEnableVertexAttribArray(aVertexColorArrID);
     glBindBuffer(GL_ARRAY_BUFFER, particleColorArrBufferID);
     glVertexAttribPointer(aVertexColorArrID, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+    //glVertexAttribDivisor(aVertexColorArrID, 1);
   }
   if (aVertexPositionArrID != -1 && particlePositionArrBufferID != -1) {
     glEnableVertexAttribArray(aVertexPositionArrID);
     glBindBuffer(GL_ARRAY_BUFFER, particlePositionArrBufferID);
     glVertexAttribPointer(aVertexPositionArrID, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+    //glVertexAttribDivisor(aVertexPositionArrID, 1);
   }
 
-  // Divide attributes for instancing
-  glVertexAttribDivisor(aBillboardVertexArrID, 0);
-  glVertexAttribDivisor(aVertexColorArrID, 1);
-  glVertexAttribDivisor(aVertexPositionArrID, 1);
-
   // Draw billboards on all them particles!
-  glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, solver->numParticles());
+  //glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, solver->numParticles());
+  glDrawArrays(GL_POINTS, 0, solver->numParticles());
 
   // Disable attributes
   if (aBillboardVertexArrID != -1) glDisableVertexAttribArray(aBillboardVertexArrID);

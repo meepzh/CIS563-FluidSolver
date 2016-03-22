@@ -2,6 +2,21 @@
 
 uniform mat4 u_Model;
 uniform mat4 u_ViewProjection;
+
+in vec3 avs_Color;
+in vec3 avs_Position;
+
+out vec3 afs_Color;
+
+void main()
+{
+    afs_Color = avs_Color;
+    gl_Position = u_ViewProjection * vec4(avs_Position, 1.f);
+}
+
+/* Use points until I figure out how to draw lines as a triangle strip
+uniform mat4 u_Model;
+uniform mat4 u_ViewProjection;
 uniform vec3 u_CameraRight;
 uniform vec3 u_CameraUp;
 uniform float u_ParticleSize;
@@ -24,3 +39,4 @@ void main()
 
     afs_UV = avs_Billboard.xy + vec2(0.5, 0.5);
 }
+*/
