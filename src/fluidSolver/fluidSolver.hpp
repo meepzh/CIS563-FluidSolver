@@ -14,9 +14,9 @@ public:
   FluidSolver();
   ~FluidSolver();
 
-  void update(double deltaT);
+  virtual void update(double deltaT);
 
-  void addParticle(Particle *p);
+  virtual void addParticle(Particle *p);
   const std::vector<Particle *> *particles() const;
   unsigned int numParticles() const;
   unsigned int maxParticles;
@@ -24,7 +24,7 @@ public:
   void setGravity(float g);
   float gravity() const;
 
-  void setParticleSeparation(float ps);
+  virtual void setParticleSeparation(float ps);
   float particleSeparation() const;
 
   Geometry *fluidSource;

@@ -25,12 +25,12 @@ int main() {
     return -1;
   }
 
-  std::string sceneJSON = "scene.json";
-  std::string wireVShader = "wire.vert.glsl";
-  std::string wireFShader = "wire.frag.glsl";
-  std::string particleVShader = "particle.vert.glsl";
-  std::string particleFShader = "particle.frag.glsl";
-  std::string particleTexture = "particle.dds";
+  std::string sceneJSON = "scene/scene.json";
+  std::string wireVShader = "glsl/wire.vert.glsl";
+  std::string wireFShader = "glsl/wire.frag.glsl";
+  std::string particleVShader = "glsl/particle.vert.glsl";
+  std::string particleFShader = "glsl/particle.frag.glsl";
+  std::string particleTexture = "texture/particle.dds";
 
   Viewer viewer;
   Input::viewer = &viewer;

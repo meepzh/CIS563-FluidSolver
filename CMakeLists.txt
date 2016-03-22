@@ -19,11 +19,11 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 # Copy GLSL and JSON files
 file(GLOB JSON_SRC "${PROJECT_SOURCE_DIR}/src/scene/*.json")
-file(COPY ${JSON_SRC} DESTINATION "${PROJECT_BINARY_DIR}/")
+file(COPY ${JSON_SRC} DESTINATION "${PROJECT_BINARY_DIR}/scene/")
 file(GLOB GLSL_SRC "${PROJECT_SOURCE_DIR}/glsl/*.glsl")
-file(COPY ${GLSL_SRC} DESTINATION "${PROJECT_BINARY_DIR}/")
+file(COPY ${GLSL_SRC} DESTINATION "${PROJECT_BINARY_DIR}/glsl/")
 file(GLOB TEXTURE_SRC "${PROJECT_SOURCE_DIR}/texture/*")
-file(COPY ${TEXTURE_SRC} DESTINATION "${PROJECT_BINARY_DIR}/")
+file(COPY ${TEXTURE_SRC} DESTINATION "${PROJECT_BINARY_DIR}/texture/")
 
 # Set creates a variable
 set(NUPARU "nuparu")
@@ -106,6 +106,9 @@ endif()
 # Add source files you want to compile (.cpp)
 set(CORE_SRC
         src/camera/camera.cpp
+        src/fluidSolver/sphSolver/kernelFunction.cpp
+        src/fluidSolver/sphSolver/neighborSearch.cpp
+        src/fluidSolver/sphSolver/sphSolver.cpp
         src/fluidSolver/fluidSolver.cpp
         src/fluidSolver/integrator.cpp
         src/fluidSolver/particle.cpp
