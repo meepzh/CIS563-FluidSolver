@@ -16,6 +16,12 @@ described below.
     make
     ./MFluidSolver
 
+### Unit Test Instructions (*nix) ###
+
+	make test
+	# Test results print in stdout
+	# Test details in build/Testing/Temporary/LastTest.log
+
 ### How To Use ###
 Press P to toggle pausing.
 

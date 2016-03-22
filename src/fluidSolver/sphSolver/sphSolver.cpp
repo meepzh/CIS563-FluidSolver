@@ -21,7 +21,7 @@ SPHConfig *SPHSolver::init(const double &kernelRadius,
       break;
     case NeighborSearchType::StandardGrid:
     default:
-      nSearch = new StandardGridNeighborSearch(gridMin, gridMax);
+      nSearch = new StandardGridNeighborSearch(kernelRadius, gridMin, gridMax);
       break;
   }
 
