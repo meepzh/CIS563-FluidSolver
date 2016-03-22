@@ -97,7 +97,7 @@ void ParticleShaderProgram::draw() {
   if (billboardTextureID != -1) {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, billboardTextureID);
-    glUniform1i(billboardTextureID, 0);
+    glUniform1i(uBillboardTextureSamplerID, 0);
   }
 
   // Update buffers

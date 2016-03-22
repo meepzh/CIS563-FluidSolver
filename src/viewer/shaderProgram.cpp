@@ -157,6 +157,8 @@ GLuint ShaderProgram::loadDDS(const std::string &file) {
     if (height < 1) height = 1;
   }
 
+  printf("Loaded texture %s\n", file.c_str());
+
   free(buffer);
   return textureID;
 }

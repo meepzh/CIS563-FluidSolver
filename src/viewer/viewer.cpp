@@ -49,6 +49,9 @@ Viewer::Viewer(int width, int height)
 void Viewer::run() {
   double oldTime = glfwGetTime();
   double currTime, deltaT;
+  GLenum glErrorCode;
+  const GLubyte *glErrorString;
+
   do {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -101,6 +104,12 @@ void Viewer::run() {
     // Swap buffers
     glfwSwapBuffers(window);
     glfwPollEvents();
+
+    // Check for errors
+    if ((glErrorCode = glGetError()) != GL_NO_ERROR) {
+      glErrorString = gluErrorString(glErrorCode);
+      std::fprintf(stderr, "OpenGL Error: %s\n", glErrorString);
+    }
   } while (!shouldStop &&
            glfwWindowShouldClose(window) == 0);
 }
