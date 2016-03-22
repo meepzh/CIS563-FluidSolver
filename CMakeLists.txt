@@ -106,7 +106,7 @@ endif()
 # Add source files you want to compile (.cpp)
 set(CORE_SRC
         src/camera/camera.cpp
-        src/fluidSolver/sphSolver/kernelFunction.cpp
+        src/fluidSolver/sphSolver/kernelFunctions.cpp
         src/fluidSolver/sphSolver/neighborSearch.cpp
         src/fluidSolver/sphSolver/sphSolver.cpp
         src/fluidSolver/fluidSolver.cpp
