@@ -11,11 +11,9 @@
 #define POLY6_CONST 1.566681471060844711474949545698188251276712137757618167359
 #define SPIKY_CONST 4.774648292756860073066512901175430861033789372213693462430
 
-double KernelFunctions::_h = 0.1f;
-double KernelFunctions::_h2 = 0.01f;
-double KernelFunctions::_h3 = 0.001f;
-double KernelFunctions::_h6 = 0.000001f;
-double KernelFunctions::_h9 = 0.000000001f;
+KernelFunctions::KernelFunctions() {
+  setKernelRadius(0.1);
+}
 
 void KernelFunctions::setKernelRadius(const double &h) {
   _h = h;
