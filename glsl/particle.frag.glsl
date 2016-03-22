@@ -1,5 +1,4 @@
-#version 150
-// ^ Change this to version 130 if you have compatibility issues
+#version 330 core
 
 uniform sampler2D u_BillboardTextureSampler;
 

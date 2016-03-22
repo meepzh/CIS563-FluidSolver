@@ -1,11 +1,10 @@
-#version 150
-// ^ Change this to version 130 if you have compatibility issues
+#version 330 core
 
 in vec3 afs_Color;
 
-out vec3 out_Color;
+out vec4 out_Color;
 
 void main()
 {
-    out_Color = afs_Color;
+    out_Color = vec4(afs_Color, 1.f);
 }

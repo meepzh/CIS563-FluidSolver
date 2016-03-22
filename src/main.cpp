@@ -46,7 +46,6 @@ int main() {
 
   // Set the size with which points should be rendered
   glPointSize(5);
-
   glLineWidth(5);
 
   // Set background color

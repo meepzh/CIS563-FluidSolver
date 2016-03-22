@@ -1,5 +1,4 @@
-#version 150
-// ^ Change this to version 130 if you have compatibility issues
+#version 330 core
 
 uniform mat4 u_ViewProjection;
 uniform vec3 u_CameraRight;
