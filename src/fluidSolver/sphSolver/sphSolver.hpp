@@ -6,6 +6,7 @@
 #define MFLUIDSOLVER_SPHSOLVER_HPP_
 
 #include "../fluidSolver.hpp"
+#include "neighborSearch.hpp"
 
 struct SPHConfig {
   float kStiffness;
@@ -18,7 +19,15 @@ struct SPHConfig {
 
 class SPHSolver : public FluidSolver {
 public:
+  SPHSolver();
+  ~SPHSolver();
 
+  SPHConfig *init(const double &kernelRadius, const glm::vec3 &gridMin, const glm::vec3 &gridMax);
+  void setDefaultConfig();
+
+private:
+  SPHConfig config;
+  NeighborSearch *nSearch;
 };
 
 #endif /* MFLUIDSOLVER_SPHSOLVER_HPP_ */
