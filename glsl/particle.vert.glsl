@@ -1,5 +1,6 @@
 #version 330 core
 
+uniform mat4 u_Model;
 uniform mat4 u_ViewProjection;
 uniform vec3 u_CameraRight;
 uniform vec3 u_CameraUp;
