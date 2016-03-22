@@ -5,7 +5,8 @@
 #ifndef MFLUIDSOLVER_VIEWER_SHADERPROGRAM_HPP_
 #define MFLUIDSOLVER_VIEWER_SHADERPROGRAM_HPP_
 
-#include <string>
+#include "MFluidSolverConfig.hpp"
+#include <cstring>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include "../geom/geom.hpp"

@@ -17,39 +17,39 @@ void APIENTRY openglDebugCallbackFunction(GLenum source, GLenum type, GLuint id,
 
   switch (type) {
     case GL_DEBUG_TYPE_ERROR:
-      sType = "Error";
+      sType = "ERROR";
       outStream = &stderr;
       break;
     case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
-      sType = "Deprecated";
+      sType = "DEPRECATED";
       break;
     case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
-      sType = "Undefined";
+      sType = "UNDEFINED";
       break;
     case GL_DEBUG_TYPE_PORTABILITY:
-      sType = "Portability";
+      sType = "PORTABILITY";
       break;
     case GL_DEBUG_TYPE_PERFORMANCE:
-      sType = "Performance";
+      sType = "PERFORMANCE";
       break;
     case GL_DEBUG_TYPE_OTHER:
-      sType = "Other";
+      sType = "OTHER";
       break;
   }
   switch (severity){
     case GL_DEBUG_SEVERITY_LOW:
-      sSeverity = "Low";
+      sSeverity = "LOW";
       break;
     case GL_DEBUG_SEVERITY_MEDIUM:
-      sSeverity = "Medium";
+      sSeverity = "MEDIUM";
       break;
     case GL_DEBUG_SEVERITY_HIGH:
-      sSeverity = "High";
+      sSeverity = "HIGH";
       break;
     default:
-      sSeverity = "Other";
+      sSeverity = "OTHER";
   }
-  std::fprintf(*outStream, "GL %s (%s): %s\n", sType.c_str(), sSeverity.c_str(), message);
+  std::fprintf(*outStream, "GL:%s(%s): %s\n", sType.c_str(), sSeverity.c_str(), message);
 }
 #endif
 
@@ -70,7 +70,7 @@ Viewer::Viewer(int width, int height)
 
   window = glfwCreateWindow(width, height, "MFluidSolver", NULL, NULL);
   if (window == NULL) {
-    std::fprintf(stderr, "Failed to open GLFW window\n");
+    std::fprintf(stderr, "ERROR: Failed to open GLFW window\n");
     getchar(); // Wait for key before quit
     glfwTerminate();
     throw -1;
@@ -80,7 +80,7 @@ Viewer::Viewer(int width, int height)
 
   glewExperimental = GL_TRUE;
   if (glewInit() != GLEW_OK) {
-    std::fprintf(stderr, "Failed to initialize GLEW\n");
+    std::fprintf(stderr, "ERROR: Failed to initialize GLEW\n");
     getchar(); // Wait for key before quit
     glfwTerminate();
     throw -1;
@@ -98,14 +98,14 @@ Viewer::Viewer(int width, int height)
   #if MFluidSolver_DEBUG
   // Set debug callback
   if (glDebugMessageCallback) {
-    printf("Registering OpenGL debug callback\n");
+    printf("DEBUG: Registering OpenGL debug callback\n");
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
     glDebugMessageCallback(openglDebugCallbackFunction, nullptr);
     GLuint unusedIds = 0;
     glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_HIGH,
       0, &unusedIds, true);
   } else {
-    printf("OpenGL debug callback not available\n");
+    printf("DEBUG: OpenGL debug callback not available\n");
   }
   #endif
 }
@@ -173,7 +173,7 @@ void Viewer::run() {
     // Check for errors
     if ((glErrorCode = glGetError()) != GL_NO_ERROR) {
       glErrorString = gluErrorString(glErrorCode);
-      std::fprintf(stderr, "OpenGL Error: %s\n", glErrorString);
+      std::fprintf(stderr, "GL:ERROR: %s\n", glErrorString);
     }
     #endif
   } while (!shouldStop &&

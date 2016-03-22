@@ -25,6 +25,22 @@ ShaderProgram::ShaderProgram(const std::string &vertexShader, const std::string 
   // Get uniform IDs
   uModelMatID = glGetUniformLocation(programID, "u_Model");
   uViewProjectionMatID = glGetUniformLocation(programID, "u_ViewProjection");
+
+  #if MFluidSolver_DEBUG
+  printf("DEBUG:SHADER: Created program ID %d\n", programID);
+  if (aVertexColorArrID == -1) {
+    printf("- WARN: avs_Color is not bound\n");
+  }
+  if (aVertexPositionArrID == -1) {
+    printf("- WARN: avs_Position is not bound\n");
+  }
+  if (uModelMatID == -1) {
+    printf("- WARN: u_Model is not bound\n");
+  }
+  if (uViewProjectionMatID == -1) {
+    printf("- WARN: u_ViewProjection is not bound\n");
+  }
+  #endif
 }
 
 ShaderProgram::~ShaderProgram() {
@@ -84,7 +100,7 @@ GLuint ShaderProgram::loadDDS(const std::string &file) {
   // Try to open the file
   fp = fopen(file.c_str(), "rb");
   if (fp == NULL){
-    printf("%s could not be opened.\n", file.c_str()); getchar();
+    std::fprintf(stderr, "ERROR: %s could not be opened.\n", file.c_str()); getchar();
     return 0;
   }
 
@@ -157,14 +173,14 @@ GLuint ShaderProgram::loadDDS(const std::string &file) {
     if (height < 1) height = 1;
   }
 
-  printf("Loaded texture %s\n", file.c_str());
+  printf("INFO: Loaded texture %s\n", file.c_str());
 
   free(buffer);
   return textureID;
 }
 
 void ShaderProgram::compile() {
-  std::printf("Loading shader program (VS:%s, FS:%s)\n", _vertexShader.c_str(), _fragmentShader.c_str());
+  std::printf("INFO: Loading shader program (VS:%s, FS:%s)\n", _vertexShader.c_str(), _fragmentShader.c_str());
 
   vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
   fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -187,7 +203,7 @@ void ShaderProgram::compile() {
   if (compileLogLen > 1) {
     std::vector<char> vsErrMessage(compileLogLen + 1);
     glGetShaderInfoLog(vertexShaderID, compileLogLen, NULL, &vsErrMessage[0]);
-    printf("Error compiling vertex shader %s %d: %s\n", _vertexShader.c_str(), &vsErrMessage[0]);
+    std::fprintf(stderr, "ERROR: Error compiling vertex shader %s %d: %s\n", _vertexShader.c_str(), &vsErrMessage[0]);
   }
 
   char const *fsTextPtr = fsText.c_str();
@@ -198,7 +214,7 @@ void ShaderProgram::compile() {
   if (compileLogLen > 1) {
     std::vector<char> fsErrMessage(compileLogLen + 1);
     glGetShaderInfoLog(fragmentShaderID, compileLogLen, NULL, &fsErrMessage[0]);
-    printf("Error compiling fragment shader %s: %s\n", _fragmentShader.c_str(), &fsErrMessage[0]);
+    std::fprintf(stderr, "ERROR: Error compiling fragment shader %s: %s\n", _fragmentShader.c_str(), &fsErrMessage[0]);
   }
 
   // Link the two programs
@@ -211,7 +227,7 @@ void ShaderProgram::compile() {
   if (compileLogLen > 1){
     std::vector<char> programErrMessage(compileLogLen + 1);
     glGetProgramInfoLog(programID, compileLogLen, NULL, &programErrMessage[0]);
-    printf("Error linking program (VS:%s, FS:%s): %s\n", _vertexShader.c_str(), _fragmentShader.c_str(), &programErrMessage[0]);
+    std::fprintf(stderr, "ERROR: Error linking program (VS:%s, FS:%s): %s\n", _vertexShader.c_str(), _fragmentShader.c_str(), &programErrMessage[0]);
   }
 
   // Free space: http://gamedev.stackexchange.com/questions/47910/after-a-succesful-gllinkprogram-should-i-delete-detach-my-shaders

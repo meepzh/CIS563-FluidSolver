@@ -48,6 +48,25 @@ ParticleShaderProgram::ParticleShaderProgram(FluidSolver *solver,
   // Allocate particle space on RAM
   particleColorArray = new glm::vec3[solver->maxParticles];
   particlePositionArray = new glm::vec3[solver->maxParticles];
+
+  #if MFluidSolver_DEBUG
+  printf("DEBUG:SHADER: Program %d is type particles\n", programID);
+  if (aBillboardVertexArrID == -1) {
+    printf("- WARN: avs_Billboard is not bound\n");
+  }
+  if (uBillboardTextureSamplerID == -1) {
+    printf("- WARN: u_BillboardTextureSampler is not bound\n");
+  }
+  if (uCameraRightVecID == -1) {
+    printf("- WARN: u_CameraRight is not bound\n");
+  }
+  if (uCameraUpVecID == -1) {
+    printf("- WARN: u_CameraUp is not bound\n");
+  }
+  if (uParticleSizeFloatID == -1) {
+    printf("- WARN: u_ParticleSize is not bound\n");
+  }
+  #endif
 }
 
 ParticleShaderProgram::~ParticleShaderProgram() {

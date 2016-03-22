@@ -16,11 +16,11 @@
 
 int main() {
   // Print version info
-  printf("Version %d.%d\n", MFluidSolver_VERSION_MAJOR, MFluidSolver_VERSION_MINOR);
+  printf("INFO: Version %d.%d\n", MFluidSolver_VERSION_MAJOR, MFluidSolver_VERSION_MINOR);
 
   // Initialize GLFW
   if (!glfwInit()) {
-    fprintf(stderr, "Failed to initiaize GLFW\n");
+    fprintf(stderr, "ERROR: Failed to initiaize GLFW\n");
     getchar(); // Wait for key before quit
     return -1;
   }
@@ -34,7 +34,7 @@ int main() {
 
   Viewer viewer;
   Input::viewer = &viewer;
-  printf("OpenGL Version %s\n", glGetString(GL_VERSION));
+  printf("INFO: OpenGL Version %s\n", glGetString(GL_VERSION));
 
   // Set a few settings/modes in OpenGL rendering
   glEnable(GL_DEPTH_TEST);

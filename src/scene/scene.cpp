@@ -19,7 +19,7 @@ Scene::~Scene() {
 }
 
 void Scene::loadJSON(const std::string &file) {
-  std::printf("Loading scene file: %s\n", file.c_str());
+  std::printf("INFO: Loading scene file: %s\n", file.c_str());
 
   // Read JSON file
   Json::Reader reader;
@@ -28,7 +28,7 @@ void Scene::loadJSON(const std::string &file) {
 
   bool success = reader.parse(sceneStream, root, false);
   if (!success) {
-    std::printf("Failed to parse scene file %s", file.c_str());
+    std::fprintf(stderr, "ERROR: Failed to parse scene file %s", file.c_str());
     return;
   }
 
