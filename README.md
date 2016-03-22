@@ -51,6 +51,7 @@ None
 - DDS File Loader adapted from [opengl-tutorial.org](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-5-a-textured-cube/) [(WTF Public License)](http://www.wtfpl.net/).
 - 2-line implementation for reading text files from [Tyler McHenry](http://stackoverflow.com/questions/2602013/read-whole-ascii-file-into-c-stdstring).
 - OpenGL Error checking from [glprogramming.com](http://www.glprogramming.com/red/chapter14.html).
+- OpenGL debug callback adapted from [Morten Nobel](https://blog.nobel-joergensen.com/2013/02/17/debugging-opengl-part-2-using-gldebugmessagecallback/).
 - Organization of the camera class from CIS460 staff.
 - Transform class adapted from CIS460 staff.
 - Organization of shaderProgram/drawable classes from CIS277 staff.

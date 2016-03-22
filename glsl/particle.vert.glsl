@@ -5,9 +5,9 @@ uniform vec3 u_CameraRight;
 uniform vec3 u_CameraUp;
 uniform float u_ParticleSize;
 
-in vec3 avs_Billboard;
 in vec3 avs_Color;
 in vec3 avs_Position;
+in vec3 avs_Billboard;
 
 out vec3 afs_Color;
 out vec2 afs_UV;

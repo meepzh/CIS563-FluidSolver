@@ -16,7 +16,7 @@
 
 int main() {
   // Print version info
-  std::fprintf(stdout,"Version %d.%d\n", MFluidSolver_VERSION_MAJOR, MFluidSolver_VERSION_MINOR);
+  printf("Version %d.%d\n", MFluidSolver_VERSION_MAJOR, MFluidSolver_VERSION_MINOR);
 
   // Initialize GLFW
   if (!glfwInit()) {
@@ -34,7 +34,7 @@ int main() {
 
   Viewer viewer;
   Input::viewer = &viewer;
-  std::fprintf(stdout, "OpenGL Version %s\n", glGetString(GL_VERSION));
+  printf("OpenGL Version %s\n", glGetString(GL_VERSION));
 
   // Set a few settings/modes in OpenGL rendering
   glEnable(GL_DEPTH_TEST);
