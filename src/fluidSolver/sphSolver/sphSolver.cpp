@@ -42,7 +42,7 @@ void SPHSolver::setDefaultConfig() {
 }
 
 void SPHSolver::loadConfig(const std::string &file) {
-  printf("INFO: Loading config file: %s\n", file.c_str());
+  printf("INFO: Loading SPH data from config file: %s\n", file.c_str());
 
   // Read JSON file
   Json::Reader reader;
@@ -55,12 +55,12 @@ void SPHSolver::loadConfig(const std::string &file) {
     return;
   }
 
-  config.kStiffness = root.get("kStiffness", SPHConfig_Default_kStiffness).asFloat();
-  config.muViscosity = root.get("muViscosity", SPHConfig_Default_muViscosity).asFloat();
-  config.rRadius = root.get("rRadius", SPHConfig_Default_rRadius).asFloat();
-  config.mMass = root.get("mMass", SPHConfig_Default_mMass).asFloat();
-  config.dRestDensity = root.get("dRestDensity", SPHConfig_Default_dRestDensity).asFloat();
-  config.dtTimestep = root.get("dtTimestep", SPHConfig_Default_dtTimestep).asFloat();
+  config.kStiffness = root["sph"].get("kStiffness", SPHConfig_Default_kStiffness).asFloat();
+  config.muViscosity = root["sph"].get("muViscosity", SPHConfig_Default_muViscosity).asFloat();
+  config.rRadius = root["sph"].get("rRadius", SPHConfig_Default_rRadius).asFloat();
+  config.mMass = root["sph"].get("mMass", SPHConfig_Default_mMass).asFloat();
+  config.dRestDensity = root["sph"].get("dRestDensity", SPHConfig_Default_dRestDensity).asFloat();
+  config.dtTimestep = root["sph"].get("dtTimestep", SPHConfig_Default_dtTimestep).asFloat();
 }
 
 void SPHSolver::update(double deltaT) {

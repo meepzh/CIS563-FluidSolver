@@ -8,6 +8,8 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 // #include <openvdb/openvdb.h>
+#include <fstream>
+#include <json/json.h>
 
 #include "MFluidSolverConfig.hpp"
 #include "main.hpp"
@@ -25,13 +27,34 @@ int main() {
     return -1;
   }
 
-  std::string sphConfigJSON = "config.json";
+  std::string configJSON = "config.json";
   std::string sceneJSON = "scene/scene.json";
   std::string wireVShader = "glsl/wire.vert.glsl";
   std::string wireFShader = "glsl/wire.frag.glsl";
   std::string particleVShader = "glsl/particle.vert.glsl";
   std::string particleFShader = "glsl/particle.frag.glsl";
   std::string particleTexture = "texture/particle.dds";
+
+  // Load config JSON
+  printf("INFO: Loading config file: %s\n", configJSON.c_str());
+
+  // Read JSON file
+  Json::Reader reader;
+  Json::Value root;
+  std::ifstream sceneStream(configJSON, std::ifstream::binary);
+
+  bool success = reader.parse(sceneStream, root, false);
+  if (!success) {
+    std::fprintf(stderr, "ERROR: Failed to parse config file %s", configJSON.c_str());
+    return -1;
+  }
+
+  sceneJSON = root.get("sceneJSON", "").asString();
+  wireVShader = root.get("wireVShader", "").asString();
+  wireFShader = root.get("wireFShader", "").asString();
+  particleVShader = root.get("particleVShader", "").asString();
+  particleFShader = root.get("particleFShader", "").asString();
+  particleTexture = root.get("particleTexture", "").asString();
 
   Viewer viewer;
   Input::viewer = &viewer;
@@ -60,7 +83,7 @@ int main() {
   viewer.wireShader = new ShaderProgram(wireVShader, wireFShader);
   viewer.particleShader = new ParticleShaderProgram(&(viewer.scene.solver), particleVShader, particleFShader, particleTexture);
   viewer.scene.loadJSON(sceneJSON);
-  viewer.scene.solver.loadConfig(sphConfigJSON);
+  viewer.scene.solver.loadConfig(configJSON);
 
   viewer.run();
 

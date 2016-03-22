@@ -1,8 +1,16 @@
 {
-  "kStiffness": 1,
-  "muViscosity": 1,
-  "rRadius": 1,
-  "mMass": 1,
-  "dRestDensity": 1,
-  "dtTimestep": 1
+  "sceneJSON": "scene/scene.json",
+  "wireVShader": "glsl/wire.vert.glsl",
+  "wireFShader": "glsl/wire.frag.glsl",
+  "particleVShader": "glsl/particle.vert.glsl",
+  "particleFShader": "glsl/particle.frag.glsl",
+  "particleTexture": "texture/particle.dds",
+  "sph": {
+  	"kStiffness": 1,
+	  "muViscosity": 1,
+	  "rRadius": 1,
+	  "mMass": 1,
+	  "dRestDensity": 1,
+	  "dtTimestep": 1
+  }
 }
