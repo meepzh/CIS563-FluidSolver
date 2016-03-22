@@ -43,7 +43,7 @@ Cube::Cube(const glm::vec3 &color) : _color(color) {
   for (unsigned int i = 0; i < VERT_COUNT; ++i) {
     for (unsigned int j = i + 1; j < VERT_COUNT; ++j) {
       if (idxCount == IDX_COUNT) break;
-      if (glm::distance(vert_pos[i], vert_pos[j]) < 1.0001f && glm::distance2(vert_pos[i], vert_pos[j]) > 0.999f) {
+      if (glm::distance2(vert_pos[i], vert_pos[j]) < 1.0001f && glm::distance2(vert_pos[i], vert_pos[j]) > 0.999f) {
         idx[idxCount++] = i;
         idx[idxCount++] = j;
         counter++;

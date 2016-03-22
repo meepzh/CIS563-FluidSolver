@@ -9,7 +9,7 @@ out vec4 out_Color;
 
 void main()
 {
-	vec4 tex_Color = texture(u_BillboardTextureSampler, afs_UV);
-	vec4 in_Color = vec4(afs_Color, 1.f);
+    vec4 tex_Color = texture(u_BillboardTextureSampler, afs_UV);
+    vec4 in_Color = vec4(afs_Color, 1.f);
     out_Color = tex_Color * in_Color;
 }
