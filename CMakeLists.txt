@@ -126,3 +126,13 @@ set(CORE_SRC
 
 add_executable(MFluidSolver ${CORE_SRC})
 target_link_libraries(MFluidSolver ${CORE_LIBS})
+
+##### Testing #####
+add_subdirectory(src/unittest)
+
+# Libraries
+add_library(MNeighborSearch src/fluidSolver/sphSolver/neighborSearch.cpp)
+
+# Tests
+enable_testing()
+add_test(NAME MTest COMMAND MTest)
