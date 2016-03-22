@@ -128,7 +128,7 @@ add_executable(MFluidSolver ${CORE_SRC})
 target_link_libraries(MFluidSolver ${CORE_LIBS})
 
 ##### Testing #####
-add_subdirectory(src/unittest)
+add_subdirectory(unittest)
 
 # Libraries
 set(MNEIGHBORSEARCH_LIB

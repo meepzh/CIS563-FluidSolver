@@ -5,7 +5,7 @@
 #define BOOST_TEST_MODULE NeighborSearchTests
 #include <boost/test/unit_test.hpp>
 
-#include "../fluidSolver/sphSolver/neighborSearch.hpp"
+#include "../src/fluidSolver/sphSolver/neighborSearch.hpp"
 
 BOOST_AUTO_TEST_CASE(FailTest)
 {
