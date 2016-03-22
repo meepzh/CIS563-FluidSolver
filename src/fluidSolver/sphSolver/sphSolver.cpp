@@ -4,6 +4,10 @@
 
 #include "sphSolver.hpp"
 
+#include <cstdio>
+#include <fstream>
+#include <json/json.h>
+
 SPHSolver::SPHSolver()
  : nSearch(nullptr) {
 }
@@ -29,7 +33,34 @@ SPHConfig *SPHSolver::init(const double &kernelRadius,
 }
 
 void SPHSolver::setDefaultConfig() {
+  config.kStiffness = SPHConfig_Default_kStiffness;
+  config.muViscosity = SPHConfig_Default_muViscosity;
+  config.rRadius = SPHConfig_Default_rRadius;
+  config.mMass = SPHConfig_Default_mMass;
+  config.dRestDensity = SPHConfig_Default_dRestDensity;
+  config.dtTimestep = SPHConfig_Default_dtTimestep;
+}
 
+void SPHSolver::loadConfig(const std::string &file) {
+  printf("INFO: Loading config file: %s\n", file.c_str());
+
+  // Read JSON file
+  Json::Reader reader;
+  Json::Value root;
+  std::ifstream sceneStream(file, std::ifstream::binary);
+
+  bool success = reader.parse(sceneStream, root, false);
+  if (!success) {
+    std::fprintf(stderr, "ERROR: Failed to parse config file %s", file.c_str());
+    return;
+  }
+
+  config.kStiffness = root.get("kStiffness", SPHConfig_Default_kStiffness).asFloat();
+  config.muViscosity = root.get("muViscosity", SPHConfig_Default_muViscosity).asFloat();
+  config.rRadius = root.get("rRadius", SPHConfig_Default_rRadius).asFloat();
+  config.mMass = root.get("mMass", SPHConfig_Default_mMass).asFloat();
+  config.dRestDensity = root.get("dRestDensity", SPHConfig_Default_dRestDensity).asFloat();
+  config.dtTimestep = root.get("dtTimestep", SPHConfig_Default_dtTimestep).asFloat();
 }
 
 void SPHSolver::update(double deltaT) {

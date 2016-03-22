@@ -17,13 +17,15 @@ configure_file(
 )
 include_directories("${PROJECT_BINARY_DIR}")
 
-# Copy GLSL and JSON files
+# Copy GLSL, JSON, and Texture files
 file(GLOB JSON_SRC "${PROJECT_SOURCE_DIR}/src/scene/*.json")
 file(COPY ${JSON_SRC} DESTINATION "${PROJECT_BINARY_DIR}/scene/")
 file(GLOB GLSL_SRC "${PROJECT_SOURCE_DIR}/glsl/*.glsl")
 file(COPY ${GLSL_SRC} DESTINATION "${PROJECT_BINARY_DIR}/glsl/")
 file(GLOB TEXTURE_SRC "${PROJECT_SOURCE_DIR}/texture/*")
 file(COPY ${TEXTURE_SRC} DESTINATION "${PROJECT_BINARY_DIR}/texture/")
+file(GLOB CONFIG_FILE "${PROJECT_SOURCE_DIR}/config/*")
+file(COPY ${CONFIG_FILE} DESTINATION "${PROJECT_BINARY_DIR}/")
 
 # Set creates a variable
 set(NUPARU "nuparu")

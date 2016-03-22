@@ -17,6 +17,12 @@ struct SPHConfig {
   float dRestDensity;
   float dtTimestep;
 };
+#define SPHConfig_Default_kStiffness 1
+#define SPHConfig_Default_muViscosity 1
+#define SPHConfig_Default_rRadius 1
+#define SPHConfig_Default_mMass 1000
+#define SPHConfig_Default_dRestDensity 1000
+#define SPHConfig_Default_dtTimestep 1
 
 class SPHSolver : public FluidSolver {
 public:
@@ -26,6 +32,7 @@ public:
   SPHConfig *init(const double &kernelRadius,
     const glm::vec3 &gridMin, const glm::vec3 &gridMax, NeighborSearchType nSearchType);
   void setDefaultConfig();
+  void loadConfig(const std::string &file);
 
   virtual void update(double deltaT);
   virtual void addParticle(Particle *p);

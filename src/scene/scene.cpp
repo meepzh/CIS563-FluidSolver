@@ -19,7 +19,7 @@ Scene::~Scene() {
 }
 
 void Scene::loadJSON(const std::string &file) {
-  std::printf("INFO: Loading scene file: %s\n", file.c_str());
+  printf("INFO: Loading scene file: %s\n", file.c_str());
 
   // Read JSON file
   Json::Reader reader;
@@ -44,6 +44,8 @@ void Scene::loadJSON(const std::string &file) {
 
   float particleSeparation = root.get("particleSeparation", 0.1f).asFloat();
   solver.setParticleSeparation(particleSeparation);
+
+  solver.init(particleSeparation, glm::vec3(0), particleDim, NeighborSearchType::Naive);
 
   // Create geometry
   solver.fluidContainer = new Cube(glm::vec3(0));

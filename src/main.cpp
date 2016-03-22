@@ -25,6 +25,7 @@ int main() {
     return -1;
   }
 
+  std::string sphConfigJSON = "config.json";
   std::string sceneJSON = "scene/scene.json";
   std::string wireVShader = "glsl/wire.vert.glsl";
   std::string wireFShader = "glsl/wire.frag.glsl";
@@ -59,6 +60,7 @@ int main() {
   viewer.wireShader = new ShaderProgram(wireVShader, wireFShader);
   viewer.particleShader = new ParticleShaderProgram(&(viewer.scene.solver), particleVShader, particleFShader, particleTexture);
   viewer.scene.loadJSON(sceneJSON);
+  viewer.scene.solver.loadConfig(sphConfigJSON);
 
   viewer.run();
 

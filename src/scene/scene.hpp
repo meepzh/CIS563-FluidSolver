@@ -7,7 +7,7 @@
 
 #include <string>
 #include <vector>
-#include "../fluidSolver/fluidSolver.hpp"
+#include "../fluidSolver/sphSolver/sphSolver.hpp"
 
 class Scene {
 public:
@@ -15,7 +15,7 @@ public:
   ~Scene();
   void loadJSON(const std::string &file);
 
-  FluidSolver solver;
+  SPHSolver solver;
   std::vector<Geometry *> objects;
 };
 
