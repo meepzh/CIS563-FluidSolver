@@ -87,7 +87,7 @@ void SPHSolver::update(double deltaT) {
   for (SPHParticle *p : _particles) {
     // Density
     float densitySum = 0;
-    for (SPHParticle *n : p->neighbors()) {
+    for (SPHParticle *n : *(p->neighbors())) {
       densitySum += n->mass() * kernelFunctions.computePoly6(p->position() - n->position());
     }
     p->setDensity(densitySum);

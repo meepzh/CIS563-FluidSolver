@@ -18,11 +18,11 @@ void NeighborSearch::setSearchRadius(float r) {
 
 void NaiveNeighborSearch::findNeighbors(SPHParticle *p) {
   const glm::vec3 pPos = p->position();
-  std::vector<SPHParticle *> &neighbors = p->neighbors();
+  std::vector<SPHParticle *> *neighbors = p->neighbors();
   for (SPHParticle *n : particleList) {
     if (n != p) {
       if (glm::distance2(n->position(), pPos) < searchRadius2) {
-        neighbors.push_back(n);
+        neighbors->push_back(n);
       }
     }
   }
@@ -45,16 +45,16 @@ void StandardGridNeighborSearch::findNeighbors(SPHParticle *p) {
   grid->getNeighbors(p);
 
   const glm::vec3 pPos = p->position();
-  std::vector<SPHParticle *> &neighbors = p->neighbors();
+  std::vector<SPHParticle *> *neighbors = p->neighbors();
 
-  unsigned int numCandidates = neighbors.size();
+  unsigned int numCandidates = neighbors->size();
   unsigned int i = 0;
   unsigned int count = 0;
   SPHParticle *n;
   while (count < numCandidates) {
-    n = neighbors.at(i);
+    n = neighbors->at(i);
     if (glm::distance2(n->position(), pPos) >= searchRadius2 || n == p) {
-      neighbors.erase(neighbors.begin() + i);
+      neighbors->erase(neighbors->begin() + i);
     } else {
       ++i;
     }

@@ -39,8 +39,8 @@ void SPHParticle::setForceDensity(const glm::vec3 &forceDensity) {
 }
 
 
-std::vector<SPHParticle *> &SPHParticle::neighbors() {
-  return _neighbors;
+std::vector<SPHParticle *> *SPHParticle::neighbors() {
+  return &_neighbors;
 }
 
 void SPHParticle::clearNeighbors() {

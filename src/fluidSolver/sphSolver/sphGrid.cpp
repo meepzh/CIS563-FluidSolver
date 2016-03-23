@@ -32,7 +32,7 @@ void SPHGrid::addParticle(SPHParticle *p) {
 void SPHGrid::getNeighbors(SPHParticle *p) {
   glm::ivec3 pC = getGridCoordinates(p->position());
   //printf("INFO: Getting neighbors for cell (%d, %d, %d)\n", pC.x, pC.y, pC.z);
-  std::vector<SPHParticle *> &neighbors = p->neighbors();
+  std::vector<SPHParticle *> *neighbors = p->neighbors();
 
   unsigned int index;// = getIndex(pC);
   std::vector<SPHParticle *> *vec;/* = &(data->at(index));
@@ -58,7 +58,7 @@ void SPHGrid::getNeighbors(SPHParticle *p) {
             vec = &(data->at(index));
             //printf("INFO: Accessing cell (%d, %d, %d)\n", coords.x, coords.y, coords.z);
             for (unsigned int l = 0; l < vec->size(); ++l) {
-              neighbors.push_back(vec->at(l));
+              neighbors->push_back(vec->at(l));
             } // end for l
           }
         //} // end if != pC

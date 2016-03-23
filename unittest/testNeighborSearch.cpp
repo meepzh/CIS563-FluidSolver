@@ -21,16 +21,16 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_Naive_BasicSuccess)
   // Check a's neighbors
   nSearch.findNeighbors(&a);
 
-  BOOST_CHECK_EQUAL(1, a.neighbors().size());
-  if (a.neighbors().size() > 0)
-    BOOST_CHECK_EQUAL(&b, a.neighbors().at(0));
+  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
+  if (a.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
 
   // Check b's neighbors
   nSearch.findNeighbors(&b);
 
-  BOOST_CHECK_EQUAL(1, b.neighbors().size());
-  if (b.neighbors().size() > 0)
-    BOOST_CHECK_EQUAL(&a, b.neighbors().at(0));
+  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
+  if (b.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
 }
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_Naive_BasicFail)
@@ -47,13 +47,13 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_Naive_BasicFail)
   std::vector<SPHParticle *> neighbors;
   nSearch.findNeighbors(&a);
 
-  BOOST_CHECK_EQUAL(0, a.neighbors().size());
+  BOOST_CHECK_EQUAL(0, a.neighbors()->size());
 
   // Check b's neighbors
   neighbors.clear();
   nSearch.findNeighbors(&b);
 
-  BOOST_CHECK_EQUAL(0, b.neighbors().size());
+  BOOST_CHECK_EQUAL(0, b.neighbors()->size());
 }
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_SameCell)
@@ -69,16 +69,16 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_SameCell)
   // Check a's neighbors
   nSearch.findNeighbors(&a);
 
-  BOOST_CHECK_EQUAL(1, a.neighbors().size());
-  if (a.neighbors().size() > 0)
-    BOOST_CHECK_EQUAL(&b, a.neighbors().at(0));
+  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
+  if (a.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
 
   // Check b's neighbors
   nSearch.findNeighbors(&b);
 
-  BOOST_CHECK_EQUAL(1, b.neighbors().size());
-  if (b.neighbors().size() > 0)
-    BOOST_CHECK_EQUAL(&a, b.neighbors().at(0));
+  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
+  if (b.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
 }
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsX)
@@ -94,16 +94,16 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsX)
   // Check a's neighbors
   nSearch.findNeighbors(&a);
 
-  BOOST_CHECK_EQUAL(1, a.neighbors().size());
-  if (a.neighbors().size() > 0)
-    BOOST_CHECK_EQUAL(&b, a.neighbors().at(0));
+  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
+  if (a.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
 
   // Check b's neighbors
   nSearch.findNeighbors(&b);
 
-  BOOST_CHECK_EQUAL(1, b.neighbors().size());
-  if (b.neighbors().size() > 0)
-    BOOST_CHECK_EQUAL(&a, b.neighbors().at(0));
+  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
+  if (b.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
 }
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsY)
@@ -119,16 +119,16 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsY)
   // Check a's neighbors
   nSearch.findNeighbors(&a);
 
-  BOOST_CHECK_EQUAL(1, a.neighbors().size());
-  if (a.neighbors().size() > 0)
-    BOOST_CHECK_EQUAL(&b, a.neighbors().at(0));
+  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
+  if (a.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
 
   // Check b's neighbors
   nSearch.findNeighbors(&b);
 
-  BOOST_CHECK_EQUAL(1, b.neighbors().size());
-  if (b.neighbors().size() > 0)
-    BOOST_CHECK_EQUAL(&a, b.neighbors().at(0));
+  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
+  if (b.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
 }
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsZ)
@@ -144,16 +144,16 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsZ)
   // Check a's neighbors
   nSearch.findNeighbors(&a);
 
-  BOOST_CHECK_EQUAL(1, a.neighbors().size());
-  if (a.neighbors().size() > 0)
-    BOOST_CHECK_EQUAL(&b, a.neighbors().at(0));
+  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
+  if (a.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
 
   // Check b's neighbors
   nSearch.findNeighbors(&b);
 
-  BOOST_CHECK_EQUAL(1, b.neighbors().size());
-  if (b.neighbors().size() > 0)
-    BOOST_CHECK_EQUAL(&a, b.neighbors().at(0));
+  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
+  if (b.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
 }
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellNotNeighborsX)
@@ -169,12 +169,12 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellNotNeighborsX)
   // Check a's neighbors
   nSearch.findNeighbors(&a);
 
-  BOOST_CHECK_EQUAL(0, a.neighbors().size());
+  BOOST_CHECK_EQUAL(0, a.neighbors()->size());
 
   // Check b's neighbors
   nSearch.findNeighbors(&b);
 
-  BOOST_CHECK_EQUAL(0, b.neighbors().size());
+  BOOST_CHECK_EQUAL(0, b.neighbors()->size());
 }
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellNotNeighborsY)
@@ -190,12 +190,12 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellNotNeighborsY)
   // Check a's neighbors
   nSearch.findNeighbors(&a);
 
-  BOOST_CHECK_EQUAL(0, a.neighbors().size());
+  BOOST_CHECK_EQUAL(0, a.neighbors()->size());
 
   // Check b's neighbors
   nSearch.findNeighbors(&b);
 
-  BOOST_CHECK_EQUAL(0, b.neighbors().size());
+  BOOST_CHECK_EQUAL(0, b.neighbors()->size());
 }
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellNotNeighborsZ)
@@ -211,12 +211,12 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellNotNeighborsZ)
   // Check a's neighbors
   nSearch.findNeighbors(&a);
 
-  BOOST_CHECK_EQUAL(0, a.neighbors().size());
+  BOOST_CHECK_EQUAL(0, a.neighbors()->size());
 
   // Check b's neighbors
   nSearch.findNeighbors(&b);
 
-  BOOST_CHECK_EQUAL(0, b.neighbors().size());
+  BOOST_CHECK_EQUAL(0, b.neighbors()->size());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
