@@ -48,10 +48,11 @@ The right mouse button pans the camera. This changes both the camera's and its
 focus point's position. Right-click and drag to move the camera in the opposite
 direction of the mouse. It will look like you're dragging the scene with you.
 
-### Missing Required Features ###
+### Neighbor Search Performance ###
+![Exponential Improvement with Uniform Grid over Naive Neighbor Search](nsPerfGraph00.png?raw=true)
 
-- Export with OpenVDB
-- Performance testing / graphs
+### Missing Required Features ###
+None
 
 ### Extra Features ###
 None
