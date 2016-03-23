@@ -18,7 +18,7 @@ FluidSolver::~FluidSolver() {
 }
 
 void FluidSolver::update(double deltaT) {
-  for (Particle *p : *_particles) {
+  /*for (Particle *p : *_particles) {
     p->addForce(glm::vec3(0, _gravity, 0));
   }
 
@@ -27,12 +27,12 @@ void FluidSolver::update(double deltaT) {
     if (!fluidContainer->intersects(p->position())) {
       p->color = glm::vec3(1, 0, 0);
     }
-  }
+  }*/
 }
 
-void FluidSolver::addParticle(Particle *p) {
+void FluidSolver::addParticleAt(const glm::vec3 &position) {
   if (_particles->size() < maxParticles) {
-    _particles->push_back(p);
+    _particles->push_back(new Particle(position));
   }
 }
 

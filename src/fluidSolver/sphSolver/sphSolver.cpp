@@ -11,6 +11,7 @@
 SPHSolver::SPHSolver()
  : nSearch(nullptr) {
 }
+
 SPHSolver::~SPHSolver() {
   delete nSearch;
 }
@@ -67,9 +68,12 @@ void SPHSolver::update(double deltaT) {
 
 }
 
-void SPHSolver::addParticle(Particle *p) {
-  FluidSolver::addParticle(p);
-  nSearch->addParticle(p);
+void SPHSolver::addParticleAt(const glm::vec3 &position) {
+  if (_particles->size() < maxParticles) {
+    SPHParticle *p = new SPHParticle(position);
+    _particles->push_back(p);
+    nSearch->addParticle(p);
+  }
 }
 
 void SPHSolver::setParticleSeparation(float ps) {

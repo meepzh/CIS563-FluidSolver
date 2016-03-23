@@ -8,6 +8,7 @@
 #include "../fluidSolver.hpp"
 #include "kernelFunctions.hpp"
 #include "neighborSearch.hpp"
+#include "sphParticle.hpp"
 
 struct SPHConfig {
   float kStiffness;
@@ -17,6 +18,7 @@ struct SPHConfig {
   float dRestDensity;
   float dtTimestep;
 };
+
 #define SPHConfig_Default_kStiffness 1
 #define SPHConfig_Default_muViscosity 1
 #define SPHConfig_Default_rRadius 1
@@ -35,7 +37,7 @@ public:
   void loadConfig(const std::string &file);
 
   virtual void update(double deltaT);
-  virtual void addParticle(Particle *p);
+  virtual void addParticleAt(const glm::vec3 &position);
   virtual void setParticleSeparation(float ps);
 
 private:

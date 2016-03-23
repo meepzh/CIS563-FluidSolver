@@ -110,6 +110,7 @@ set(CORE_SRC
         src/camera/camera.cpp
         src/fluidSolver/sphSolver/kernelFunctions.cpp
         src/fluidSolver/sphSolver/neighborSearch.cpp
+        src/fluidSolver/sphSolver/sphParticle.cpp
         src/fluidSolver/sphSolver/sphSolver.cpp
         src/fluidSolver/fluidSolver.cpp
         src/fluidSolver/integrator.cpp

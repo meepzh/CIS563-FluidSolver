@@ -16,7 +16,7 @@ public:
 
   virtual void update(double deltaT);
 
-  virtual void addParticle(Particle *p);
+  virtual void addParticleAt(const glm::vec3 &position);
   const std::vector<Particle *> *particles() const;
   unsigned int numParticles() const;
   unsigned int maxParticles;
@@ -30,7 +30,7 @@ public:
   Geometry *fluidSource;
   Geometry *fluidContainer;
 
-private:
+protected:
   std::vector<Particle *> *_particles;
   float _gravity;
   float _particleSeparation;
