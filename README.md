@@ -1,14 +1,17 @@
 # CIS563-FluidSolver #
 ### How Does It Work ###
-This fluid solver uses GLFW, GLM, and GLEW. It reads a JSON scene file,
-creating a fluid container and a fluid source. The fluid generates particles
-once, then all the particles are subject to fluid forces (currently gravity).
-Upon exiting the fluid container, particles are detected by a collision
-detection system which colors the particles appropriately. The scene is
-initially paused. The camera is controlled by a standard arcball interface
-described below.
+This fluid solver uses GLFW, GLM, and GLEW. It reads a JSON configuration file
+and a JSON scene file, creating a fluid container and a scene container. The
+fluid generates particles once, then all the particles are subject to fluid
+forces (currently none). The scene is initially paused. The camera is controlled
+by a standard arcball interface described below. The solver currently set to
+display the neighbor particles of the first particle, which can be changed
+randomly. The solver can also export the backend grid for the fluid particles to
+the VDB format.
 
 ### Build Instructions (*nix) ###
+By default, the program is set to default debugging mode as set in
+`src/MFluidSolverConfig.hpp.in`.
 
     mkdir build
     cd build
@@ -18,19 +21,20 @@ described below.
 
 ### Unit Test Instructions (*nix) ###
 This will run all tests in the unittest folder. Test results will be printed
-to stdout, and details are found in `build/Testing/Temporary/LastTest.log`
+to stdout, and details are found in `build/Testing/Temporary/LastTest.log`.
+This does include a brief performance test on neighbor search.
 
     make test
 
 ### How To Use ###
 Press P to toggle pausing. Press Press R to randomly pick a particle to show
-its neighbors.
+its neighbors. Press E to export a VDB file of the graph to `export.vdb`.
 
-All SPH parameters can be found in `config/config.json`. The scene file, which
-contains dimensions and particle separation, can be edited from
-`scene/scene.json`.
+All SPH parameters, as well as several general program parameters, can be found
+in `config/config.json`. The scene file, which contains dimensions and particle
+separation, can be edited from `scene/scene.json`.
 
-####Arcball####
+#### Arcball ####
 The camera uses the arcball interface and can be controlled with the left and
 right mouse buttons and the scroll wheel.
 
@@ -49,7 +53,7 @@ focus point's position. Right-click and drag to move the camera in the opposite
 direction of the mouse. It will look like you're dragging the scene with you.
 
 ### Neighbor Search Performance ###
-![Exponential Improvement with Uniform Grid over Naive Neighbor Search](nsPerfGraph0.png?raw=true)
+![Exponential Improvement with Uniform Grid over Naive Neighbor Search](images/nsPerfGraph0.png?raw=true "The uniform grid neighbor search dramatically reduces search time to O(n).")
 
 ### Missing Required Features ###
 None
