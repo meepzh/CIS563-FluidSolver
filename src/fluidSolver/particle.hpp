@@ -10,18 +10,21 @@
 class Particle {
 public:
   // Constructors/Destructors
-  Particle() : Particle(glm::vec3(0)) {}
-  Particle(const glm::vec3 &position);
+  Particle() : Particle(1, glm::vec3(0)) {}
+  Particle(const glm::vec3 &position) : Particle(1, position) {}
+  Particle(float mass, const glm::vec3 &position);
 
   // Update
   virtual void update(double deltaT);
 
   // Properties
   glm::vec3 color;
+  float mass() const;
   glm::vec3 position() const;
   glm::vec3 velocity() const;
 
 protected:
+  float _mass;
   glm::vec3 _position;
   glm::vec3 _velocity;
 };

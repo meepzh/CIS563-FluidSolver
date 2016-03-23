@@ -45,7 +45,6 @@ direction of the mouse. It will look like you're dragging the scene with you.
 ### Missing Required Features ###
 Mandatory
 
-- Implement core SPH algorithm
 - Uniform Spatial Grid
 - Test SPH config file works
 - Larger naive neighbor search unit test
@@ -58,6 +57,7 @@ Optional
 
 - SPH paper optimizations
 - Parallelize neighbor search with TBB
+- Calculate force densities
 
 ### Extra Features ###
 None
