@@ -33,7 +33,7 @@ public:
   ~SPHSolver();
 
   SPHConfig *init(const double &kernelRadius,
-    const glm::vec3 &gridMin, const glm::vec3 &gridMax, NeighborSearchType nSearchType);
+    const glm::vec3 &gridMin, const glm::vec3 &gridMax, NeighborSearchType nsType);
   void setDefaultConfig();
   void loadConfig(const std::string &file);
 
@@ -45,6 +45,7 @@ public:
 
 private:
   SPHConfig config;
+  NeighborSearchType nSearchType;
   KernelFunctions kernelFunctions;
   NeighborSearch *nSearch;
   std::vector<SPHParticle *> _particles;

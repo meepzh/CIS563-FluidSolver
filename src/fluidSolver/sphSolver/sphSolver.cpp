@@ -20,8 +20,9 @@ SPHSolver::~SPHSolver() {
 }
 
 SPHConfig *SPHSolver::init(const double &kernelRadius,
-    const glm::vec3 &gridMin, const glm::vec3 &gridMax, NeighborSearchType nSearchType) {
+    const glm::vec3 &gridMin, const glm::vec3 &gridMax, NeighborSearchType nsType) {
   kernelFunctions.setKernelRadius(kernelRadius);
+  nSearchType = nsType;
 
   switch (nSearchType) {
     case NeighborSearchType::Naive:
@@ -29,7 +30,7 @@ SPHConfig *SPHSolver::init(const double &kernelRadius,
       break;
     case NeighborSearchType::StandardGrid:
     default:
-      nSearch = new StandardGridNeighborSearch(kernelRadius, gridMin, gridMax);
+      nSearch = new StandardGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius);
       break;
   }
 
@@ -68,6 +69,14 @@ void SPHSolver::loadConfig(const std::string &file) {
 }
 
 void SPHSolver::update(double deltaT) {
+  // Prepare neighbor search
+  if (nSearchType == NeighborSearchType::StandardGrid) {
+    static_cast<StandardGridNeighborSearch *>(nSearch)->clear();
+    for (SPHParticle *p : _particles) {
+      nSearch->addParticle(p);
+    }
+  }
+
   // Calculate neighbors
   for (SPHParticle *p : _particles) {
     p->clearNeighbors();

@@ -32,23 +32,23 @@ void NaiveNeighborSearch::addParticle(SPHParticle *p) {
   particleList.push_back(p);
 }
 
-void NaiveNeighborSearch::updateParticle(SPHParticle *p) {
-  // Do nothing
+StandardGridNeighborSearch::StandardGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize)
+: NeighborSearch(r), grid(nullptr) {
+  grid = new SPHGrid(gridMin, gridMax, cellSize);
 }
 
-StandardGridNeighborSearch::StandardGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax)
-: NeighborSearch(r) {
-
+StandardGridNeighborSearch::~StandardGridNeighborSearch() {
+  delete grid;
 }
 
 void StandardGridNeighborSearch::findNeighbors(SPHParticle *p) {
-
+  return grid->getNeighbors(p);
 }
 
 void StandardGridNeighborSearch::addParticle(SPHParticle *p) {
-
+  grid->addParticle(p);
 }
 
-void StandardGridNeighborSearch::updateParticle(SPHParticle *p) {
-
+void StandardGridNeighborSearch::clear() {
+  grid->clear();
 }

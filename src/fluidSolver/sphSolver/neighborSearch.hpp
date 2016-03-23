@@ -7,6 +7,7 @@
 
 #include <vector>
 #include "sphParticle.hpp"
+#include "sphGrid.hpp"
 
 enum NeighborSearchType {Naive, StandardGrid};
 
@@ -19,7 +20,6 @@ public:
   void setSearchRadius(float r);
   virtual void findNeighbors(SPHParticle *p) = 0;
   virtual void addParticle(SPHParticle *p) = 0;
-  virtual void updateParticle(SPHParticle *p) = 0;
 
 protected:
   float searchRadius;
@@ -32,7 +32,6 @@ public:
   NaiveNeighborSearch(float r) : NeighborSearch(r) {}
   virtual void findNeighbors(SPHParticle *p);
   virtual void addParticle(SPHParticle *p);
-  virtual void updateParticle(SPHParticle *p);
 
 private:
   std::vector<SPHParticle *> particleList;
@@ -40,12 +39,14 @@ private:
 
 class StandardGridNeighborSearch : public NeighborSearch {
 public:
-  StandardGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax);
+  StandardGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize);
+  ~StandardGridNeighborSearch();
   virtual void findNeighbors(SPHParticle *p);
   virtual void addParticle(SPHParticle *p);
-  virtual void updateParticle(SPHParticle *p);
+  void clear();
 
 private:
+  SPHGrid *grid;
 };
 
 #endif /* MFLUIDSOLVER_SPHSOLVER_NEIGHBORSEARCH_HPP_ */

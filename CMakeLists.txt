@@ -110,10 +110,10 @@ set(CORE_SRC
         src/camera/camera.cpp
         src/fluidSolver/sphSolver/kernelFunctions.cpp
         src/fluidSolver/sphSolver/neighborSearch.cpp
+        src/fluidSolver/sphSolver/sphGrid.cpp
         src/fluidSolver/sphSolver/sphParticle.cpp
         src/fluidSolver/sphSolver/sphSolver.cpp
         src/fluidSolver/fluidSolver.cpp
-        src/fluidSolver/integrator.cpp
         src/fluidSolver/particle.cpp
         src/geom/cube.cpp
         src/geom/drawable.cpp
@@ -136,6 +136,7 @@ add_subdirectory(unittest)
 # Libraries
 set(MNEIGHBORSEARCH_LIB
         src/fluidSolver/sphSolver/neighborSearch.cpp
+        src/fluidSolver/sphSolver/sphGrid.cpp
         src/fluidSolver/sphSolver/sphParticle.cpp
         src/fluidSolver/particle.cpp
 )

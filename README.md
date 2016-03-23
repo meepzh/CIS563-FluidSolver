@@ -46,12 +46,12 @@ direction of the mouse. It will look like you're dragging the scene with you.
 Mandatory
 
 - Uniform Spatial Grid
-- Test SPH config file works
+- Export with OpenVDB
+- Visualize neighbor search with color
 - Larger naive neighbor search unit test
 - Basic uniform spatial grid neighbor search unit test
 - Larger uniform spatial grid neighbor search unit test
-- Export with OpenVDB
-- Visualize neighbor search with color
+- Test SPH config file works
 
 Optional
 
