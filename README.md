@@ -48,10 +48,9 @@ Mandatory
 - Uniform Spatial Grid
 - Export with OpenVDB
 - Visualize neighbor search with color
-- Larger naive neighbor search unit test
-- Basic uniform spatial grid neighbor search unit test
-- Larger uniform spatial grid neighbor search unit test
 - Test SPH config file works
+- Change neighbor search mode from config file
+- Performance testing / graphs
 
 Optional
 

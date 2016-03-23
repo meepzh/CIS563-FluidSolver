@@ -42,7 +42,24 @@ StandardGridNeighborSearch::~StandardGridNeighborSearch() {
 }
 
 void StandardGridNeighborSearch::findNeighbors(SPHParticle *p) {
-  return grid->getNeighbors(p);
+  grid->getNeighbors(p);
+
+  const glm::vec3 pPos = p->position();
+  std::vector<SPHParticle *> &neighbors = p->neighbors();
+
+  unsigned int numCandidates = neighbors.size();
+  unsigned int i = 0;
+  unsigned int count = 0;
+  SPHParticle *n;
+  while (count < numCandidates) {
+    n = neighbors.at(i);
+    if (glm::distance2(n->position(), pPos) >= searchRadius2 || n == p) {
+      neighbors.erase(neighbors.begin() + i);
+    } else {
+      ++i;
+    }
+    count++;
+  }
 }
 
 void StandardGridNeighborSearch::addParticle(SPHParticle *p) {

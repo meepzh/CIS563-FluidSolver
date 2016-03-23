@@ -126,3 +126,18 @@ unsigned int SPHSolver::numParticles() const {
 void SPHSolver::setParticleSeparation(float ps) {
   FluidSolver::setParticleSeparation(ps);
 }
+
+void SPHSolver::demoCode() {
+  if (nSearchType == NeighborSearchType::StandardGrid) {
+    static_cast<StandardGridNeighborSearch *>(nSearch)->clear();
+    for (SPHParticle *p : _particles) {
+      nSearch->addParticle(p);
+    }
+  }
+
+  SPHParticle *target = _particles.at(0);
+  target->clearNeighbors();
+  nSearch->findNeighbors(target);
+
+  target->color = glm::vec3(1, 1, 0);
+}

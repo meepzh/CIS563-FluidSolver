@@ -34,8 +34,8 @@ void SPHGrid::getNeighbors(SPHParticle *p) {
   //printf("INFO: Getting neighbors for cell (%d, %d, %d)\n", pC.x, pC.y, pC.z);
   std::vector<SPHParticle *> &neighbors = p->neighbors();
 
-  unsigned int index = getIndex(pC);
-  std::vector<SPHParticle *> *vec = &(data->at(index));
+  unsigned int index;// = getIndex(pC);
+  std::vector<SPHParticle *> *vec;/* = &(data->at(index));
   // Add all but original particle in current cell (best place to do this is here)
   for (unsigned int i = 0; i < vec->size(); ++i) {
     if (vec->at(i) != p) {
@@ -43,13 +43,14 @@ void SPHGrid::getNeighbors(SPHParticle *p) {
     }
   }
   //printf("INFO: Finished self cell\n");
+  */
 
   glm::ivec3 coords;
   for (int i = -1; i < 2; ++i) {
     for (int j = -1; j < 2; ++j) {
       for (int k = -1; k < 2; ++k) {
         coords = glm::ivec3(pC.x + i, pC.y + j, pC.z + k);
-        if (coords != pC) {
+        //if (coords != pC) {
           // If not at original cell, add all neighbors (process later in kernel)
           if (coords.x >= 0 && coords.y >= 0 && coords.z >= 0 &&
               coords.x < cellBounds.x && coords.y < cellBounds.y && coords.z < cellBounds.z) {
@@ -60,7 +61,7 @@ void SPHGrid::getNeighbors(SPHParticle *p) {
               neighbors.push_back(vec->at(l));
             } // end for l
           }
-        } // end if
+        //} // end if != pC
       } // end for k
     } // end for j
   } // end for i

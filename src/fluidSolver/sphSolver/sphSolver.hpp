@@ -42,6 +42,7 @@ public:
   virtual std::vector<SPHParticle *> &particles();
   virtual unsigned int numParticles() const;
   virtual void setParticleSeparation(float ps);
+  void demoCode();
 
 private:
   SPHConfig config;
