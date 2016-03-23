@@ -2,10 +2,11 @@
 //  testKernelFunctions.cpp
 //  MFluidSolver
 
-#define BOOST_TEST_MODULE KernelFunctionsTests
 #include <boost/test/unit_test.hpp>
 
 #include "../src/fluidSolver/sphSolver/kernelFunctions.hpp"
+
+BOOST_AUTO_TEST_SUITE(KernelFunctionsTests)
 
 BOOST_AUTO_TEST_CASE(KernelFunctions_Poly6_InsideKernelTest)
 {
@@ -62,3 +63,5 @@ BOOST_AUTO_TEST_CASE(KernelFunctions_Spiky_OutsideKernelTest)
   out = kernelFunctions.computeSpiky(glm::vec3(0.1f, 0.1f, 0.1f));
   BOOST_CHECK_CLOSE(out, 0, 0.001);
 }
+
+BOOST_AUTO_TEST_SUITE_END()

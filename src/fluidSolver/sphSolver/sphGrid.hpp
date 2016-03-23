@@ -21,6 +21,7 @@ public:
   glm::ivec3 getGridCoordinates(const glm::vec3 &pt);
   unsigned int getIndex(const glm::ivec3 &c);
   unsigned int getIndex(unsigned int x, unsigned int y, unsigned int z);
+  void printDiagnostics();
 
 private:
   std::vector<std::vector<SPHParticle *>> *data;
