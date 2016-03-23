@@ -6,7 +6,7 @@
 #define MFLUIDSOLVER_SPHSOLVER_NEIGHBORSEARCH_HPP_
 
 #include <vector>
-#include "../particle.hpp"
+#include "sphParticle.hpp"
 
 enum NeighborSearchType {Naive, StandardGrid};
 
@@ -17,9 +17,9 @@ public:
   NeighborSearch() : NeighborSearch(DEFAULT_SEARCH_RADIUS) {}
   NeighborSearch(float r);
   void setSearchRadius(float r);
-  virtual void findNeighbors(Particle *p, std::vector<Particle *> &neighbors) = 0;
-  virtual void addParticle(Particle *p) = 0;
-  virtual void updateParticle(Particle *p) = 0;
+  virtual void findNeighbors(SPHParticle *p, std::vector<SPHParticle *> &neighbors) = 0;
+  virtual void addParticle(SPHParticle *p) = 0;
+  virtual void updateParticle(SPHParticle *p) = 0;
 
 protected:
   float searchRadius;
@@ -30,20 +30,20 @@ class NaiveNeighborSearch : public NeighborSearch {
 public:
   NaiveNeighborSearch() : NaiveNeighborSearch(DEFAULT_SEARCH_RADIUS) {}
   NaiveNeighborSearch(float r) : NeighborSearch(r) {}
-  virtual void findNeighbors(Particle *p, std::vector<Particle *> &neighbors);
-  virtual void addParticle(Particle *p);
-  virtual void updateParticle(Particle *p);
+  virtual void findNeighbors(SPHParticle *p, std::vector<SPHParticle *> &neighbors);
+  virtual void addParticle(SPHParticle *p);
+  virtual void updateParticle(SPHParticle *p);
 
 private:
-  std::vector<Particle *> particleList;
+  std::vector<SPHParticle *> particleList;
 };
 
 class StandardGridNeighborSearch : public NeighborSearch {
 public:
   StandardGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax);
-  virtual void findNeighbors(Particle *p, std::vector<Particle *> &neighbors);
-  virtual void addParticle(Particle *p);
-  virtual void updateParticle(Particle *p);
+  virtual void findNeighbors(SPHParticle *p, std::vector<SPHParticle *> &neighbors);
+  virtual void addParticle(SPHParticle *p);
+  virtual void updateParticle(SPHParticle *p);
 
 private:
 };

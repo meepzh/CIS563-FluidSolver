@@ -11,14 +11,14 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_Naive_BasicSuccess)
 {
   NaiveNeighborSearch nSearch(1.f);
 
-  Particle a(glm::vec3(1.f));
-  Particle b(glm::vec3(1.f, 1.5f, 1.5f));
+  SPHParticle a(glm::vec3(1.f));
+  SPHParticle b(glm::vec3(1.f, 1.5f, 1.5f));
 
   nSearch.addParticle(&a);
   nSearch.addParticle(&b);
 
   // Check a's neighbors
-  std::vector<Particle *> neighbors;
+  std::vector<SPHParticle *> neighbors;
   nSearch.findNeighbors(&a, neighbors);
 
   BOOST_CHECK_EQUAL(1, neighbors.size());
@@ -36,14 +36,14 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_Naive_BasicFail)
 {
   NaiveNeighborSearch nSearch(1.f);
 
-  Particle a(glm::vec3(1.f));
-  Particle b(glm::vec3(3.f));
+  SPHParticle a(glm::vec3(1.f));
+  SPHParticle b(glm::vec3(3.f));
 
   nSearch.addParticle(&a);
   nSearch.addParticle(&b);
 
   // Check a's neighbors
-  std::vector<Particle *> neighbors;
+  std::vector<SPHParticle *> neighbors;
   nSearch.findNeighbors(&a, neighbors);
 
   BOOST_CHECK_EQUAL(0, neighbors.size());

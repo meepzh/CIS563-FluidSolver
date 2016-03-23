@@ -136,6 +136,7 @@ add_subdirectory(unittest)
 # Libraries
 set(MNEIGHBORSEARCH_LIB
         src/fluidSolver/sphSolver/neighborSearch.cpp
+        src/fluidSolver/sphSolver/sphParticle.cpp
         src/fluidSolver/particle.cpp
 )
 add_library(MNeighborSearch ${MNEIGHBORSEARCH_LIB})

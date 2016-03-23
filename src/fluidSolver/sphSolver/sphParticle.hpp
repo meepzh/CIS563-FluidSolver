@@ -17,13 +17,13 @@ public:
   float density() const;
   float pressure() const;
   glm::vec3 forceDensity() const;
-  std::vector<Particle *> &neighbors();
+  std::vector<SPHParticle *> &neighbors();
 
 protected:
   float _density;
   float _pressure;
   glm::vec3 _forceDensity;
-  std::vector<Particle *> _neighbors;
+  std::vector<SPHParticle *> _neighbors;
 };
 
 #endif /* MFLUIDSOLVER_FLUIDSOLVER_SPHSOLVER_SPHPARTICLE_HPP_ */

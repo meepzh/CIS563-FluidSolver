@@ -21,6 +21,6 @@ glm::vec3 SPHParticle::forceDensity() const {
   return _forceDensity;
 }
 
-std::vector<Particle *> &SPHParticle::neighbors() {
+std::vector<SPHParticle *> &SPHParticle::neighbors() {
   return _neighbors;
 }

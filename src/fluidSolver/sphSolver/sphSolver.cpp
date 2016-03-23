@@ -65,7 +65,7 @@ void SPHSolver::loadConfig(const std::string &file) {
 }
 
 void SPHSolver::update(double deltaT) {
-
+  
 }
 
 void SPHSolver::addParticleAt(const glm::vec3 &position) {
