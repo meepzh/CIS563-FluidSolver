@@ -24,3 +24,7 @@ glm::vec3 SPHParticle::forceDensity() const {
 std::vector<SPHParticle *> &SPHParticle::neighbors() {
   return _neighbors;
 }
+
+void SPHParticle::clearNeighbors() {
+  _neighbors.clear();
+}

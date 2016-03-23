@@ -65,7 +65,12 @@ void SPHSolver::loadConfig(const std::string &file) {
 }
 
 void SPHSolver::update(double deltaT) {
-  
+  // Calculate neighbors
+  for (Particle *p : *_particles) {
+    SPHParticle *sp = static_cast<SPHParticle *>(p);
+    sp->clearNeighbors();
+    nSearch->findNeighbors(sp);
+  }
 }
 
 void SPHSolver::addParticleAt(const glm::vec3 &position) {

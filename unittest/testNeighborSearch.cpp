@@ -18,18 +18,16 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_Naive_BasicSuccess)
   nSearch.addParticle(&b);
 
   // Check a's neighbors
-  std::vector<SPHParticle *> neighbors;
-  nSearch.findNeighbors(&a, neighbors);
+  nSearch.findNeighbors(&a);
 
-  BOOST_CHECK_EQUAL(1, neighbors.size());
-  BOOST_CHECK_EQUAL(&b, neighbors.at(0));
+  BOOST_CHECK_EQUAL(1, a.neighbors().size());
+  BOOST_CHECK_EQUAL(&b, a.neighbors().at(0));
 
   // Check b's neighbors
-  neighbors.clear();
-  nSearch.findNeighbors(&b, neighbors);
+  nSearch.findNeighbors(&b);
 
-  BOOST_CHECK_EQUAL(1, neighbors.size());
-  BOOST_CHECK_EQUAL(&a, neighbors.at(0));
+  BOOST_CHECK_EQUAL(1, b.neighbors().size());
+  BOOST_CHECK_EQUAL(&a, b.neighbors().at(0));
 }
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_Naive_BasicFail)
@@ -44,13 +42,13 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_Naive_BasicFail)
 
   // Check a's neighbors
   std::vector<SPHParticle *> neighbors;
-  nSearch.findNeighbors(&a, neighbors);
+  nSearch.findNeighbors(&a);
 
-  BOOST_CHECK_EQUAL(0, neighbors.size());
+  BOOST_CHECK_EQUAL(0, a.neighbors().size());
 
   // Check b's neighbors
   neighbors.clear();
-  nSearch.findNeighbors(&b, neighbors);
+  nSearch.findNeighbors(&b);
 
-  BOOST_CHECK_EQUAL(0, neighbors.size());
+  BOOST_CHECK_EQUAL(0, b.neighbors().size());
 }

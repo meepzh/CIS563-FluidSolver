@@ -18,6 +18,7 @@ public:
   float pressure() const;
   glm::vec3 forceDensity() const;
   std::vector<SPHParticle *> &neighbors();
+  void clearNeighbors();
 
 protected:
   float _density;

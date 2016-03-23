@@ -17,7 +17,7 @@ public:
   NeighborSearch() : NeighborSearch(DEFAULT_SEARCH_RADIUS) {}
   NeighborSearch(float r);
   void setSearchRadius(float r);
-  virtual void findNeighbors(SPHParticle *p, std::vector<SPHParticle *> &neighbors) = 0;
+  virtual void findNeighbors(SPHParticle *p) = 0;
   virtual void addParticle(SPHParticle *p) = 0;
   virtual void updateParticle(SPHParticle *p) = 0;
 
@@ -30,7 +30,7 @@ class NaiveNeighborSearch : public NeighborSearch {
 public:
   NaiveNeighborSearch() : NaiveNeighborSearch(DEFAULT_SEARCH_RADIUS) {}
   NaiveNeighborSearch(float r) : NeighborSearch(r) {}
-  virtual void findNeighbors(SPHParticle *p, std::vector<SPHParticle *> &neighbors);
+  virtual void findNeighbors(SPHParticle *p);
   virtual void addParticle(SPHParticle *p);
   virtual void updateParticle(SPHParticle *p);
 
@@ -41,7 +41,7 @@ private:
 class StandardGridNeighborSearch : public NeighborSearch {
 public:
   StandardGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax);
-  virtual void findNeighbors(SPHParticle *p, std::vector<SPHParticle *> &neighbors);
+  virtual void findNeighbors(SPHParticle *p);
   virtual void addParticle(SPHParticle *p);
   virtual void updateParticle(SPHParticle *p);
 
