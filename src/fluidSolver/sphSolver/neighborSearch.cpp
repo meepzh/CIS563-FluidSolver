@@ -69,3 +69,9 @@ void StandardGridNeighborSearch::addParticle(SPHParticle *p) {
 void StandardGridNeighborSearch::clear() {
   grid->clear();
 }
+
+void StandardGridNeighborSearch::exportVDB() {
+  std::string filename = "export.vdb";
+  std::string exportname = "MExport";
+  grid->exportVDB(filename, exportname);
+}

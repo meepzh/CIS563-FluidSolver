@@ -27,6 +27,9 @@ int main() {
     return -1;
   }
 
+  // Initialize OpenVDB
+  openvdb::initialize();
+
   std::string configJSON = "config.json";
 
   // Load config JSON

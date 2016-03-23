@@ -44,6 +44,7 @@ public:
   virtual void findNeighbors(SPHParticle *p);
   virtual void addParticle(SPHParticle *p);
   void clear();
+  void exportVDB();
 
 private:
   SPHGrid *grid;

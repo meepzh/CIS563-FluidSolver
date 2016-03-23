@@ -42,6 +42,7 @@ public:
   void demoCode(SPHParticle *target);
   void initialDemo();
   void randomDemo();
+  void exportVDB();
 
 private:
   NeighborSearchType nSearchType;

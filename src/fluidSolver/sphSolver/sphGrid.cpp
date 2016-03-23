@@ -5,6 +5,7 @@
 #include "sphGrid.hpp"
 #include <assert.h>
 #include <cstdio>
+#include <openvdb/openvdb.h>
 
 SPHGrid::SPHGrid(const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float cellSize)
  : minBounds(minBounds), maxBounds(maxBounds), cellSize(cellSize) {
@@ -97,4 +98,35 @@ void SPHGrid::printDiagnostics() {
       }
     }
   }
+}
+
+void SPHGrid::exportVDB(std::string &file, std::string &gridName) {
+  // http://www.openvdb.org/documentation/doxygen/codeExamples.html
+  openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create(/*background value=*/0);
+  openvdb::FloatGrid::Accessor accessor = grid->getAccessor();
+  openvdb::Coord coord;
+
+  for (unsigned int i = 0; i < cellBounds.x; ++i) {
+    for (unsigned int j = 0; j < cellBounds.y; ++j) {
+      for (unsigned int k = 0; k < cellBounds.z; ++k) {
+        unsigned int numParticles = data->at(getIndex(i, j, k)).size();
+        if (numParticles > 0) {
+          coord.reset(i, j, k);
+          accessor.setValue(coord, numParticles);
+        }
+      }
+    }
+  }
+
+  grid->setName(gridName);
+  openvdb::io::File fileIO(file);
+
+  // Add the grid pointer to a container.
+  openvdb::GridPtrVec grids;
+  grids.push_back(grid);
+
+  fileIO.write(grids);
+  fileIO.close();
+
+  printf("INFO: Exported grid VDB to: %s\n", file.c_str());
 }

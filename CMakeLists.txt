@@ -57,6 +57,8 @@ find_package(GLEW)
 find_library(GLFW_LIBRARY "glfw3" HINTS ${GLFW_LIBRARY_DIR})
 find_library(JSONCPP "jsoncpp")
 find_library(OPENVDB "openvdb")
+find_library(OPENEXR_HALF NAMES Half PATHS ${CMAKE_LIBRARY_PATH})
+find_library(TBB tbb)
 
 add_definitions(
         -DTW_STATIC
@@ -66,7 +68,7 @@ add_definitions(
         -D_CRT_SECURE_NO_WARNINGS
 )
 
-set(CORE_LIBS ${GLFW_LIBRARY} ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${JSONCPP} ${OPENGL_LIBRARY} ${OPENVDB})
+set(CORE_LIBS ${GLFW_LIBRARY} ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${JSONCPP} ${OPENGL_LIBRARY} ${OPENVDB} ${OPENEXR_HALF} ${TBB})
 
 # OSX-specific hacks/fixes
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -134,7 +136,7 @@ target_link_libraries(MFluidSolver ${CORE_LIBS})
 ##### Testing #####
 add_subdirectory(unittest)
 
-# Libraries
+# NeighborSearch Library
 set(MNEIGHBORSEARCH_LIB
         src/fluidSolver/sphSolver/neighborSearch.cpp
         src/fluidSolver/sphSolver/sphGrid.cpp
@@ -142,6 +144,9 @@ set(MNEIGHBORSEARCH_LIB
         src/fluidSolver/particle.cpp
 )
 add_library(MNeighborSearch ${MNEIGHBORSEARCH_LIB})
+target_link_libraries(MNeighborSearch ${CORE_LIBS})
+
+# KernelFunctions Library
 set(MKERNELFUNCTIONS_LIB
         src/fluidSolver/sphSolver/kernelFunctions.cpp
 )

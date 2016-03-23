@@ -17,6 +17,8 @@ void Input::checkKeys(GLFWwindow* window, int key, int scancode, int action, int
     viewer->togglePause();
   } else if (key == GLFW_KEY_R && action == GLFW_RELEASE) {
     viewer->scene.solver.randomDemo();
+  } else if (key == GLFW_KEY_E && action == GLFW_RELEASE) {
+    viewer->scene.solver.exportVDB();
   } else if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
     viewer->stop();
   }

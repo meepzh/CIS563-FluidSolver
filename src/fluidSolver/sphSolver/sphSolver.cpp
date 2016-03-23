@@ -173,3 +173,11 @@ void SPHSolver::randomDemo() {
   }
   demoCode(_particles.at(rand() % _particles.size()));
 }
+
+void SPHSolver::exportVDB() {
+  if (nSearchType == NeighborSearchType::StandardGrid) {
+    static_cast<StandardGridNeighborSearch *>(nSearch)->exportVDB();
+  } else {
+    std::printf("WARN: Cannot export VDB unless using grid neighbor search\n");
+  }
+}
