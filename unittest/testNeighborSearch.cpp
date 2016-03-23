@@ -3,6 +3,7 @@
 //  MFluidSolver
 
 #include <boost/test/unit_test.hpp>
+#include <ctime>
 
 #include "../src/fluidSolver/sphSolver/neighborSearch.hpp"
 
@@ -267,6 +268,69 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsNega
   BOOST_CHECK_EQUAL(1, b.neighbors()->size());
   if (b.neighbors()->size() > 0)
     BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
+}
+
+BOOST_AUTO_TEST_CASE(NeighborSearch_Naive_StressTest)
+{
+  NaiveNeighborSearch nSearch(0.2f);
+  std::vector<SPHParticle *> particles;
+
+  // Init particles
+  glm::vec3 minBound(0);
+  glm::vec3 maxBound(2.5);
+  float particleSeparation = 0.1f;
+  minBound += particleSeparation / 2.f;
+  maxBound -= particleSeparation / 2.f;
+  for (float i = minBound.x; i <= maxBound.x; i += particleSeparation) {
+    for (float j = minBound.y; j <= maxBound.y; j += particleSeparation) {
+      for (float k = minBound.z; k <= maxBound.z; k += particleSeparation) {
+        SPHParticle *p = new SPHParticle(glm::vec3(i, j, k));
+        particles.push_back(p);
+        nSearch.addParticle(p);
+      }
+    }
+  }
+
+  std::clock_t startTime = std::clock();
+  for (SPHParticle *p : particles) {
+    nSearch.findNeighbors(p);
+  }
+  clock_t endTime = clock();
+
+  double timeInSeconds = (endTime - startTime) / (double) CLOCKS_PER_SEC;
+  printf("INFO: Naive neighbor search took %.6f seconds for %d particles\n", timeInSeconds, particles.size());
+}
+
+BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_StressTest)
+{
+  glm::vec3 minBound(0);
+  glm::vec3 maxBound(2.5);
+
+  StandardGridNeighborSearch nSearch(0.2f, minBound, maxBound, 0.2f);
+  std::vector<SPHParticle *> particles;
+
+  // Init particles
+  float particleSeparation = 0.1f;
+  minBound += particleSeparation / 2.f;
+  maxBound -= particleSeparation / 2.f;
+  for (float i = minBound.x; i <= maxBound.x; i += particleSeparation) {
+    for (float j = minBound.y; j <= maxBound.y; j += particleSeparation) {
+      for (float k = minBound.z; k <= maxBound.z; k += particleSeparation) {
+        SPHParticle *p = new SPHParticle(glm::vec3(i, j, k));
+        particles.push_back(p);
+        nSearch.addParticle(p);
+      }
+    }
+  }
+
+  std::clock_t startTime = std::clock();
+  for (SPHParticle *p : particles) {
+    nSearch.findNeighbors(p);
+  }
+  clock_t endTime = clock();
+
+  double timeInSeconds = (endTime - startTime) / (double) CLOCKS_PER_SEC;
+  printf("INFO: Uniform grid neighbor search took %.6f seconds for %d particles\n", timeInSeconds, particles.size());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
