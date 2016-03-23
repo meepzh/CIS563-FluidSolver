@@ -58,4 +58,6 @@ void Scene::loadJSON(const std::string &file) {
   solver.fluidSource->transform.setScale(particleDim);
 
   solver.fluidSource->spawnParticlesInVolume(&solver);
+
+  printf("INFO: Particle count: %d / %d\n", solver.numParticles(), solver.maxParticles);
 }

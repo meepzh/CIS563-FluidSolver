@@ -68,9 +68,10 @@ void SPHSolver::update(double deltaT) {
 }
 
 void SPHSolver::addParticle(Particle *p) {
+  FluidSolver::addParticle(p);
   nSearch->addParticle(p);
 }
 
 void SPHSolver::setParticleSeparation(float ps) {
-
+  FluidSolver::setParticleSeparation(ps);
 }

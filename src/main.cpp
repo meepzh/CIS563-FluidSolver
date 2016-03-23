@@ -28,12 +28,6 @@ int main() {
   }
 
   std::string configJSON = "config.json";
-  std::string sceneJSON = "scene/scene.json";
-  std::string wireVShader = "glsl/wire.vert.glsl";
-  std::string wireFShader = "glsl/wire.frag.glsl";
-  std::string particleVShader = "glsl/particle.vert.glsl";
-  std::string particleFShader = "glsl/particle.frag.glsl";
-  std::string particleTexture = "texture/particle.dds";
 
   // Load config JSON
   printf("INFO: Loading config file: %s\n", configJSON.c_str());
@@ -49,12 +43,12 @@ int main() {
     return -1;
   }
 
-  sceneJSON = root.get("sceneJSON", "").asString();
-  wireVShader = root.get("wireVShader", "").asString();
-  wireFShader = root.get("wireFShader", "").asString();
-  particleVShader = root.get("particleVShader", "").asString();
-  particleFShader = root.get("particleFShader", "").asString();
-  particleTexture = root.get("particleTexture", "").asString();
+  std::string sceneJSON = root.get("sceneJSON", "scene/scene.json").asString();
+  std::string wireVShader = root.get("wireVShader", "glsl/wire.vert.glsl").asString();
+  std::string wireFShader = root.get("wireFShader", "glsl/wire.frag.glsl").asString();
+  std::string particleVShader = root.get("particleVShader", "glsl/particle.vert.glsl").asString();
+  std::string particleFShader = root.get("particleFShader", "glsl/particle.frag.glsl").asString();
+  std::string particleTexture = root.get("particleTexture", "texture/particle.dds").asString();
 
   Viewer viewer;
   Input::viewer = &viewer;

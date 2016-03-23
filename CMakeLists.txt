@@ -138,6 +138,10 @@ set(MNEIGHBORSEARCH_LIB
         src/fluidSolver/particle.cpp
 )
 add_library(MNeighborSearch ${MNEIGHBORSEARCH_LIB})
+set(MKERNELFUNCTIONS_LIB
+        src/fluidSolver/sphSolver/kernelFunctions.cpp
+)
+add_library(MKernelFunctions ${MKERNELFUNCTIONS_LIB})
 
 # Tests
 enable_testing()
