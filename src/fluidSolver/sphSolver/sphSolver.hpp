@@ -11,15 +11,6 @@
 #include "neighborSearch.hpp"
 #include "sphParticle.hpp"
 
-struct SPHConfig {
-  float kStiffness;
-  float muViscosity;
-  float rRadius;
-  float mMass;
-  float dRestDensity;
-  float dtTimestep;
-};
-
 #define SPHConfig_Default_kStiffness 1
 #define SPHConfig_Default_muViscosity 1
 #define SPHConfig_Default_rRadius 1
@@ -32,7 +23,7 @@ public:
   SPHSolver();
   ~SPHSolver();
 
-  SPHConfig *init(const double &kernelRadius,
+  void init(const double &kernelRadius,
     const glm::vec3 &gridMin, const glm::vec3 &gridMax, NeighborSearchType nsType);
   void setDefaultConfig();
   void loadConfig(const std::string &file);
@@ -42,14 +33,23 @@ public:
   virtual std::vector<SPHParticle *> &particles();
   virtual unsigned int numParticles() const;
   virtual void setParticleSeparation(float ps);
-  void demoCode();
+
+  void demoCode(SPHParticle *target);
+  void initialDemo();
+  void randomDemo();
 
 private:
-  SPHConfig config;
   NeighborSearchType nSearchType;
   KernelFunctions kernelFunctions;
   NeighborSearch *nSearch;
   std::vector<SPHParticle *> _particles;
+
+  float kStiffness;
+  float muViscosity;
+  float rRadius;
+  float mMass;
+  float dRestDensity;
+  float dtTimestep;
 };
 
 #endif /* MFLUIDSOLVER_SPHSOLVER_HPP_ */

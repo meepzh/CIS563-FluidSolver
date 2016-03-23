@@ -19,7 +19,7 @@ SPHSolver::~SPHSolver() {
   }
 }
 
-SPHConfig *SPHSolver::init(const double &kernelRadius,
+void SPHSolver::init(const double &kernelRadius,
     const glm::vec3 &gridMin, const glm::vec3 &gridMax, NeighborSearchType nsType) {
   kernelFunctions.setKernelRadius(kernelRadius);
   nSearchType = nsType;
@@ -30,20 +30,19 @@ SPHConfig *SPHSolver::init(const double &kernelRadius,
       break;
     case NeighborSearchType::StandardGrid:
     default:
+      // Note: Assumes grid cell size is equal to kernelRadius
       nSearch = new StandardGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius);
       break;
   }
-
-  return &config;
 }
 
 void SPHSolver::setDefaultConfig() {
-  config.kStiffness = SPHConfig_Default_kStiffness;
-  config.muViscosity = SPHConfig_Default_muViscosity;
-  config.rRadius = SPHConfig_Default_rRadius;
-  config.mMass = SPHConfig_Default_mMass;
-  config.dRestDensity = SPHConfig_Default_dRestDensity;
-  config.dtTimestep = SPHConfig_Default_dtTimestep;
+  kStiffness = SPHConfig_Default_kStiffness;
+  muViscosity = SPHConfig_Default_muViscosity;
+  rRadius = SPHConfig_Default_rRadius;
+  mMass = SPHConfig_Default_mMass;
+  dRestDensity = SPHConfig_Default_dRestDensity;
+  dtTimestep = SPHConfig_Default_dtTimestep;
 }
 
 void SPHSolver::loadConfig(const std::string &file) {
@@ -60,12 +59,12 @@ void SPHSolver::loadConfig(const std::string &file) {
     return;
   }
 
-  config.kStiffness = root["sph"].get("kStiffness", SPHConfig_Default_kStiffness).asFloat();
-  config.muViscosity = root["sph"].get("muViscosity", SPHConfig_Default_muViscosity).asFloat();
-  config.rRadius = root["sph"].get("rRadius", SPHConfig_Default_rRadius).asFloat();
-  config.mMass = root["sph"].get("mMass", SPHConfig_Default_mMass).asFloat();
-  config.dRestDensity = root["sph"].get("dRestDensity", SPHConfig_Default_dRestDensity).asFloat();
-  config.dtTimestep = root["sph"].get("dtTimestep", SPHConfig_Default_dtTimestep).asFloat();
+  kStiffness = root["sph"].get("kStiffness", SPHConfig_Default_kStiffness).asFloat();
+  muViscosity = root["sph"].get("muViscosity", SPHConfig_Default_muViscosity).asFloat();
+  rRadius = root["sph"].get("rRadius", SPHConfig_Default_rRadius).asFloat();
+  mMass = root["sph"].get("mMass", SPHConfig_Default_mMass).asFloat();
+  dRestDensity = root["sph"].get("dRestDensity", SPHConfig_Default_dRestDensity).asFloat();
+  dtTimestep = root["sph"].get("dtTimestep", SPHConfig_Default_dtTimestep).asFloat();
 }
 
 void SPHSolver::update(double deltaT) {
@@ -93,7 +92,7 @@ void SPHSolver::update(double deltaT) {
     p->setDensity(densitySum);
 
     // Pressure
-    p->setPressure(config.kStiffness * (p->pressure() - config.dRestDensity));
+    p->setPressure(kStiffness * (p->pressure() - dRestDensity));
   }
 
   // Compute forces
@@ -127,7 +126,7 @@ void SPHSolver::setParticleSeparation(float ps) {
   FluidSolver::setParticleSeparation(ps);
 }
 
-void SPHSolver::demoCode() {
+void SPHSolver::demoCode(SPHParticle *target) {
   if (nSearchType == NeighborSearchType::StandardGrid) {
     static_cast<StandardGridNeighborSearch *>(nSearch)->clear();
     for (SPHParticle *p : _particles) {
@@ -135,9 +134,22 @@ void SPHSolver::demoCode() {
     }
   }
 
-  SPHParticle *target = _particles.at(0);
   target->clearNeighbors();
   nSearch->findNeighbors(target);
 
   target->color = glm::vec3(1, 1, 0);
+  for (SPHParticle *n : *(target->neighbors())) {
+    n->color = glm::vec3(1, 0, 0);
+  }
+}
+
+void SPHSolver::initialDemo() {
+  demoCode(_particles.at(0));
+}
+
+void SPHSolver::randomDemo() {
+  for (SPHParticle *p : _particles) {
+    p->color = glm::vec3(0, 0, 1);
+  }
+  demoCode(_particles.at(rand() % _particles.size()));
 }

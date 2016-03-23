@@ -50,6 +50,8 @@ int main() {
   std::string particleFShader = root.get("particleFShader", "glsl/particle.frag.glsl").asString();
   std::string particleTexture = root.get("particleTexture", "texture/particle.dds").asString();
 
+  srand(time(NULL));
+
   Viewer viewer;
   Input::viewer = &viewer;
   printf("INFO: OpenGL Version %s\n", glGetString(GL_VERSION));

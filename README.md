@@ -23,7 +23,11 @@ to stdout, and details are found in `build/Testing/Temporary/LastTest.log`
     make test
 
 ### How To Use ###
-Press P to toggle pausing.
+Press P to toggle pausing. Press Press R to randomly pick a particle to show
+its neighbors.
+
+Most SPH parameters can be found in `config/config.json`. Some can be found in
+the scene file, `scene/scene.json`, along with several container dimensions.
 
 The camera uses the arcball interface and can be controlled with the left and
 right mouse buttons and the scroll wheel.
