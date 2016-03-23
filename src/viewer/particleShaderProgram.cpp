@@ -4,7 +4,7 @@
 
 #include "particleShaderProgram.hpp"
 
-ParticleShaderProgram::ParticleShaderProgram(FluidSolver *solver,
+ParticleShaderProgram::ParticleShaderProgram(SPHSolver *solver,
   const std::string &vertexShader, const std::string &fragmentShader,
   const std::string &billboardDDS)
  : ShaderProgram(vertexShader, fragmentShader), solver(solver),
@@ -106,10 +106,10 @@ void ParticleShaderProgram::draw() {
   glUseProgram(programID);
 
   // Copy data from particles to RAM buffers
-  auto particles = solver->particles();
-  for (unsigned int i = 0; i < particles->size(); ++i) {
-    particleColorArray[i] = glm::vec3(particles->at(i)->color);
-    particlePositionArray[i] = particles->at(i)->position();
+  std::vector<SPHParticle *> &particles = solver->particles();
+  for (unsigned int i = 0; i < particles.size(); ++i) {
+    particleColorArray[i] = glm::vec3(particles.at(i)->color);
+    particlePositionArray[i] = particles.at(i)->position();
   }
 
   // Set billboard texture to texture unit 0

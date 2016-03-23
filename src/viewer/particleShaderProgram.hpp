@@ -7,11 +7,11 @@
 
 #include <vector>
 #include "shaderProgram.hpp"
-#include "../fluidSolver/fluidSolver.hpp"
+#include "../fluidSolver/sphSolver/sphSolver.hpp"
 
 class ParticleShaderProgram : public ShaderProgram {
 public:
-  ParticleShaderProgram(FluidSolver *solver,
+  ParticleShaderProgram(SPHSolver *solver,
     const std::string &vertexShader, const std::string &fragmentShader,
     const std::string &billboardDDS);
   ~ParticleShaderProgram();
@@ -23,7 +23,7 @@ public:
   glm::vec3 *particlePositionArray;
 
 private:
-  FluidSolver *solver;
+  SPHSolver *solver;
   GLuint billboardTextureID;
 
   // Variable IDs

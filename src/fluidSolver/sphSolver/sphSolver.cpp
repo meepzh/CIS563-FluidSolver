@@ -14,6 +14,9 @@ SPHSolver::SPHSolver()
 
 SPHSolver::~SPHSolver() {
   delete nSearch;
+  for (SPHParticle *p : _particles) {
+    delete p;
+  }
 }
 
 SPHConfig *SPHSolver::init(const double &kernelRadius,
@@ -66,19 +69,39 @@ void SPHSolver::loadConfig(const std::string &file) {
 
 void SPHSolver::update(double deltaT) {
   // Calculate neighbors
-  for (Particle *p : *_particles) {
-    SPHParticle *sp = static_cast<SPHParticle *>(p);
-    sp->clearNeighbors();
-    nSearch->findNeighbors(sp);
+  for (SPHParticle *p : _particles) {
+    p->clearNeighbors();
+    nSearch->findNeighbors(p);
+  }
+
+  // Compute density and pressure
+  for (SPHParticle *p : _particles) {
+
+  }
+
+  for (SPHParticle *p : _particles) {
+
+  }
+
+  for (SPHParticle *p : _particles) {
+
   }
 }
 
 void SPHSolver::addParticleAt(const glm::vec3 &position) {
-  if (_particles->size() < maxParticles) {
+  if (_particles.size() < maxParticles) {
     SPHParticle *p = new SPHParticle(position);
-    _particles->push_back(p);
+    _particles.push_back(p);
     nSearch->addParticle(p);
   }
+}
+
+std::vector<SPHParticle *> &SPHSolver::particles() {
+  return _particles;
+}
+
+unsigned int SPHSolver::numParticles() const {
+  return _particles.size();
 }
 
 void SPHSolver::setParticleSeparation(float ps) {
