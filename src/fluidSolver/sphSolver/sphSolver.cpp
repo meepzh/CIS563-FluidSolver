@@ -9,7 +9,8 @@
 #include <json/json.h>
 
 SPHSolver::SPHSolver()
- : nSearch(nullptr) {
+ : nSearch(nullptr), inited(false) {
+  setDefaultConfig();
 }
 
 SPHSolver::~SPHSolver() {
@@ -19,34 +20,40 @@ SPHSolver::~SPHSolver() {
   }
 }
 
-void SPHSolver::init(const double &kernelRadius,
-    const glm::vec3 &gridMin, const glm::vec3 &gridMax, NeighborSearchType nsType) {
+void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
+  printf("INFO: Initializing SPH Solver\n");
   kernelFunctions.setKernelRadius(kernelRadius);
-  nSearchType = nsType;
 
   switch (nSearchType) {
     case NeighborSearchType::Naive:
+      printf("INFO: SPH Solver using naive neighbor search\n");
       nSearch = new NaiveNeighborSearch();
       break;
     case NeighborSearchType::StandardGrid:
     default:
+      printf("INFO: SPH Solver using uniform grid neighbor search\n");
       // Note: Assumes grid cell size is equal to kernelRadius
       nSearch = new StandardGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius);
       break;
   }
+
+  inited = true;
 }
 
 void SPHSolver::setDefaultConfig() {
+  if (checkInited()) return;
   kStiffness = SPHConfig_Default_kStiffness;
   muViscosity = SPHConfig_Default_muViscosity;
-  rRadius = SPHConfig_Default_rRadius;
   mMass = SPHConfig_Default_mMass;
   dRestDensity = SPHConfig_Default_dRestDensity;
   dtTimestep = SPHConfig_Default_dtTimestep;
+  kernelRadius = SPHConfig_Default_kernelRadius;
+  nSearchType = SPHConfig_Default_nSearchType;
 }
 
 void SPHSolver::loadConfig(const std::string &file) {
-  printf("INFO: Loading SPH data from config file: %s\n", file.c_str());
+  if (checkInited()) return;
+  printf("INFO: Loading SPH parameters from config file: %s\n", file.c_str());
 
   // Read JSON file
   Json::Reader reader;
@@ -61,10 +68,16 @@ void SPHSolver::loadConfig(const std::string &file) {
 
   kStiffness = root["sph"].get("kStiffness", SPHConfig_Default_kStiffness).asFloat();
   muViscosity = root["sph"].get("muViscosity", SPHConfig_Default_muViscosity).asFloat();
-  rRadius = root["sph"].get("rRadius", SPHConfig_Default_rRadius).asFloat();
   mMass = root["sph"].get("mMass", SPHConfig_Default_mMass).asFloat();
   dRestDensity = root["sph"].get("dRestDensity", SPHConfig_Default_dRestDensity).asFloat();
   dtTimestep = root["sph"].get("dtTimestep", SPHConfig_Default_dtTimestep).asFloat();
+  kernelRadius = root["sph"].get("kernelRadius", SPHConfig_Default_kernelRadius).asFloat();
+  bool useUniformGrid = root["sph"].get("useUniformGrid", SPHConfig_Default_useUniformGrid).asBool();
+  if (useUniformGrid) {
+    nSearchType = NeighborSearchType::StandardGrid;
+  } else {
+    nSearchType = NeighborSearchType::Naive;
+  }
 }
 
 void SPHSolver::update(double deltaT) {
@@ -124,6 +137,13 @@ unsigned int SPHSolver::numParticles() const {
 
 void SPHSolver::setParticleSeparation(float ps) {
   FluidSolver::setParticleSeparation(ps);
+}
+
+bool SPHSolver::checkInited() {
+  if (inited) {
+    std::fprintf(stderr, "ERROR: Already inited SPH Solver. Config will not be applied");
+  }
+  return inited;
 }
 
 void SPHSolver::demoCode(SPHParticle *target) {

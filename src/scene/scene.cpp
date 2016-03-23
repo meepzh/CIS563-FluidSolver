@@ -38,16 +38,14 @@ void Scene::loadJSON(const std::string &file) {
   containerDim.z = root["containerDim"].get("scaleZ", 1.f).asFloat();
 
   glm::vec3 particleDim;
-  particleDim.x = root["particleDim"].get("boundX", 0.5f).asFloat();
-  particleDim.y = root["particleDim"].get("boundY", 0.5f).asFloat();
-  particleDim.z = root["particleDim"].get("boundZ", 0.5f).asFloat();
+  particleDim.x = root["particleDim"].get("scaleX", 0.5f).asFloat();
+  particleDim.y = root["particleDim"].get("scaleY", 0.5f).asFloat();
+  particleDim.z = root["particleDim"].get("scaleZ", 0.5f).asFloat();
 
   float particleSeparation = root.get("particleSeparation", 0.1f).asFloat();
   solver.setParticleSeparation(particleSeparation);
 
-  float kernelRadius = root.get("kernelRadius", 0.2f).asFloat();
-
-  solver.init(kernelRadius, particleDim * -0.5f, particleDim * 0.5f, NeighborSearchType::StandardGrid);
+  solver.init(particleDim * -0.5f, particleDim * 0.5f);
 
   // Create geometry
   solver.fluidContainer = new Cube(glm::vec3(0));

@@ -13,18 +13,23 @@
 
 #define SPHConfig_Default_kStiffness 1
 #define SPHConfig_Default_muViscosity 1
-#define SPHConfig_Default_rRadius 1
 #define SPHConfig_Default_mMass 1000
 #define SPHConfig_Default_dRestDensity 1000
 #define SPHConfig_Default_dtTimestep 1
+#define SPHConfig_Default_kernelRadius 0.2
+#define SPHConfig_Default_useUniformGrid true
+#if SPHConfig_Default_useUniformGrid
+  #define SPHConfig_Default_nSearchType NeighborSearchType::StandardGrid
+#else
+  #define SPHConfig_Default_nSearchType NeighborSearchType::Naive
+#endif
 
 class SPHSolver : public FluidSolver {
 public:
   SPHSolver();
   ~SPHSolver();
 
-  void init(const double &kernelRadius,
-    const glm::vec3 &gridMin, const glm::vec3 &gridMax, NeighborSearchType nsType);
+  void init(const glm::vec3 &gridMin, const glm::vec3 &gridMax);
   void setDefaultConfig();
   void loadConfig(const std::string &file);
 
@@ -46,10 +51,13 @@ private:
 
   float kStiffness;
   float muViscosity;
-  float rRadius;
+  float kernelRadius;
   float mMass;
   float dRestDensity;
   float dtTimestep;
+
+  bool inited;
+  bool checkInited();
 };
 
 #endif /* MFLUIDSOLVER_SPHSOLVER_HPP_ */

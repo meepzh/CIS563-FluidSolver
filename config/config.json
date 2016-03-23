@@ -1,16 +1,17 @@
 {
-  "sceneJSON": "scene/scene.json",
-  "wireVShader": "glsl/wire.vert.glsl",
-  "wireFShader": "glsl/wire.frag.glsl",
-  "particleVShader": "glsl/particle.vert.glsl",
-  "particleFShader": "glsl/particle.frag.glsl",
-  "particleTexture": "texture/particle.dds",
-  "sph": {
-    "kStiffness": 2,
-    "muViscosity": 3,
-    "rRadius": 4,
-    "mMass": 5,
-    "dRestDensity": 6,
-    "dtTimestep": 7
-  }
+	"sceneJSON": "scene/scene.json",
+	"wireVShader": "glsl/wire.vert.glsl",
+	"wireFShader": "glsl/wire.frag.glsl",
+	"particleVShader": "glsl/particle.vert.glsl",
+	"particleFShader": "glsl/particle.frag.glsl",
+	"particleTexture": "texture/particle.dds",
+	"sph": {
+		"kStiffness": 2,
+		"muViscosity": 3,
+		"mMass": 5,
+		"dRestDensity": 6,
+		"dtTimestep": 7,
+		"kernelRadius": 0.2,
+		"useUniformGrid": true
+	}
 }

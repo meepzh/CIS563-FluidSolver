@@ -26,9 +26,11 @@ to stdout, and details are found in `build/Testing/Temporary/LastTest.log`
 Press P to toggle pausing. Press Press R to randomly pick a particle to show
 its neighbors.
 
-Most SPH parameters can be found in `config/config.json`. Some can be found in
-the scene file, `scene/scene.json`, along with several container dimensions.
+All SPH parameters can be found in `config/config.json`. The scene file, which
+contains dimensions and particle separation, can be edited from
+`scene/scene.json`.
 
+####Arcball####
 The camera uses the arcball interface and can be controlled with the left and
 right mouse buttons and the scroll wheel.
 
@@ -47,20 +49,9 @@ focus point's position. Right-click and drag to move the camera in the opposite
 direction of the mouse. It will look like you're dragging the scene with you.
 
 ### Missing Required Features ###
-Mandatory
 
-- Uniform Spatial Grid
 - Export with OpenVDB
-- Visualize neighbor search with color
-- Test SPH config file works
-- Change neighbor search mode from config file
 - Performance testing / graphs
-
-Optional
-
-- SPH paper optimizations
-- Parallelize neighbor search with TBB
-- Calculate force densities
 
 ### Extra Features ###
 None
