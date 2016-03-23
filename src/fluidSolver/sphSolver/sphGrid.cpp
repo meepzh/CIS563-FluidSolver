@@ -73,7 +73,7 @@ void SPHGrid::clear() {
 }
 
 glm::ivec3 SPHGrid::getGridCoordinates(const glm::vec3 &pt) {
-  return glm::ivec3((int)(pt.x / cellSize), (int)(pt.y / cellSize), (int)(pt.z / cellSize));
+  return glm::ivec3((int)((pt.x - minBounds.x) / cellSize), (int)((pt.y - minBounds.y) / cellSize), (int)((pt.z - minBounds.z) / cellSize));
 }
 
 unsigned int SPHGrid::getIndex(unsigned int x, unsigned int y, unsigned int z) {

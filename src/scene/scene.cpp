@@ -45,7 +45,7 @@ void Scene::loadJSON(const std::string &file) {
   float particleSeparation = root.get("particleSeparation", 0.1f).asFloat();
   solver.setParticleSeparation(particleSeparation);
 
-  solver.init(particleSeparation, particleDim * -0.5f, particleDim * 0.5f, NeighborSearchType::Naive);
+  solver.init(particleSeparation, particleDim * -0.5f, particleDim * 0.5f, NeighborSearchType::StandardGrid);
 
   // Create geometry
   solver.fluidContainer = new Cube(glm::vec3(0));
