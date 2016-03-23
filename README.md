@@ -43,7 +43,21 @@ focus point's position. Right-click and drag to move the camera in the opposite
 direction of the mouse. It will look like you're dragging the scene with you.
 
 ### Missing Required Features ###
-None
+Mandatory
+
+- Implement core SPH algorithm
+- Uniform Spatial Grid
+- Test SPH config file works
+- Larger naive neighbor search unit test
+- Basic uniform spatial grid neighbor search unit test
+- Larger uniform spatial grid neighbor search unit test
+- Export with OpenVDB
+- Visualize neighbor search with color
+
+Optional
+
+- SPH paper optimizations
+- Parallelize neighbor search with TBB
 
 ### Extra Features ###
 None
