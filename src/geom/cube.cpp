@@ -92,14 +92,17 @@ void Cube::spawnParticlesInVolume(FluidSolver *solver) const {
   getBoundsByTransformedMinMax(glm::vec3(-0.5f), glm::vec3(0.5f), minBound, maxBound);
 
   double particleSeparation = solver->particleSeparation();
+  unsigned int count = 0;
   minBound += particleSeparation / 2.f;
   maxBound -= particleSeparation / 2.f;
   for (double i = minBound.x; i <= maxBound.x; i += particleSeparation) {
     for (double j = minBound.y; j <= maxBound.y; j += particleSeparation) {
       for (double k = minBound.z; k <= maxBound.z; k += particleSeparation) {
         solver->addParticleAt(glm::vec3(i, j, k));
+        ++count;
       }
     }
   }
   //solver->addParticle(new Particle(glm::vec3(0)));
+  printf("INFO: Seeded %d particles.\n", count);
 }

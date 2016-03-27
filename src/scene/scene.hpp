@@ -14,6 +14,7 @@ public:
   Scene();
   ~Scene();
   void loadJSON(const std::string &file);
+  void seedScene();
 
   SPHSolver solver;
   std::vector<Geometry *> objects;

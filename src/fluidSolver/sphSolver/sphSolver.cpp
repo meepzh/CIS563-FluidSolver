@@ -37,6 +37,10 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
       break;
   }
 
+  if (muViscosity <= 0) {
+    printf("INFO: As per config, viscosity is disabled.\n");
+  }
+
   inited = true;
 }
 
@@ -134,12 +138,29 @@ void SPHSolver::update(double deltaT) {
   }
 
   // Compute velocity and position
-  for (SPHParticle *p : _particles) {
+  //for (SPHParticle *p : _particles) {
+  unsigned int _count = 0;
+  unsigned int _index = 0;
+  unsigned int _numParticles = _particles.size();
+  unsigned int deleteCount = 0;
+  while (_count < _numParticles) {
+    SPHParticle *p = _particles.at(_index);
     p->update(deltaT);
+
+    // Check bounds
+    if (!fluidContainer->intersects(p->position())) {
+      ++deleteCount;
+      delete p;
+      _particles.erase(_particles.begin() + _index);
+    } else {
+      ++_index;
+    }
+    ++_count;
   }
 
-  // Check bounds
-  
+  if (deleteCount > 0) {
+    printf("INFO: Deleted %d out of bounds particles\n", deleteCount);
+  }
 }
 
 void SPHSolver::addParticleAt(const glm::vec3 &position) {

@@ -27,8 +27,9 @@ This does include a brief performance test on neighbor search.
     make test
 
 ### How To Use ###
-Press P to toggle pausing. Press Press R to randomly pick a particle to show
-its neighbors. Press E to export a VDB file of the graph to `export.vdb`.
+Press P to toggle pausing. Press Press N to randomly pick a particle to show
+its neighbors. Press E to export a VDB file of the graph to `export.vdb`. Press
+R to reseed the scene.
 
 All SPH parameters, as well as several general program parameters, can be found
 in `config/config.json`. The scene file, which contains dimensions and particle

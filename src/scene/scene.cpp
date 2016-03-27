@@ -45,7 +45,7 @@ void Scene::loadJSON(const std::string &file) {
   float particleSeparation = root.get("particleSeparation", 0.1f).asFloat();
   solver.setParticleSeparation(particleSeparation);
 
-  solver.init(particleDim * -0.5f, particleDim * 0.5f);
+  solver.init(containerDim * -0.5f, containerDim * 0.5f);
 
   // Create geometry
   solver.fluidContainer = new Cube(glm::vec3(0));
@@ -57,9 +57,13 @@ void Scene::loadJSON(const std::string &file) {
   solver.fluidContainer->transform.setScale(containerDim);
   solver.fluidSource->transform.setScale(particleDim);
 
-  solver.fluidSource->spawnParticlesInVolume(&solver);
+  seedScene();
 
   printf("INFO: Particle count: %d / %d\n", solver.numParticles(), solver.maxParticles);
 
   solver.initialDemo();
+}
+
+void Scene::seedScene() {
+  solver.fluidSource->spawnParticlesInVolume(&solver);
 }
