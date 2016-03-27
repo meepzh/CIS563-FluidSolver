@@ -8,6 +8,9 @@
 #include <fstream>
 #include <json/json.h>
 
+#define GLM_FORCE_RADIANS
+#include <glm/gtx/string_cast.hpp>
+
 SPHSolver::SPHSolver()
  : nSearch(nullptr), inited(false) {
   setDefaultConfig();
@@ -82,9 +85,17 @@ void SPHSolver::loadConfig(const std::string &file) {
   } else {
     nSearchType = NeighborSearchType::Naive;
   }
+
+  printf("- Stiffness: %.2f\n", kStiffness);
+  printf("- Viscosity: %.2f\n", muViscosity);
+  printf("- Mass: %.2f\n", mMass);
+  printf("- Rest Density: %.2f\n", dRestDensity);
+  printf("- Timestep: %.2f\n", dtTimestep);
+  printf("- Kernel Radius: %.2f\n", kernelRadius);
 }
 
 void SPHSolver::update(double deltaT) {
+  printf("INFO: Updating by %.4f seconds\n", deltaT);
   // Prepare neighbor search
   if (nSearchType == NeighborSearchType::StandardGrid) {
     static_cast<StandardGridNeighborSearch *>(nSearch)->clear();
@@ -116,19 +127,20 @@ void SPHSolver::update(double deltaT) {
   for (SPHParticle *p : _particles) {
     glm::vec3 pressureFD(0);
     glm::vec3 viscosityFD(0);
-    glm::vec3 gravityFD = glm::vec3(0, p->density() * _gravity, 0);
+    //glm::vec3 gravityFD = glm::vec3(0, p->density() * _gravity, 0);
+    glm::vec3 gravityFD(0);
 
     for (SPHParticle *n : *(p->neighbors())) {
       pressureFD -= n->mass() / n->density() *
         (p->pressure() + n->pressure()) / 2.f *
-        kernelFunctions.computeSpiky(p->position() - n->position());
+        kernelFunctions.computeSpikyGradient(p->position() - n->position());
     }
 
     if (muViscosity > 0) {
       for (SPHParticle *n : *(p->neighbors())) {
-        viscosityFD += n->mass() / n->density() *
+        viscosityFD += glm::vec3(n->mass() / n->density() *
           (n->velocity() - p->velocity()) *
-          (float)kernelFunctions.computeViscousLaplacian(p->position() - n->position());
+          (float)kernelFunctions.computeViscousLaplacian(p->position() - n->position()));
       }
 
       viscosityFD *= muViscosity;
@@ -137,8 +149,11 @@ void SPHSolver::update(double deltaT) {
     p->setForceDensity(pressureFD + viscosityFD + gravityFD);
   }
 
-  // Compute velocity and position
-  //for (SPHParticle *p : _particles) {
+  if (_particles.size() > 0) {
+    printf("DEBUG: Particle pressure is %.2f, density is %.2f, pfd is %s\n", _particles.at(0)->pressure(), _particles.at(0)->density(), glm::to_string(_particles.at(0)->forceDensity()).c_str());
+  }
+
+  // Compute velocity and position, check bounds
   unsigned int _count = 0;
   unsigned int _index = 0;
   unsigned int _numParticles = _particles.size();
@@ -165,7 +180,7 @@ void SPHSolver::update(double deltaT) {
 
 void SPHSolver::addParticleAt(const glm::vec3 &position) {
   if (_particles.size() < maxParticles) {
-    SPHParticle *p = new SPHParticle(position);
+    SPHParticle *p = new SPHParticle(mMass, position);
     _particles.push_back(p);
     nSearch->addParticle(p);
   }

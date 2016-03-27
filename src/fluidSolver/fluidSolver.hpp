@@ -9,6 +9,7 @@
 #include "particle.hpp"
 
 #define FLUID_MAX_PARTICLES 100000
+#define UPDATE_STEP_DEFAULT 0.017
 
 class FluidSolver {
 public:
@@ -16,6 +17,7 @@ public:
   ~FluidSolver();
 
   virtual void update(double deltaT);
+  void updateStep();
 
   virtual void addParticleAt(const glm::vec3 &position) = 0;
   virtual unsigned int numParticles() const = 0;

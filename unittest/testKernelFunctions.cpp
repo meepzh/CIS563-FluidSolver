@@ -64,6 +64,35 @@ BOOST_AUTO_TEST_CASE(KernelFunctions_Spiky_OutsideKernelTest)
   BOOST_CHECK_CLOSE(out, 0, 0.001);
 }
 
+BOOST_AUTO_TEST_CASE(KernelFunctions_SpikyGradient_InsideKernelTest)
+{
+  KernelFunctions kernelFunctions;
+  glm::vec3 out;
+
+  kernelFunctions.setKernelRadius(0.1f);
+
+  out = kernelFunctions.computeSpikyGradient(glm::vec3(0.05f, 0.05f, 0.05f));
+  BOOST_CHECK_CLOSE(out.x, -1484.40, 0.01);
+  out = kernelFunctions.computeSpikyGradient(glm::vec3(0.05f, 0.05f, 0.05f));
+  BOOST_CHECK_CLOSE(out.y, -1484.40, 0.01);
+  out = kernelFunctions.computeSpikyGradient(glm::vec3(0.05f, 0.05f, 0.05f));
+  BOOST_CHECK_CLOSE(out.z, -1484.40, 0.01);
+
+  out = kernelFunctions.computeSpikyGradient(glm::vec3(0.03f, 0.04f, 0.05f));
+  BOOST_CHECK_CLOSE(out.x, -5213.35, 0.01);
+  out = kernelFunctions.computeSpikyGradient(glm::vec3(0.03f, 0.04f, 0.05f));
+  BOOST_CHECK_CLOSE(out.y, -6951.13, 0.01);
+  out = kernelFunctions.computeSpikyGradient(glm::vec3(0.03f, 0.04f, 0.05f));
+  BOOST_CHECK_CLOSE(out.z, -8688.91, 0.01);
+
+  out = kernelFunctions.computeSpikyGradient(glm::vec3(0.003f, 0.002f, 0.001f));
+  BOOST_CHECK_CLOSE(out.x, -106413.397, 0.01);
+  out = kernelFunctions.computeSpikyGradient(glm::vec3(0.003f, 0.002f, 0.001f));
+  BOOST_CHECK_CLOSE(out.y, -70942.265, 0.01);
+  out = kernelFunctions.computeSpikyGradient(glm::vec3(0.003f, 0.002f, 0.001f));
+  BOOST_CHECK_CLOSE(out.z, -35471.133, 0.01);
+}
+
 BOOST_AUTO_TEST_CASE(KernelFunctions_Viscous_InsideKernelTest)
 {
   KernelFunctions kernelFunctions;

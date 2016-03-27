@@ -11,11 +11,11 @@
 //#define POLY6_CONST 1.566681471060844711474949545698188251276712137757618167359
 //#define SPIKY_CONST 4.774648292756860073066512901175430861033789372213693462430
 //#define VISCOUS_CONST 2.387324146378430036533256450587715430516894686106846731215
-//#define VISCOUS_LAP_CONST 14.32394487827058021919953870352629258310136811664108038729
+//#define FORTYFIVE_DIV_PI 14.32394487827058021919953870352629258310136811664108038729
 #define POLY6_CONST 1.56668147106084471
 #define SPIKY_CONST 4.77464829275686007
 #define VISCOUS_CONST 2.38732414637843004
-#define VISCOUS_LAP_CONST 14.323944878270580
+#define FORTYFIVE_DIV_PI 14.323944878270580
 
 KernelFunctions::KernelFunctions() {
   setKernelRadius(0.1);
@@ -41,6 +41,12 @@ double KernelFunctions::computeSpiky(const glm::vec3 &r) {
   return SPIKY_CONST * std::pow(_h - _r, 3) / _h6;
 }
 
+glm::vec3 KernelFunctions::computeSpikyGradient(const glm::vec3 &r) {
+  double _r = glm::length(r);
+  double hMinusR = _h - _r;
+  return (float)(-1 * FORTYFIVE_DIV_PI * hMinusR * hMinusR / _r /_h6) * r;
+}
+
 double KernelFunctions::computeViscous(const glm::vec3 &r) {
   double _r = glm::length(r);
   if (_r > _h) return 0;
@@ -49,5 +55,5 @@ double KernelFunctions::computeViscous(const glm::vec3 &r) {
 
 double KernelFunctions::computeViscousLaplacian(const glm::vec3 &r) {
   double _r = glm::length(r);
-  return VISCOUS_LAP_CONST * (_h - _r) / _h6;
+  return FORTYFIVE_DIV_PI * (_h - _r) / _h6;
 }
