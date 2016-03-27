@@ -9,7 +9,7 @@
 #include "particle.hpp"
 
 #define FLUID_MAX_PARTICLES 100000
-#define UPDATE_STEP_DEFAULT 0.017
+#define UPDATE_STEP_DEFAULT 0.01
 
 class FluidSolver {
 public:

@@ -120,15 +120,14 @@ void SPHSolver::update(double deltaT) {
     p->setDensity(densitySum);
 
     // Pressure
-    p->setPressure(kStiffness * (p->pressure() - dRestDensity));
+    p->setPressure(kStiffness * (p->density() - dRestDensity));
   }
 
   // Compute forces
   for (SPHParticle *p : _particles) {
     glm::vec3 pressureFD(0);
     glm::vec3 viscosityFD(0);
-    //glm::vec3 gravityFD = glm::vec3(0, p->density() * _gravity, 0);
-    glm::vec3 gravityFD(0);
+    glm::vec3 gravityFD = glm::vec3(0, p->density() * _gravity, 0);
 
     for (SPHParticle *n : *(p->neighbors())) {
       pressureFD -= n->mass() / n->density() *
@@ -149,8 +148,8 @@ void SPHSolver::update(double deltaT) {
     p->setForceDensity(pressureFD + viscosityFD + gravityFD);
   }
 
-  if (_particles.size() > 0) {
-    printf("DEBUG: Particle pressure is %.2f, density is %.2f, pfd is %s\n", _particles.at(0)->pressure(), _particles.at(0)->density(), glm::to_string(_particles.at(0)->forceDensity()).c_str());
+  if (_particles.size() > 500) {
+    printf("DEBUG: Particle pressure is %.2f, density is %.2f, pfd is %s\n", _particles.at(500)->pressure(), _particles.at(500)->density(), glm::to_string(_particles.at(500)->forceDensity()).c_str());
   }
 
   // Compute velocity and position, check bounds

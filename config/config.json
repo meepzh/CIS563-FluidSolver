@@ -6,7 +6,7 @@
 	"particleFShader": "glsl/particle.frag.glsl",
 	"particleTexture": "texture/particle.dds",
 	"sph": {
-		"kStiffness": 300,
+		"kStiffness": 5,
 		"muViscosity": 0,
 		"mMass": 1,
 		"dRestDensity": 1000,
