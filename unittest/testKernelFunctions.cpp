@@ -64,4 +64,49 @@ BOOST_AUTO_TEST_CASE(KernelFunctions_Spiky_OutsideKernelTest)
   BOOST_CHECK_CLOSE(out, 0, 0.001);
 }
 
+BOOST_AUTO_TEST_CASE(KernelFunctions_Viscous_InsideKernelTest)
+{
+  KernelFunctions kernelFunctions;
+  double out;
+
+  kernelFunctions.setKernelRadius(0.1f);
+
+  out = kernelFunctions.computeViscous(glm::vec3(0.05f, 0.05f, 0.05f));
+  BOOST_CHECK_CLOSE(out, 6.18494, 0.01);
+
+  out = kernelFunctions.computeViscous(glm::vec3(0.03f, 0.04f, 0.05f));
+  BOOST_CHECK_CLOSE(out, 72.4076, 0.01);
+
+  out = kernelFunctions.computeViscous(glm::vec3(0.003f, 0.002f, 0.001f));
+  BOOST_CHECK_CLOSE(out, 29517.8941, 0.01);
+}
+
+BOOST_AUTO_TEST_CASE(KernelFunctions_Viscous_OutsideKernelTest)
+{
+  KernelFunctions kernelFunctions;
+  double out;
+
+  kernelFunctions.setKernelRadius(0.1f);
+
+  out = kernelFunctions.computeViscous(glm::vec3(0.1f, 0.1f, 0.1f));
+  BOOST_CHECK_CLOSE(out, 0, 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(KernelFunctions_ViscousLaplacian_Test)
+{
+  KernelFunctions kernelFunctions;
+  double out;
+
+  kernelFunctions.setKernelRadius(0.1f);
+
+  out = kernelFunctions.computeViscousLaplacian(glm::vec3(0.05f, 0.05f, 0.05f));
+  BOOST_CHECK_CLOSE(out, 191905.05, 1);
+
+  out = kernelFunctions.computeViscousLaplacian(glm::vec3(0.03f, 0.04f, 0.05f));
+  BOOST_CHECK_CLOSE(out, 419538.32, 1);
+
+  out = kernelFunctions.computeViscousLaplacian(glm::vec3(0.003f, 0.002f, 0.001f));
+  BOOST_CHECK_CLOSE(out, 1378799, 1);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

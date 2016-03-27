@@ -110,13 +110,36 @@ void SPHSolver::update(double deltaT) {
 
   // Compute forces
   for (SPHParticle *p : _particles) {
-    // TODO Later
+    glm::vec3 pressureFD(0);
+    glm::vec3 viscosityFD(0);
+    glm::vec3 gravityFD = glm::vec3(0, p->density() * _gravity, 0);
+
+    for (SPHParticle *n : *(p->neighbors())) {
+      pressureFD -= n->mass() / n->density() *
+        (p->pressure() + n->pressure()) / 2.f *
+        kernelFunctions.computeSpiky(p->position() - n->position());
+    }
+
+    if (muViscosity > 0) {
+      for (SPHParticle *n : *(p->neighbors())) {
+        viscosityFD += n->mass() / n->density() *
+          (n->velocity() - p->velocity()) *
+          (float)kernelFunctions.computeViscousLaplacian(p->position() - n->position());
+      }
+
+      viscosityFD *= muViscosity;
+    }
+
+    p->setForceDensity(pressureFD + viscosityFD + gravityFD);
   }
 
   // Compute velocity and position
   for (SPHParticle *p : _particles) {
     p->update(deltaT);
   }
+
+  // Check bounds
+  
 }
 
 void SPHSolver::addParticleAt(const glm::vec3 &position) {

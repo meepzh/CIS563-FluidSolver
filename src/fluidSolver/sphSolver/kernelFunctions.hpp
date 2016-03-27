@@ -14,6 +14,8 @@ public:
   void setKernelRadius(const double &h);
   double computePoly6(const glm::vec3 &r);
   double computeSpiky(const glm::vec3 &r);
+  double computeViscous(const glm::vec3 &r);
+  double computeViscousLaplacian(const glm::vec3 &r);
 
 private:
   double _h;

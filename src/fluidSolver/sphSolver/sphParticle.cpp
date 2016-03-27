@@ -38,6 +38,9 @@ void SPHParticle::setForceDensity(const glm::vec3 &forceDensity) {
   _forceDensity = forceDensity;
 }
 
+void SPHParticle::addForceDensity(const glm::vec3 &forceDensity) {
+  _forceDensity += forceDensity;
+}
 
 std::vector<SPHParticle *> *SPHParticle::neighbors() {
   return &_neighbors;

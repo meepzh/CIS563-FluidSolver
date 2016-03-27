@@ -25,6 +25,7 @@ public:
   void setDensity(float density);
   void setPressure(float pressure);
   void setForceDensity(const glm::vec3 &forceDensity);
+  void addForceDensity(const glm::vec3 &forceDensity);
 
   std::vector<SPHParticle *> *neighbors();
   void clearNeighbors();
