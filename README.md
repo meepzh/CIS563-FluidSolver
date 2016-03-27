@@ -56,7 +56,22 @@ direction of the mouse. It will look like you're dragging the scene with you.
 ![Exponential Improvement with Uniform Grid over Naive Neighbor Search](images/nsPerfGraph0.png?raw=true "The uniform grid neighbor search dramatically reduces search time to O(n).")
 
 ### Missing Required Features ###
-None
+
+- Resolve forces
+- Add CFL condition/timestep control
+- Change grid to fluid container rather than fluid source
+- Verify that simulation works
+- Update config to allow more than 2 options for neighbor search
+- Change standard grid to uniform grid
+- Implement Z-index sorting
+- Unit test Z-index
+- Implement insertion sort
+- Unit test insertion sort
+- Implement Z-index sorting with insertion sort
+- Add performance timers
+- Run performance tests
+- Write summary of results
+- Optional: Parallelize with TBB
 
 ### Extra Features ###
 None
