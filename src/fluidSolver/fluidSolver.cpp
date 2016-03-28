@@ -19,7 +19,7 @@ void FluidSolver::update(double deltaT) {
 }
 
 void FluidSolver::updateStep() {
-  update(UPDATE_STEP_DEFAULT);
+  update(0.0005);
 }
 
 void FluidSolver::setGravity(float g) {

@@ -14,6 +14,10 @@ void SPHParticle::update(double deltaT) {
   _position += _velocity * (float)deltaT;
 }
 
+void SPHParticle::undoUpdate(double deltaT) {
+  _position -= _velocity * (float)deltaT;
+}
+
 float SPHParticle::density() const {
   return _density;
 }

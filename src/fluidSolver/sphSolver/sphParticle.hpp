@@ -16,6 +16,7 @@ public:
 
   // Computation
   virtual void update(double deltaT);
+  virtual void undoUpdate(double deltaT);
 
   // Properties
   float density() const;

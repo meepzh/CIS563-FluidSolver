@@ -12,10 +12,14 @@ void Particle::update(double deltaT) {
   _position += _velocity * (float)deltaT;
 }
 
+void Particle::undoUpdate(double deltaT) {
+  _position -= _velocity * (float)deltaT;
+}
+
 void Particle::reverseVelocity(const glm::ivec3 &directions) {
-  if (directions.x != 0) _velocity.x *= -1;
-  if (directions.y != 0) _velocity.y *= -1;
-  if (directions.z != 0) _velocity.z *= -1;
+  if (directions.x != 0) _velocity.x *= -0.1;
+  if (directions.y != 0) _velocity.y *= -0.1;
+  if (directions.z != 0) _velocity.z *= -0.1;
 }
 
 void Particle::stopVelocity(const glm::ivec3 &directions) {

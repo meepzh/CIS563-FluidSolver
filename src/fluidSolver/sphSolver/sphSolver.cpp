@@ -7,6 +7,8 @@
 #include <cstdio>
 #include <fstream>
 #include <json/json.h>
+#define GLM_FORCE_RADIANS
+#include <glm/gtx/string_cast.hpp>
 
 SPHSolver::SPHSolver()
  : nSearch(nullptr), inited(false) {
@@ -22,6 +24,7 @@ SPHSolver::~SPHSolver() {
 
 void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
   printf("INFO: Initializing SPH Solver\n");
+  printf("Kernel radius: %.2f\n", kernelRadius);
   kernelFunctions.setKernelRadius(kernelRadius);
 
   switch (nSearchType) {
@@ -92,7 +95,7 @@ void SPHSolver::loadConfig(const std::string &file) {
 }
 
 void SPHSolver::update(double deltaT) {
-  deltaT = 0.01;
+  deltaT = 0.001;
   //printf("INFO: Updating by %.4f seconds\n", deltaT);
   // Prepare neighbor search
   if (nSearchType == NeighborSearchType::StandardGrid) {
@@ -108,21 +111,25 @@ void SPHSolver::update(double deltaT) {
     nSearch->findNeighbors(p);
   }
 
+
+  printf("Pressure: %.2f, velocity :%s\n", _particles.at(3258)->pressure(), glm::to_string(_particles.at(3258)->velocity()).c_str());
   // Compute density and pressure
   for (SPHParticle *p : _particles) {
     // Density
+    float densitySum = p->mass() * kernelFunctions.computePoly6(glm::vec3(0));
     if (p->neighbors()->size() > 0) {
-      float densitySum = 0;
       for (SPHParticle *n : *(p->neighbors())) {
         densitySum += n->mass() * kernelFunctions.computePoly6(p->position() - n->position());
       }
-      p->setDensity(densitySum);
     } else {
-      p->setDensity(dRestDensity);
+      //p->setDensity(dRestDensity);
     }
+    p->setDensity(densitySum);
 
     // Pressure
-    p->setPressure(kStiffness * (p->density() - dRestDensity));
+    float pressureTemp = kStiffness * (p->density() - dRestDensity);
+    if (pressureTemp < 0) pressureTemp = 0;
+    p->setPressure(pressureTemp);
   }
 
   // Compute forces
@@ -179,22 +186,37 @@ void SPHSolver::update(double deltaT) {
     glm::ivec3 violations;
     if (!fluidContainer->intersects(p->position(), violations)) {
       glm::vec3 position = p->position();
-      p->stopVelocity(violations);
-      //p->reverseVelocity(violations); // Bounce
+      //p->undoUpdate(deltaT);
+      //p->stopVelocity(violations);
+      p->reverseVelocity(violations); // Bounce
 
       // TODO: Generalize
       glm::vec3 scaleVec = fluidContainer->transform.scale();
       glm::vec3 minBounds = -0.5f * scaleVec;
       glm::vec3 maxBounds = 0.5f * scaleVec;
+
       if (violations.x < 0) position.x = minBounds.x;
       else if (violations.x > 0) position.x = maxBounds.x;
+
       if (violations.y < 0) position.y = minBounds.y;
       else if (violations.y > 0) position.y = maxBounds.y;
+
       if (violations.z < 0) position.z = minBounds.z;
       else if (violations.z > 0) position.z = maxBounds.z;
+
       p->setPosition(position);
+      //p->color = glm::vec3(0, 1, 0);
     }
+
+    p->color = glm::abs(p->velocity()) / glm::length(p->velocity());
   }
+
+  /*for (unsigned int i = 0; i < _particles.size(); ++i)
+  {
+    if (_particles.at(i)->position().y > 0.9f) {
+      printf("ASDFJLADSDFLDSLJDLFLDFJS: %d\n", i);
+    }
+  }*/
 }
 
 void SPHSolver::addParticleAt(const glm::vec3 &position) {

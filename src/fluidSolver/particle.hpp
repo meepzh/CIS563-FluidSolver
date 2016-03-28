@@ -19,6 +19,7 @@ public:
   void reverseVelocity(const glm::ivec3 &directions);
   void stopVelocity(const glm::ivec3 &directions);
   void setPosition(const glm::vec3 &position);
+  virtual void undoUpdate(double deltaT);
 
   // Properties
   glm::vec3 color;

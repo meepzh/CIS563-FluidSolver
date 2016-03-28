@@ -43,7 +43,8 @@ double KernelFunctions::computeSpiky(const glm::vec3 &r) {
 
 glm::vec3 KernelFunctions::computeSpikyGradient(const glm::vec3 &r) {
   double _r = glm::length(r);
-  if (_r == 0) return glm::vec3((float) -1 * FORTYFIVE_DIV_PI / _h6);
+  //if (_r == 0) return glm::vec3((float) -1 * FORTYFIVE_DIV_PI / _h6);
+  if (_r == 0 || _r > _h) return glm::vec3(0);
   double hMinusR = _h - _r;
   return (float)(-1 * FORTYFIVE_DIV_PI * hMinusR * hMinusR / _r /_h6) * r;
 }
@@ -56,5 +57,6 @@ double KernelFunctions::computeViscous(const glm::vec3 &r) {
 
 double KernelFunctions::computeViscousLaplacian(const glm::vec3 &r) {
   double _r = glm::length(r);
+  if (_r > _h) return 0;
   return FORTYFIVE_DIV_PI * (_h - _r) / _h6;
 }

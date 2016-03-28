@@ -6,12 +6,12 @@
 	"particleFShader": "glsl/particle.frag.glsl",
 	"particleTexture": "texture/particle.dds",
 	"sph": {
-		"kStiffness": 100,
-		"muViscosity": 0,
-		"mMass": 1,
+		"kStiffness": 1000,
+		"muViscosity": 25,
+		"mMass": 0.125,
 		"dRestDensity": 1000,
 		"dtTimestep": 7,
-		"kernelRadius": 0.4,
+		"kernelRadius": 0.100001,
 		"useUniformGrid": true
 	}
 }
