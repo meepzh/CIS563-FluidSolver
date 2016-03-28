@@ -43,6 +43,7 @@ double KernelFunctions::computeSpiky(const glm::vec3 &r) {
 
 glm::vec3 KernelFunctions::computeSpikyGradient(const glm::vec3 &r) {
   double _r = glm::length(r);
+  if (_r == 0) return glm::vec3((float) -1 * FORTYFIVE_DIV_PI / _h6);
   double hMinusR = _h - _r;
   return (float)(-1 * FORTYFIVE_DIV_PI * hMinusR * hMinusR / _r /_h6) * r;
 }

@@ -106,3 +106,17 @@ void Cube::spawnParticlesInVolume(FluidSolver *solver) const {
   //solver->addParticle(new Particle(glm::vec3(0)));
   printf("INFO: Seeded %d particles.\n", count);
 }
+
+bool Cube::intersects(const glm::vec3 &point, glm::ivec3 &violations) const {
+  glm::vec3 localPos = glm::vec3(transform.invT() * glm::vec4(point, 1.f));
+  violations.x = 0;
+  violations.y = 0;
+  violations.z = 0;
+  if (localPos.x <= -0.5f) violations.x = -1;
+  else if (localPos.x > 0.5f) violations.x = 1;
+  if (localPos.y <= -0.5f) violations.y = -1;
+  else if (localPos.y > 0.5f) violations.y = 1;
+  if (localPos.z <= -0.5f) violations.z = -1;
+  else if (localPos.z > 0.5f) violations.z = 1;
+  return violations.x == 0 && violations.y == 0 && violations.z == 0;
+}

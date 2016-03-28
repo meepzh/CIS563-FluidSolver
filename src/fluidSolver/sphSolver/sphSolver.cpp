@@ -8,9 +8,6 @@
 #include <fstream>
 #include <json/json.h>
 
-#define GLM_FORCE_RADIANS
-#include <glm/gtx/string_cast.hpp>
-
 SPHSolver::SPHSolver()
  : nSearch(nullptr), inited(false) {
   setDefaultConfig();
@@ -95,7 +92,8 @@ void SPHSolver::loadConfig(const std::string &file) {
 }
 
 void SPHSolver::update(double deltaT) {
-  printf("INFO: Updating by %.4f seconds\n", deltaT);
+  deltaT = 0.01;
+  //printf("INFO: Updating by %.4f seconds\n", deltaT);
   // Prepare neighbor search
   if (nSearchType == NeighborSearchType::StandardGrid) {
     static_cast<StandardGridNeighborSearch *>(nSearch)->clear();
@@ -113,11 +111,15 @@ void SPHSolver::update(double deltaT) {
   // Compute density and pressure
   for (SPHParticle *p : _particles) {
     // Density
-    float densitySum = 0;
-    for (SPHParticle *n : *(p->neighbors())) {
-      densitySum += n->mass() * kernelFunctions.computePoly6(p->position() - n->position());
+    if (p->neighbors()->size() > 0) {
+      float densitySum = 0;
+      for (SPHParticle *n : *(p->neighbors())) {
+        densitySum += n->mass() * kernelFunctions.computePoly6(p->position() - n->position());
+      }
+      p->setDensity(densitySum);
+    } else {
+      p->setDensity(dRestDensity);
     }
-    p->setDensity(densitySum);
 
     // Pressure
     p->setPressure(kStiffness * (p->density() - dRestDensity));
@@ -148,12 +150,8 @@ void SPHSolver::update(double deltaT) {
     p->setForceDensity(pressureFD + viscosityFD + gravityFD);
   }
 
-  if (_particles.size() > 500) {
-    printf("DEBUG: Particle pressure is %.2f, density is %.2f, pfd is %s\n", _particles.at(500)->pressure(), _particles.at(500)->density(), glm::to_string(_particles.at(500)->forceDensity()).c_str());
-  }
-
   // Compute velocity and position, check bounds
-  unsigned int _count = 0;
+  /*unsigned int _count = 0;
   unsigned int _index = 0;
   unsigned int _numParticles = _particles.size();
   unsigned int deleteCount = 0;
@@ -171,9 +169,31 @@ void SPHSolver::update(double deltaT) {
     }
     ++_count;
   }
-
   if (deleteCount > 0) {
     printf("INFO: Deleted %d out of bounds particles\n", deleteCount);
+  }*/
+  for (SPHParticle *p : _particles) {
+    p->update(deltaT);
+
+    // Check bounds
+    glm::ivec3 violations;
+    if (!fluidContainer->intersects(p->position(), violations)) {
+      glm::vec3 position = p->position();
+      p->stopVelocity(violations);
+      //p->reverseVelocity(violations); // Bounce
+
+      // TODO: Generalize
+      glm::vec3 scaleVec = fluidContainer->transform.scale();
+      glm::vec3 minBounds = -0.5f * scaleVec;
+      glm::vec3 maxBounds = 0.5f * scaleVec;
+      if (violations.x < 0) position.x = minBounds.x;
+      else if (violations.x > 0) position.x = maxBounds.x;
+      if (violations.y < 0) position.y = minBounds.y;
+      else if (violations.y > 0) position.y = maxBounds.y;
+      if (violations.z < 0) position.z = minBounds.z;
+      else if (violations.z > 0) position.z = maxBounds.z;
+      p->setPosition(position);
+    }
   }
 }
 
