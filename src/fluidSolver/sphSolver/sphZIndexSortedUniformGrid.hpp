@@ -15,7 +15,7 @@ struct ZISData {
 // Grid type XZY (X elements together, then Z, then Y)
 class SPHZIndexSortedUniformGrid : public SPHGrid {
 public:
-  SPHZIndexSortedUniformGrid(const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float cellSize);
+  SPHZIndexSortedUniformGrid(const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float cellSize, std::vector<SPHParticle> *master);
   ~SPHZIndexSortedUniformGrid();
 
   virtual void addParticle(SPHParticle *p);
@@ -33,7 +33,7 @@ public:
 
 private:
   std::vector<SPHParticle> *master;
-  std::vector<ZISData> *cells;
+  std::vector<ZISData> cells;
 };
 
 #endif /* MFLUIDSOLVER_FLUIDSOLVER_SPHZINDEXSORTEDUNIFORMGRID_HPP_ */

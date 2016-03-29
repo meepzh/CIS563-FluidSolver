@@ -27,7 +27,7 @@ public:
   #endif
 
 private:
-  std::vector<std::vector<SPHParticle *>> *data;
+  std::vector<std::vector<SPHParticle *>> data;
 };
 
 #endif /* MFLUIDSOLVER_FLUIDSOLVER_SPHUNIFORMGRID_HPP_ */
