@@ -1,5 +1,5 @@
 //
-//  SPHZIndexSortedUniformGrid.hpp
+//  sphZIndexSortedUniformGrid.hpp
 //  MFluidSolver
 
 #ifndef MFLUIDSOLVER_FLUIDSOLVER_SPHZINDEXSORTEDUNIFORMGRID_HPP_

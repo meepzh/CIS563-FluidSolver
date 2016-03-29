@@ -119,6 +119,7 @@ set(CORE_SRC
         src/fluidSolver/sphSolver/sphZIndexSortedUniformGrid.cpp
         src/fluidSolver/fluidSolver.cpp
         src/fluidSolver/particle.cpp
+        src/fluidSolver/zCurve.cpp
         src/geom/cube.cpp
         src/geom/drawable.cpp
         src/geom/geom.cpp

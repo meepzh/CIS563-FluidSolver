@@ -4,49 +4,49 @@
 
 #include "sphZIndexSortedUniformGrid.hpp"
 
-SPHZIndexSortedUniformGrid(const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float cellSize, std::vector<SPHParticle> *master)
+SPHZIndexSortedUniformGrid::SPHZIndexSortedUniformGrid(const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float cellSize, std::vector<SPHParticle> *master)
  : SPHGrid(minBounds, maxBounds, cellSize), master(master){
   cells.resize(numCells);
 }
 
-~SPHZIndexSortedUniformGrid() {
+SPHZIndexSortedUniformGrid::~SPHZIndexSortedUniformGrid() {
 
 }
 
-void addParticle(SPHParticle *p) {
+void SPHZIndexSortedUniformGrid::addParticle(SPHParticle *p) {
 
 }
 
-void updateParticle(SPHParticle *p) {
+void SPHZIndexSortedUniformGrid::updateParticle(SPHParticle *p) {
 
 }
 
-void getNeighbors(SPHParticle *p) {
+void SPHZIndexSortedUniformGrid::getNeighbors(SPHParticle *p) {
 
 }
 
-void clear() {
+void SPHZIndexSortedUniformGrid::clear() {
 
 }
 
-glm::ivec3 getGridCoordinates(const glm::vec3 &pt) {
-
+glm::ivec3 SPHZIndexSortedUniformGrid::getGridCoordinates(const glm::vec3 &pt) {
+  return glm::ivec3(0);
 }
 
-unsigned int getIndex(const glm::ivec3 &c) {
-
+unsigned int SPHZIndexSortedUniformGrid::getIndex(const glm::ivec3 &c) {
+  return 0;
 }
 
-unsigned int getIndex(unsigned int x, unsigned int y, unsigned int z) {
-
+unsigned int SPHZIndexSortedUniformGrid::getIndex(unsigned int x, unsigned int y, unsigned int z) {
+  return 0;
 }
 
-void printDiagnostics() {
+void SPHZIndexSortedUniformGrid::printDiagnostics() {
 
 }
 
 #if MFluidSolver_USE_OPENVDB
-void exportVDB(std::string &file, std::string &gridName) {
+void SPHZIndexSortedUniformGrid::exportVDB(std::string &file, std::string &gridName) {
 
 }
 #endif
