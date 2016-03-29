@@ -104,7 +104,10 @@ void Cube::spawnParticlesInVolume(FluidSolver *solver) const {
     }
   }
   //solver->addParticle(new Particle(glm::vec3(0)));
-  printf("INFO: Seeded %d particles.\n", count);
+
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+  std::printf("INFO: Seeded %d particles.\n", count);
+  #endif
 }
 
 bool Cube::intersects(const glm::vec3 &point, glm::ivec3 &violations) const {

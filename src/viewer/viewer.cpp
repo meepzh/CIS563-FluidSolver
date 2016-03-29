@@ -5,10 +5,11 @@
 #include "viewer.hpp"
 
 #include <cstdio>
-#include "input.hpp"
 #include <cstring>
 
-#if MFluidSolver_DEBUG
+#include "input.hpp"
+
+#if MFluidSolver_OPENGL_DEBUG
 void APIENTRY openglDebugCallbackFunction(GLenum source, GLenum type, GLuint id,
     GLenum severity, GLsizei length, const GLchar* message, void* userParam) {
   std::string sType;
@@ -39,15 +40,27 @@ void APIENTRY openglDebugCallbackFunction(GLenum source, GLenum type, GLuint id,
   switch (severity){
     case GL_DEBUG_SEVERITY_LOW:
       sSeverity = "LOW";
+      #if MFluidSolver_LOG_LEVEL > MFluidSolver_LOG_WARN
+      return;
+      #endif
       break;
     case GL_DEBUG_SEVERITY_MEDIUM:
       sSeverity = "MEDIUM";
+      #if MFluidSolver_LOG_LEVEL > MFluidSolver_LOG_ERROR
+      return;
+      #endif
       break;
     case GL_DEBUG_SEVERITY_HIGH:
       sSeverity = "HIGH";
+      #if MFluidSolver_LOG_LEVEL > MFluidSolver_LOG_FATAL
+      return;
+      #endif
       break;
     default:
       sSeverity = "OTHER";
+      #if MFluidSolver_LOG_LEVEL > MFluidSolver_LOG_INFO
+      return;
+      #endif
   }
   std::fprintf(*outStream, "GL:%s(%s): %s\n", sType.c_str(), sSeverity.c_str(), message);
 }
@@ -64,13 +77,16 @@ Viewer::Viewer(int width, int height)
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL
 
-  #if MFluidSolver_DEBUG
+  #if MFluidSolver_OPENGL_DEBUG
   glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
   #endif
 
   window = glfwCreateWindow(width, height, "MFluidSolver", NULL, NULL);
   if (window == NULL) {
-    std::fprintf(stderr, "ERROR: Failed to open GLFW window\n");
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_FATAL
+    std::fprintf(stderr, "FATAL: Failed to open GLFW window\n");
+    #endif
+
     getchar(); // Wait for key before quit
     glfwTerminate();
     throw -1;
@@ -80,7 +96,10 @@ Viewer::Viewer(int width, int height)
 
   glewExperimental = GL_TRUE;
   if (glewInit() != GLEW_OK) {
-    std::fprintf(stderr, "ERROR: Failed to initialize GLEW\n");
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_FATAL
+    std::fprintf(stderr, "FATAL: Failed to initialize GLEW\n");
+    #endif
+
     getchar(); // Wait for key before quit
     glfwTerminate();
     throw -1;
@@ -95,17 +114,22 @@ Viewer::Viewer(int width, int height)
   // Mouse callbacks
   glfwSetScrollCallback(window, Input::computeArcballScrollCb);
 
-  #if MFluidSolver_DEBUG
+  #if MFluidSolver_OPENGL_DEBUG
   // Set debug callback
   if (glDebugMessageCallback) {
-    printf("DEBUG: Registering OpenGL debug callback\n");
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+    std::printf("DEBUG: Registering OpenGL debug callback\n");
+    #endif
+
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
     glDebugMessageCallback(openglDebugCallbackFunction, nullptr);
     GLuint unusedIds = 0;
     glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_HIGH,
       0, &unusedIds, true);
   } else {
-    printf("DEBUG: OpenGL debug callback not available\n");
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+    std::printf("DEBUG: OpenGL debug callback not available\n");
+    #endif
   }
   #endif
 }
@@ -169,12 +193,14 @@ void Viewer::run() {
     glfwSwapBuffers(window);
     glfwPollEvents();
 
-    #if !MFluidSolver_DEBUG
+    #if MFluidSolver_OPENGL_DEBUG == 0
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
     // Check for errors
     if ((glErrorCode = glGetError()) != GL_NO_ERROR) {
       glErrorString = gluErrorString(glErrorCode);
       std::fprintf(stderr, "GL:ERROR: %s\n", glErrorString);
     }
+    #endif
     #endif
   } while (!shouldStop &&
            glfwWindowShouldClose(window) == 0);

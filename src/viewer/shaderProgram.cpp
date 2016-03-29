@@ -26,19 +26,21 @@ ShaderProgram::ShaderProgram(const std::string &vertexShader, const std::string 
   uModelMatID = glGetUniformLocation(programID, "u_Model");
   uViewProjectionMatID = glGetUniformLocation(programID, "u_ViewProjection");
 
-  #if MFluidSolver_DEBUG
-  printf("DEBUG:SHADER: Created program ID %d\n", programID);
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
+  std::printf("DEBUG:SHADER: Created program ID %d\n", programID);
+  #endif
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
   if (aVertexColorArrID == -1) {
-    printf("- WARN: avs_Color is not bound\n");
+    std::printf("WARN: avs_Color is not bound for program %d\n", programID);
   }
   if (aVertexPositionArrID == -1) {
-    printf("- WARN: avs_Position is not bound\n");
+    std::printf("WARN: avs_Position is not bound for program %d\n", programID);
   }
   if (uModelMatID == -1) {
-    printf("- WARN: u_Model is not bound\n");
+    std::printf("WARN: u_Model is not bound for program %d\n", programID);
   }
   if (uViewProjectionMatID == -1) {
-    printf("- WARN: u_ViewProjection is not bound\n");
+    std::printf("WARN: u_ViewProjection is not bound for program %d\n", programID);
   }
   #endif
 }
@@ -99,8 +101,12 @@ GLuint ShaderProgram::loadDDS(const std::string &file) {
 
   // Try to open the file
   fp = fopen(file.c_str(), "rb");
-  if (fp == NULL){
-    std::fprintf(stderr, "ERROR: %s could not be opened.\n", file.c_str()); getchar();
+  if (fp == NULL) {
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
+    std::fprintf(stderr, "ERROR: %s could not be opened.\n", file.c_str());
+    #endif
+
+    getchar();
     return 0;
   }
 
@@ -108,6 +114,11 @@ GLuint ShaderProgram::loadDDS(const std::string &file) {
   char filecode[4];
   fread(filecode, 1, 4, fp);
   if (std::strncmp(filecode, "DDS ", 4) != 0) {
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
+    std::fprintf(stderr, "ERROR: %s is not a DDS file.\n", file.c_str());
+    #endif
+
+    getchar();
     fclose(fp);
     return 0;
   }
@@ -173,14 +184,18 @@ GLuint ShaderProgram::loadDDS(const std::string &file) {
     if (height < 1) height = 1;
   }
 
-  printf("INFO: Loaded texture %s\n", file.c_str());
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+  std::printf("INFO: Loaded texture %s\n", file.c_str());
+  #endif
 
   free(buffer);
   return textureID;
 }
 
 void ShaderProgram::compile() {
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   std::printf("INFO: Loading shader program (VS:%s, FS:%s)\n", _vertexShader.c_str(), _fragmentShader.c_str());
+  #endif
 
   vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
   fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -203,7 +218,10 @@ void ShaderProgram::compile() {
   if (compileLogLen > 1) {
     std::vector<char> vsErrMessage(compileLogLen + 1);
     glGetShaderInfoLog(vertexShaderID, compileLogLen, NULL, &vsErrMessage[0]);
+
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
     std::fprintf(stderr, "ERROR: Error compiling vertex shader %s %d: %s\n", _vertexShader.c_str(), &vsErrMessage[0]);
+    #endif
   }
 
   char const *fsTextPtr = fsText.c_str();
@@ -214,7 +232,10 @@ void ShaderProgram::compile() {
   if (compileLogLen > 1) {
     std::vector<char> fsErrMessage(compileLogLen + 1);
     glGetShaderInfoLog(fragmentShaderID, compileLogLen, NULL, &fsErrMessage[0]);
+
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
     std::fprintf(stderr, "ERROR: Error compiling fragment shader %s: %s\n", _fragmentShader.c_str(), &fsErrMessage[0]);
+    #endif
   }
 
   // Link the two programs
@@ -227,7 +248,10 @@ void ShaderProgram::compile() {
   if (compileLogLen > 1){
     std::vector<char> programErrMessage(compileLogLen + 1);
     glGetProgramInfoLog(programID, compileLogLen, NULL, &programErrMessage[0]);
+
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
     std::fprintf(stderr, "ERROR: Error linking program (VS:%s, FS:%s): %s\n", _vertexShader.c_str(), _fragmentShader.c_str(), &programErrMessage[0]);
+    #endif
   }
 
   // Free space: http://gamedev.stackexchange.com/questions/47910/after-a-succesful-gllinkprogram-should-i-delete-detach-my-shaders

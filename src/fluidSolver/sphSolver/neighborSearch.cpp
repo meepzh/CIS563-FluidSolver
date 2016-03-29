@@ -70,8 +70,10 @@ void StandardGridNeighborSearch::clear() {
   grid->clear();
 }
 
+#if MFluidSolver_USE_OPENVDB
 void StandardGridNeighborSearch::exportVDB() {
   std::string filename = "export.vdb";
   std::string exportname = "MExport";
   grid->exportVDB(filename, exportname);
 }
+#endif

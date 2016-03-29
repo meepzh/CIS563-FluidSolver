@@ -2,38 +2,51 @@
 //  main.cpp
 //  MFluidSolver
 
+#include "MFluidSolverConfig.hpp"
+
 #include <cstdio>
+#include <fstream>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
-#include <openvdb/openvdb.h>
-#include <fstream>
+
 #include <json/json.h>
 
-#include "MFluidSolverConfig.hpp"
-#include "main.hpp"
+#if MFluidSolver_USE_OPENVDB
+#include <openvdb/openvdb.h>
+#endif
+
 #include "viewer/input.hpp"
 #include "viewer/particleShaderProgram.hpp"
 
 int main() {
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   // Print version info
-  printf("INFO: Version %d.%d\n", MFluidSolver_VERSION_MAJOR, MFluidSolver_VERSION_MINOR);
+  std::printf("INFO: Version %d.%d\n", MFluidSolver_VERSION_MAJOR, MFluidSolver_VERSION_MINOR);
+  #endif
 
   // Initialize GLFW
   if (!glfwInit()) {
-    fprintf(stderr, "ERROR: Failed to initiaize GLFW\n");
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
+    std::fprintf(stderr, "ERROR: Failed to initiaize GLFW\n");
+    #endif
+
     getchar(); // Wait for key before quit
     return -1;
   }
 
+  #if MFluidSolver_USE_OPENVDB
   // Initialize OpenVDB
   openvdb::initialize();
+  #endif
 
-  std::string configJSON = "config.json";
+  std::string configJSON = MFluidSolver_DEFAULT_CONFIG_FILE;
 
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   // Load config JSON
-  printf("INFO: Loading config file: %s\n", configJSON.c_str());
+  std::printf("INFO: Loading config file: %s\n", configJSON.c_str());
+  #endif
 
   // Read JSON file
   Json::Reader reader;
@@ -42,22 +55,26 @@ int main() {
 
   bool success = reader.parse(sceneStream, root, false);
   if (!success) {
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
     std::fprintf(stderr, "ERROR: Failed to parse config file %s", configJSON.c_str());
-    return -1;
+    #endif
   }
 
-  std::string sceneJSON = root.get("sceneJSON", "scene/scene.json").asString();
-  std::string wireVShader = root.get("wireVShader", "glsl/wire.vert.glsl").asString();
-  std::string wireFShader = root.get("wireFShader", "glsl/wire.frag.glsl").asString();
-  std::string particleVShader = root.get("particleVShader", "glsl/particle.vert.glsl").asString();
-  std::string particleFShader = root.get("particleFShader", "glsl/particle.frag.glsl").asString();
-  std::string particleTexture = root.get("particleTexture", "texture/particle.dds").asString();
+  std::string sceneJSON = root.get("sceneJSON", MFluidSolver_DEFAULT_SCENE_FILE).asString();
+  std::string wireVShader = root.get("wireVShader", MFluidSolver_DEFAULT_WIRE_VERT_FILE).asString();
+  std::string wireFShader = root.get("wireFShader", MFluidSolver_DEFAULT_WIRE_FRAG_FILE).asString();
+  std::string particleVShader = root.get("particleVShader", MFluidSolver_DEFAULT_PARTICLE_VERT_FILE).asString();
+  std::string particleFShader = root.get("particleFShader", MFluidSolver_DEFAULT_PARTICLE_FRAG_FILE).asString();
+  std::string particleTexture = root.get("particleTexture", MFluidSolver_DEFAULT_PARTICLE_TEX_FILE).asString();
 
-  srand(time(NULL));
+  std::srand(std::time(NULL));
 
   Viewer viewer;
   Input::viewer = &viewer;
-  printf("INFO: OpenGL Version %s\n", glGetString(GL_VERSION));
+
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+  std::printf("INFO: OpenGL Version %s\n", glGetString(GL_VERSION));
+  #endif
 
   // Set a few settings/modes in OpenGL rendering
   glEnable(GL_DEPTH_TEST);
@@ -68,10 +85,10 @@ int main() {
   glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
   // Set the size with which points should be rendered
-  glPointSize(5);
+  glPointSize(MFluidSolver_DEFAULT_POINT_SIZE);
 
   // Set background color
-  glClearColor(0.3f, 0.3f, 0.3f, 0.0f);
+  glClearColor(MFluidSolver_DEFAULT_BG_COLOR_R, MFluidSolver_DEFAULT_BG_COLOR_G, MFluidSolver_DEFAULT_BG_COLOR_B, 0.0f);
 
   // Bind vertex array object
   GLuint vaoID;

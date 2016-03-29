@@ -22,7 +22,9 @@ void Input::checkKeys(GLFWwindow* window, int key, int scancode, int action, int
   } else if (key == GLFW_KEY_N && action == GLFW_RELEASE) {
     viewer->scene.solver.randomDemo();
   } else if (key == GLFW_KEY_E && action == GLFW_RELEASE) {
+    #if MFluidSolver_USE_OPENVDB
     viewer->scene.solver.exportVDB();
+    #endif
   } else if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
     viewer->stop();
   }

@@ -6,9 +6,11 @@
 #define MFLUIDSOLVER_VIEWER_SHADERPROGRAM_HPP_
 
 #include "MFluidSolverConfig.hpp"
+
 #include <cstring>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+
 #include "../geom/geom.hpp"
 
 class ShaderProgram {
@@ -21,7 +23,7 @@ public:
 
   static GLuint loadDDS(const std::string &file);
 
-// Required for derived classes
+  // Required for derived classes
   void compile();
 
   GLuint programID;

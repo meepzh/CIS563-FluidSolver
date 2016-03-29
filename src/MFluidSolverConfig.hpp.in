@@ -2,6 +2,59 @@
 //  MFluidSolverConfig.hpp
 //  MFluidSolver
 
+// Versioning
 #define MFluidSolver_VERSION_MAJOR @MFluidSolver_VERSION_MAJOR@
 #define MFluidSolver_VERSION_MINOR @MFluidSolver_VERSION_MINOR@
-#define MFluidSolver_DEBUG 1
+
+// Logging/Debug
+#define MFluidSolver_LOG_LEVEL 3
+#define MFluidSolver_OPENGL_DEBUG 1
+#define MFluidSolver_USE_ASSERTS 1
+
+// Libraries
+#define MFluidSolver_USE_OPENVDB 1
+
+// Defaults
+#define MFluidSolver_DEFAULT_CONFIG_FILE "config.json"
+
+#define MFluidSolver_DEFAULT_SCENE_FILE "scene/scene.json"
+#define MFluidSolver_DEFAULT_WIRE_VERT_FILE "glsl/wire.vert.glsl"
+#define MFluidSolver_DEFAULT_WIRE_FRAG_FILE "glsl/wire.frag.glsl"
+#define MFluidSolver_DEFAULT_PARTICLE_VERT_FILE "glsl/particle.vert.glsl"
+#define MFluidSolver_DEFAULT_PARTICLE_FRAG_FILE "glsl/particle.frag.glsl"
+#define MFluidSolver_DEFAULT_PARTICLE_TEX_FILE "texture/particle.dds"
+
+#define MFluidSolver_DEFAULT_BG_COLOR_R 0.3f
+#define MFluidSolver_DEFAULT_BG_COLOR_G 0.3f
+#define MFluidSolver_DEFAULT_BG_COLOR_B 0.3f
+#define MFluidSolver_DEFAULT_GEOMETRY_COLOR_R 1
+#define MFluidSolver_DEFAULT_GEOMETRY_COLOR_G 1
+#define MFluidSolver_DEFAULT_GEOMETRY_COLOR_B 1
+#define MFluidSolver_DEFAULT_GRAVITY -9.8
+#define MFluidSolver_DEFAULT_MAX_PARTICLES 10000
+#define MFluidSolver_DEFAULT_PARTICLE_BOUNCE 0.1f
+#define MFluidSolver_DEFAULT_PARTICLE_COLOR_R 0
+#define MFluidSolver_DEFAULT_PARTICLE_COLOR_G 0
+#define MFluidSolver_DEFAULT_PARTICLE_COLOR_B 1
+#define MFluidSolver_DEFAULT_PARTICLE_SEPARATION 0.1f
+#define MFluidSolver_DEFAULT_POINT_SIZE 5
+#define MFluidSolver_DEFAULT_SEARCH_RADIUS 0.1f
+#define MFluidSolver_DEFAULT_UPDATE_STEP 0.001
+
+#define SPHConfig_Default_kStiffness 1000
+#define SPHConfig_Default_muViscosity 1
+#define SPHConfig_Default_mMass 0.125
+#define SPHConfig_Default_dRestDensity 1000
+#define SPHConfig_Default_dtTimestep 0.001
+#define SPHConfig_Default_kernelRadius 0.100001
+#define SPHConfig_Default_useUniformGrid true
+#define SPHConfig_Default_nSearchType NeighborSearchType::StandardGrid
+
+// Do not touch
+#define MFluidSolver_LOG_NONE 1000
+#define MFluidSolver_LOG_FATAL 5
+#define MFluidSolver_LOG_ERROR 4
+#define MFluidSolver_LOG_WARN 3
+#define MFluidSolver_LOG_INFO 2
+#define MFluidSolver_LOG_DEBUG 1
+#define MFluidSolver_LOG_TRACE 0

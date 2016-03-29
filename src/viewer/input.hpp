@@ -5,6 +5,8 @@
 #ifndef MFLUIDSOLVER_VIEWER_INPUT_HPP_
 #define MFLUIDSOLVER_VIEWER_INPUT_HPP_
 
+#include "MFluidSolverConfig.hpp"
+
 #include "viewer.hpp"
 
 class Input {

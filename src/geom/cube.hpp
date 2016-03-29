@@ -5,11 +5,13 @@
 #ifndef MFLUIDSOLVER_GEOM_CUBE_HPP_
 #define MFLUIDSOLVER_GEOM_CUBE_HPP_
 
+#include "MFluidSolverConfig.hpp"
+
 #include "geom.hpp"
 
 class Cube : public Geometry {
 public:
-  Cube() : Cube(glm::vec3(1.f)) {}
+  Cube() : Cube(glm::vec3(MFluidSolver_DEFAULT_GEOMETRY_COLOR_R, MFluidSolver_DEFAULT_GEOMETRY_COLOR_G, MFluidSolver_DEFAULT_GEOMETRY_COLOR_B)) {}
   Cube(const glm::vec3 &color);
 
   virtual GLenum drawMode();

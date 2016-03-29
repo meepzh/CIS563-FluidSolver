@@ -5,7 +5,8 @@
 #include "particle.hpp"
 
 Particle::Particle(float mass, const glm::vec3 &position)
- : color(0, 0, 1), _mass(mass), _position(position), _velocity(glm::vec3(0)) {
+ : color(MFluidSolver_DEFAULT_PARTICLE_COLOR_R, MFluidSolver_DEFAULT_PARTICLE_COLOR_G, MFluidSolver_DEFAULT_PARTICLE_COLOR_B),
+   _mass(mass), _position(position), _velocity(glm::vec3(0)) {
 }
 
 void Particle::update(double deltaT) {
@@ -16,10 +17,10 @@ void Particle::undoUpdate(double deltaT) {
   _position -= _velocity * (float)deltaT;
 }
 
-void Particle::reverseVelocity(const glm::ivec3 &directions) {
-  if (directions.x != 0) _velocity.x *= -0.1;
-  if (directions.y != 0) _velocity.y *= -0.1;
-  if (directions.z != 0) _velocity.z *= -0.1;
+void Particle::reverseVelocity(const glm::ivec3 &directions, float bounceCoefficient) {
+  if (directions.x != 0) _velocity.x *= -1 * bounceCoefficient;
+  if (directions.y != 0) _velocity.y *= -1 * bounceCoefficient;
+  if (directions.z != 0) _velocity.z *= -1 * bounceCoefficient;
 }
 
 void Particle::stopVelocity(const glm::ivec3 &directions) {

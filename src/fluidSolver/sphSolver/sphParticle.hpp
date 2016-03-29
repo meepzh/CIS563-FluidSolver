@@ -6,6 +6,7 @@
 #define MFLUIDSOLVER_FLUIDSOLVER_SPHSOLVER_SPHPARTICLE_HPP_
 
 #include <vector>
+
 #include "../particle.hpp"
 
 class SPHParticle : public Particle {

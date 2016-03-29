@@ -5,10 +5,18 @@
 #ifndef MFLUIDSOLVER_FLUIDSOLVER_SPHGRID_HPP_
 #define MFLUIDSOLVER_FLUIDSOLVER_SPHGRID_HPP_
 
+#include "MFluidSolverConfig.hpp"
+
+#include <exception>
+#include <glm/glm.hpp>
 #include <string>
 #include <vector>
-#include <glm/glm.hpp>
+
 #include "sphParticle.hpp"
+
+struct InvalidSPHGridSize : std::exception {
+  const char *what() const noexcept {return "Invalid SPH grid size.\n";};
+};
 
 // Grid type XZY (X elements together, then Z, then Y)
 class SPHGrid {
@@ -23,7 +31,10 @@ public:
   unsigned int getIndex(const glm::ivec3 &c);
   unsigned int getIndex(unsigned int x, unsigned int y, unsigned int z);
   void printDiagnostics();
+
+  #if MFluidSolver_USE_OPENVDB
   void exportVDB(std::string &file, std::string &gridName);
+  #endif
 
 private:
   std::vector<std::vector<SPHParticle *>> *data;

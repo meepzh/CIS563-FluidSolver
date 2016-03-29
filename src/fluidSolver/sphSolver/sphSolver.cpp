@@ -7,8 +7,6 @@
 #include <cstdio>
 #include <fstream>
 #include <json/json.h>
-#define GLM_FORCE_RADIANS
-#include <glm/gtx/string_cast.hpp>
 
 SPHSolver::SPHSolver()
  : nSearch(nullptr), inited(false) {
@@ -23,26 +21,36 @@ SPHSolver::~SPHSolver() {
 }
 
 void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
-  printf("INFO: Initializing SPH Solver\n");
-  printf("Kernel radius: %.2f\n", kernelRadius);
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+  std::printf("INFO: Initializing SPH Solver\n");
+  #endif
+
   kernelFunctions.setKernelRadius(kernelRadius);
 
   switch (nSearchType) {
     case NeighborSearchType::Naive:
-      printf("INFO: SPH Solver using naive neighbor search\n");
+      #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+      std::printf("INFO: SPH Solver using naive neighbor search\n");
+      #endif
+
       nSearch = new NaiveNeighborSearch();
       break;
     case NeighborSearchType::StandardGrid:
     default:
-      printf("INFO: SPH Solver using uniform grid neighbor search\n");
+      #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+      std::printf("INFO: SPH Solver using uniform grid neighbor search\n");
+      #endif
+
       // Note: Assumes grid cell size is equal to kernelRadius
       nSearch = new StandardGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius);
       break;
   }
 
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   if (muViscosity <= 0) {
-    printf("INFO: As per config, viscosity is disabled.\n");
+    std::printf("INFO: As per config, viscosity is disabled.\n");
   }
+  #endif
 
   inited = true;
 }
@@ -60,7 +68,10 @@ void SPHSolver::setDefaultConfig() {
 
 void SPHSolver::loadConfig(const std::string &file) {
   if (checkInited()) return;
-  printf("INFO: Loading SPH parameters from config file: %s\n", file.c_str());
+
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+  std::printf("INFO: Loading SPH parameters from config file: %s\n", file.c_str());
+  #endif
 
   // Read JSON file
   Json::Reader reader;
@@ -69,7 +80,9 @@ void SPHSolver::loadConfig(const std::string &file) {
 
   bool success = reader.parse(sceneStream, root, false);
   if (!success) {
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
     std::fprintf(stderr, "ERROR: Failed to parse config file %s", file.c_str());
+    #endif
     return;
   }
 
@@ -86,17 +99,23 @@ void SPHSolver::loadConfig(const std::string &file) {
     nSearchType = NeighborSearchType::Naive;
   }
 
-  printf("- Stiffness: %.2f\n", kStiffness);
-  printf("- Viscosity: %.2f\n", muViscosity);
-  printf("- Mass: %.2f\n", mMass);
-  printf("- Rest Density: %.2f\n", dRestDensity);
-  printf("- Timestep: %.2f\n", dtTimestep);
-  printf("- Kernel Radius: %.2f\n", kernelRadius);
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+  std::printf("- INFO: Stiffness: %.2f\n", kStiffness);
+  std::printf("- INFO: Viscosity: %.2f\n", muViscosity);
+  std::printf("- INFO: Mass: %.2f\n", mMass);
+  std::printf("- INFO: Rest Density: %.2f\n", dRestDensity);
+  std::printf("- INFO: Timestep: %.2f\n", dtTimestep);
+  std::printf("- INFO: Kernel Radius: %.2f\n", kernelRadius);
+  #endif
 }
 
 void SPHSolver::update(double deltaT) {
-  deltaT = 0.001;
-  //printf("INFO: Updating by %.4f seconds\n", deltaT);
+  deltaT = MFluidSolver_DEFAULT_UPDATE_STEP;
+
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
+  std::printf("DEBUG: Updating by %.4f seconds\n", deltaT);
+  #endif
+
   // Prepare neighbor search
   if (nSearchType == NeighborSearchType::StandardGrid) {
     static_cast<StandardGridNeighborSearch *>(nSearch)->clear();
@@ -111,8 +130,6 @@ void SPHSolver::update(double deltaT) {
     nSearch->findNeighbors(p);
   }
 
-
-  printf("Pressure: %.2f, velocity :%s\n", _particles.at(3258)->pressure(), glm::to_string(_particles.at(3258)->velocity()).c_str());
   // Compute density and pressure
   for (SPHParticle *p : _particles) {
     // Density
@@ -121,8 +138,6 @@ void SPHSolver::update(double deltaT) {
       for (SPHParticle *n : *(p->neighbors())) {
         densitySum += n->mass() * kernelFunctions.computePoly6(p->position() - n->position());
       }
-    } else {
-      //p->setDensity(dRestDensity);
     }
     p->setDensity(densitySum);
 
@@ -158,27 +173,6 @@ void SPHSolver::update(double deltaT) {
   }
 
   // Compute velocity and position, check bounds
-  /*unsigned int _count = 0;
-  unsigned int _index = 0;
-  unsigned int _numParticles = _particles.size();
-  unsigned int deleteCount = 0;
-  while (_count < _numParticles) {
-    SPHParticle *p = _particles.at(_index);
-    p->update(deltaT);
-
-    // Check bounds
-    if (!fluidContainer->intersects(p->position())) {
-      ++deleteCount;
-      delete p;
-      _particles.erase(_particles.begin() + _index);
-    } else {
-      ++_index;
-    }
-    ++_count;
-  }
-  if (deleteCount > 0) {
-    printf("INFO: Deleted %d out of bounds particles\n", deleteCount);
-  }*/
   for (SPHParticle *p : _particles) {
     p->update(deltaT);
 
@@ -186,9 +180,7 @@ void SPHSolver::update(double deltaT) {
     glm::ivec3 violations;
     if (!fluidContainer->intersects(p->position(), violations)) {
       glm::vec3 position = p->position();
-      //p->undoUpdate(deltaT);
-      //p->stopVelocity(violations);
-      p->reverseVelocity(violations); // Bounce
+      p->reverseVelocity(violations, 0.1f); // Bounce
 
       // TODO: Generalize
       glm::vec3 scaleVec = fluidContainer->transform.scale();
@@ -205,18 +197,10 @@ void SPHSolver::update(double deltaT) {
       else if (violations.z > 0) position.z = maxBounds.z;
 
       p->setPosition(position);
-      //p->color = glm::vec3(0, 1, 0);
     }
 
-    p->color = glm::abs(p->velocity()) / glm::length(p->velocity());
+    p->color = glm::normalize(glm::abs(p->velocity()));
   }
-
-  /*for (unsigned int i = 0; i < _particles.size(); ++i)
-  {
-    if (_particles.at(i)->position().y > 0.9f) {
-      printf("ASDFJLADSDFLDSLJDLFLDFJS: %d\n", i);
-    }
-  }*/
 }
 
 void SPHSolver::addParticleAt(const glm::vec3 &position) {
@@ -240,9 +224,12 @@ void SPHSolver::setParticleSeparation(float ps) {
 }
 
 bool SPHSolver::checkInited() {
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
   if (inited) {
     std::fprintf(stderr, "ERROR: Already inited SPH Solver. Config will not be applied");
   }
+  #endif
+
   return inited;
 }
 
@@ -278,6 +265,8 @@ void SPHSolver::exportVDB() {
   if (nSearchType == NeighborSearchType::StandardGrid) {
     static_cast<StandardGridNeighborSearch *>(nSearch)->exportVDB();
   } else {
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
     std::printf("WARN: Cannot export VDB unless using grid neighbor search\n");
+    #endif
   }
 }

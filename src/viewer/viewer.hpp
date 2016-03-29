@@ -6,6 +6,7 @@
 #define MFLUIDSOLVER_VIEWER_HPP_
 
 #include "MFluidSolverConfig.hpp"
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 

@@ -5,11 +5,10 @@
 #ifndef MFLUIDSOLVER_FLUIDSOLVER_HPP_
 #define MFLUIDSOLVER_FLUIDSOLVER_HPP_
 
+#include "MFluidSolverConfig.hpp"
+
 #include "../geom/geom.hpp"
 #include "particle.hpp"
-
-#define FLUID_MAX_PARTICLES 100000
-#define UPDATE_STEP_DEFAULT 0.0005
 
 class FluidSolver {
 public:

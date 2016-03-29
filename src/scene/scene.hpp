@@ -5,8 +5,11 @@
 #ifndef MFLUIDSOLVER_SCENE_HPP_
 #define MFLUIDSOLVER_SCENE_HPP_
 
+#include "MFluidSolverConfig.hpp"
+
 #include <string>
 #include <vector>
+
 #include "../fluidSolver/sphSolver/sphSolver.hpp"
 
 class Scene {

@@ -49,22 +49,24 @@ ParticleShaderProgram::ParticleShaderProgram(SPHSolver *solver,
   particleColorArray = new glm::vec3[solver->maxParticles];
   particlePositionArray = new glm::vec3[solver->maxParticles];
 
-  #if MFluidSolver_DEBUG
-  printf("DEBUG:SHADER: Program %d is type particles\n", programID);
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
+  std::printf("DEBUG:SHADER: Program %d is type particles\n", programID);
+  #endif
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
   if (aBillboardVertexArrID == -1) {
-    printf("- WARN: avs_Billboard is not bound\n");
+    std::printf("WARN: avs_Billboard is not bound for program %d\n", programID);
   }
   if (uBillboardTextureSamplerID == -1) {
-    printf("- WARN: u_BillboardTextureSampler is not bound\n");
+    std::printf("WARN: u_BillboardTextureSampler is not bound for program %d\n", programID);
   }
   if (uCameraRightVecID == -1) {
-    printf("- WARN: u_CameraRight is not bound\n");
+    std::printf("WARN: u_CameraRight is not bound for program %d\n", programID);
   }
   if (uCameraUpVecID == -1) {
-    printf("- WARN: u_CameraUp is not bound\n");
+    std::printf("WARN: u_CameraUp is not bound for program %d\n", programID);
   }
   if (uParticleSizeFloatID == -1) {
-    printf("- WARN: u_ParticleSize is not bound\n");
+    std::printf("WARN: u_ParticleSize is not bound for program %d\n", programID);
   }
   #endif
 }

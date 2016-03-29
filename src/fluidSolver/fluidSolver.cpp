@@ -5,8 +5,9 @@
 #include "fluidSolver.hpp"
 
 FluidSolver::FluidSolver()
- : maxParticles(FLUID_MAX_PARTICLES), _gravity(-9.8), _particleSeparation(0.1f),
-  fluidSource(nullptr), fluidContainer(nullptr) {
+ : maxParticles(MFluidSolver_DEFAULT_MAX_PARTICLES), _gravity(MFluidSolver_DEFAULT_GRAVITY),
+   _particleSeparation(MFluidSolver_DEFAULT_PARTICLE_SEPARATION),
+   fluidSource(nullptr), fluidContainer(nullptr) {
 
 }
 
@@ -19,7 +20,7 @@ void FluidSolver::update(double deltaT) {
 }
 
 void FluidSolver::updateStep() {
-  update(0.0005);
+  update(MFluidSolver_DEFAULT_UPDATE_STEP);
 }
 
 void FluidSolver::setGravity(float g) {

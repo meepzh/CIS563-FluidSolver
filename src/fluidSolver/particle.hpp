@@ -5,6 +5,8 @@
 #ifndef MFLUIDSOLVER_FLUIDSOLVER_PARTICLE_HPP_
 #define MFLUIDSOLVER_FLUIDSOLVER_PARTICLE_HPP_
 
+#include "MFluidSolverConfig.hpp"
+
 #include <glm/glm.hpp>
 
 class Particle {
@@ -16,7 +18,7 @@ public:
 
   // Update
   virtual void update(double deltaT);
-  void reverseVelocity(const glm::ivec3 &directions);
+  void reverseVelocity(const glm::ivec3 &directions, float bounceCoefficient = MFluidSolver_DEFAULT_PARTICLE_BOUNCE);
   void stopVelocity(const glm::ivec3 &directions);
   void setPosition(const glm::vec3 &position);
   virtual void undoUpdate(double deltaT);

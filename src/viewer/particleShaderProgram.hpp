@@ -5,9 +5,12 @@
 #ifndef MFLUIDSOLVER_VIEWER_PARTICLESHADERPROGRAM_HPP_
 #define MFLUIDSOLVER_VIEWER_PARTICLESHADERPROGRAM_HPP_
 
+#include "MFluidSolverConfig.hpp"
+
 #include <vector>
-#include "shaderProgram.hpp"
+
 #include "../fluidSolver/sphSolver/sphSolver.hpp"
+#include "shaderProgram.hpp"
 
 class ParticleShaderProgram : public ShaderProgram {
 public:

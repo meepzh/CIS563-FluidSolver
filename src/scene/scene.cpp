@@ -19,7 +19,9 @@ Scene::~Scene() {
 }
 
 void Scene::loadJSON(const std::string &file) {
-  printf("INFO: Loading scene file: %s\n", file.c_str());
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+  std::printf("INFO: Loading scene file: %s\n", file.c_str());
+  #endif
 
   // Read JSON file
   Json::Reader reader;
@@ -28,7 +30,10 @@ void Scene::loadJSON(const std::string &file) {
 
   bool success = reader.parse(sceneStream, root, false);
   if (!success) {
-    std::fprintf(stderr, "ERROR: Failed to parse scene file %s", file.c_str());
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_FATAL
+    std::fprintf(stderr, "FATAL: Failed to parse scene file %s", file.c_str());
+    #endif
+
     return;
   }
 
@@ -59,7 +64,9 @@ void Scene::loadJSON(const std::string &file) {
 
   seedScene();
 
-  printf("INFO: Particle count: %d / %d\n", solver.numParticles(), solver.maxParticles);
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+  std::printf("INFO: Particle count: %d / %d\n", solver.numParticles(), solver.maxParticles);
+  #endif
 
   solver.initialDemo();
 }

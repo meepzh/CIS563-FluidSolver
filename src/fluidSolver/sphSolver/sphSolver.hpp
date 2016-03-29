@@ -5,24 +5,14 @@
 #ifndef MFLUIDSOLVER_SPHSOLVER_HPP_
 #define MFLUIDSOLVER_SPHSOLVER_HPP_
 
+#include "MFluidSolverConfig.hpp"
+
 #include <vector>
+
 #include "../fluidSolver.hpp"
 #include "kernelFunctions.hpp"
 #include "neighborSearch.hpp"
 #include "sphParticle.hpp"
-
-#define SPHConfig_Default_kStiffness 1
-#define SPHConfig_Default_muViscosity 1
-#define SPHConfig_Default_mMass 1000
-#define SPHConfig_Default_dRestDensity 1000
-#define SPHConfig_Default_dtTimestep 1
-#define SPHConfig_Default_kernelRadius 0.2
-#define SPHConfig_Default_useUniformGrid true
-#if SPHConfig_Default_useUniformGrid
-  #define SPHConfig_Default_nSearchType NeighborSearchType::StandardGrid
-#else
-  #define SPHConfig_Default_nSearchType NeighborSearchType::Naive
-#endif
 
 class SPHSolver : public FluidSolver {
 public:
