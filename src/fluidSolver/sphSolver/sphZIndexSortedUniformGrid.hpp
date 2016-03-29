@@ -7,6 +7,8 @@
 
 #include "sphGrid.hpp"
 
+#include "../zCurve.hpp"
+
 struct ZISData {
   SPHParticle *p;
   unsigned int count;
@@ -34,6 +36,8 @@ public:
 private:
   std::vector<SPHParticle> *master;
   std::vector<ZISData> cells;
+  ZCurve zCurve;
+  unsigned long zMax;
 };
 
 #endif /* MFLUIDSOLVER_FLUIDSOLVER_SPHZINDEXSORTEDUNIFORMGRID_HPP_ */

@@ -4,11 +4,12 @@
 
 #include "zCurve.hpp"
 
+#include <cassert>
 #include <iostream>
 
 #define LONG_COORD_LIMIT 2047
 
-ZCurve::ZCurve(const glm::ivec3 &cellBounds) {
+unsigned long ZCurve::maxIndex(const glm::ivec3 &cellBounds) {
   if (cellBounds.x < 0 || cellBounds.y < 0 || cellBounds.z < 0) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_FATAL
     std::cerr << "FATAL: ZCurve bounds (" << cellBounds.x << ", " << cellBounds.y << ", " << cellBounds.z << ") is negative" << std::endl;
@@ -22,9 +23,20 @@ ZCurve::ZCurve(const glm::ivec3 &cellBounds) {
     #endif
     throw ZCurveTooLargeException();
   }
+
+  return getIndex(cellBounds);
+}
+
+unsigned long ZCurve::getIndex(const glm::ivec3 &p) {
+  return getIndex(p.x, p.y, p.z);
 }
 
 unsigned long ZCurve::getIndex(int i, int j, int k) {
+  #if MFluidSolver_USE_ASSERTS
+  assert(i >= 0 && j >= 0 && k >= 0);
+  assert(i <= LONG_COORD_LIMIT && j <= LONG_COORD_LIMIT && k <= LONG_COORD_LIMIT);
+  #endif
+
   return (splitBits(k) << 2) | (splitBits(j) << 1) | splitBits(i);
 }
 
