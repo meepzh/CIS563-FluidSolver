@@ -26,14 +26,13 @@ public:
 
   void setGravity(float g);
   float gravity() const;
-
   virtual void setMaxParticles(int mp);
   int maxParticles() const;
-
   virtual void setParticleSeparation(float ps);
   float particleSeparation() const;
-
   void setFixedTimestep(float ft);
+
+  virtual void printPerformanceStats();
 
   Geometry *fluidSource;
   Geometry *fluidContainer;
@@ -44,6 +43,10 @@ protected:
   int _maxParticles;
   FluidVisualizationType visualizationType;
   float _fixedTimestep;
+  double computeTime;
+  unsigned int numUpdates;
+  unsigned int maxUpdates;
+  bool limitNumUpdates;
 };
 
 #endif /* MFLUIDSOLVER_FLUIDSOLVER_HPP_ */

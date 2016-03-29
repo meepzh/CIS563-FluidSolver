@@ -121,6 +121,11 @@ int main() {
     returnCode = -1;
   }
 
+  // Performance
+  #if MFluidSolver_RECORD_PERFORMANCE
+  viewer.scene.solver.printPerformanceStats();
+  #endif
+
   // Cleanup
   glDeleteVertexArrays(1, &vaoID);
 

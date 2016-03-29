@@ -30,6 +30,30 @@ void SPHUniformGrid::addParticle(SPHParticle *p) {
   data->at(pI).push_back(p);
 }
 
+void SPHUniformGrid::updateParticle(SPHParticle *p) {
+  glm::ivec3 oldCoords = getGridCoordinates(p->oldPosition());
+  glm::ivec3 newCoords = getGridCoordinates(p->position());
+  if (oldCoords != newCoords) {
+    unsigned int oldIndex = getIndex(oldCoords);
+    unsigned int newIndex = getIndex(newCoords);
+
+    std::vector<SPHParticle *> *oldCell = &(data->at(oldIndex));
+    auto oldIt = std::find(std::begin(*oldCell), std::end(*oldCell), p);
+    if (oldIt != std::end(*oldCell)) {
+      oldCell->erase(oldIt);
+      data->at(newIndex).push_back(p);
+    } else {
+      #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
+      std::cerr << "ERROR: Could not find particle at (" <<
+        p->position().x << ", " << p->position().y << ", " << p->position().z <<
+        ") based on old position (" <<
+        p->oldPosition().x << ", " << p->oldPosition().y << ", " << p->oldPosition().z <<
+        "), index " << oldIndex << std::endl;
+      #endif
+    }
+  }
+}
+
 void SPHUniformGrid::getNeighbors(SPHParticle *p) {
   glm::ivec3 pC = getGridCoordinates(p->position());
   std::vector<SPHParticle *> *neighbors = p->neighbors();

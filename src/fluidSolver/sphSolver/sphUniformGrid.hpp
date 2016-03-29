@@ -14,6 +14,7 @@ public:
   ~SPHUniformGrid();
 
   virtual void addParticle(SPHParticle *p);
+  virtual void updateParticle(SPHParticle *p);
   virtual void getNeighbors(SPHParticle *p);
   virtual void clear();
   virtual glm::ivec3 getGridCoordinates(const glm::vec3 &pt);

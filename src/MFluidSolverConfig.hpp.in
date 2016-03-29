@@ -11,6 +11,8 @@
 #define MFluidSolver_OPENGL_DEBUG 1
 #define MFluidSolver_USE_ASSERTS 1
 
+#define MFluidSolver_RECORD_PERFORMANCE 1
+
 // Libraries
 #define MFluidSolver_USE_OPENVDB 1
 
@@ -31,7 +33,9 @@
 #define MFluidSolver_DEFAULT_GEOMETRY_COLOR_G 1
 #define MFluidSolver_DEFAULT_GEOMETRY_COLOR_B 1
 #define MFluidSolver_DEFAULT_GRAVITY -9.8
+#define MFluidSolver_DEFAULT_LIMIT_UPDATES false
 #define MFluidSolver_DEFAULT_MAX_PARTICLES 10000
+#define MFluidSolver_DEFAULT_MAX_UPDATES 1000
 #define MFluidSolver_DEFAULT_PARTICLE_BOUNCE 0.1f
 #define MFluidSolver_DEFAULT_PARTICLE_COLOR_R 0
 #define MFluidSolver_DEFAULT_PARTICLE_COLOR_G 0

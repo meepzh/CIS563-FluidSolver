@@ -51,6 +51,11 @@ visualization
 - none
 - velocity
 
+The `numUpdates` parameter can be used to set the number of frames to simulate
+in order to get accurate and comparable performance ratings. Set `numUpdates`
+to a non-positive number to disable this feature. Note that the
+`RECORD_PERFORMANCE` configuration needs to be enabled for this feature.
+
 #### Arcball ####
 The camera uses the arcball interface and can be controlled with the left and
 right mouse buttons and the scroll wheel.
@@ -75,8 +80,8 @@ direction of the mouse. It will look like you're dragging the scene with you.
 ### Missing Required Features ###
 
 - Implement particle grid copying (not pointers)
-- Implement Z-curve Uniform Grid
-- Unit test Z-curve Uniform Grid
+- Implement Z-curve Index Sorted Uniform Grid
+- Unit test Z-curve Index Sorted Uniform Grid
 - Implement insertion sort
 - Unit test insertion sort
 - Implement Z-index sorting with insertion sort

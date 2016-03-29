@@ -4,11 +4,17 @@
 
 #include "fluidSolver.hpp"
 
+#include <iostream>
+
+#include "../utils.hpp"
+
 FluidSolver::FluidSolver()
  : _maxParticles(MFluidSolver_DEFAULT_MAX_PARTICLES), _gravity(MFluidSolver_DEFAULT_GRAVITY),
    _particleSeparation(MFluidSolver_DEFAULT_PARTICLE_SEPARATION),
    visualizationType(MFluidSolver_DEFAULT_VISUALIZATION),
    _fixedTimestep(MFluidSolver_DEFAULT_UPDATE_STEP),
+   computeTime(0), numUpdates(0),
+   maxUpdates(MFluidSolver_DEFAULT_MAX_UPDATES), limitNumUpdates(MFluidSolver_DEFAULT_LIMIT_UPDATES),
    fluidSource(nullptr), fluidContainer(nullptr) {
 
 }
@@ -48,4 +54,11 @@ float FluidSolver::particleSeparation() const {
 
 void FluidSolver::setFixedTimestep(float ft) {
   _fixedTimestep = ft;
+}
+
+void FluidSolver::printPerformanceStats() {
+  std::cout << "PERF: Fluid solver averaged " <<
+    (computeTime / (double)numUpdates) <<
+    " seconds over " << numUpdates << " updates" << std::endl;
+  std::cout << "PERF: Overall simulation ran for " << MUtils::toHMS(computeTime) << std::endl;
 }

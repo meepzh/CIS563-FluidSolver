@@ -23,6 +23,7 @@ public:
   float density() const;
   float pressure() const;
   glm::vec3 forceDensity() const;
+  glm::vec3 oldPosition() const;
 
   void setDensity(float density);
   void setPressure(float pressure);
@@ -36,6 +37,7 @@ protected:
   float _density;
   float _pressure;
   glm::vec3 _forceDensity;
+  glm::vec3 _oldPosition;
   std::vector<SPHParticle *> _neighbors;
 };
 

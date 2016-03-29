@@ -14,5 +14,6 @@
 		"kernelRadius": 0.100001,
 		"neighborSearchType": "uniform"
 	},
-	"visualization": "velocity"
+	"visualization": "velocity",
+	"numUpdates": 800
 }

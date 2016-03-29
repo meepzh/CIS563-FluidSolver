@@ -33,6 +33,10 @@ void Particle::setPosition(const glm::vec3 &position) {
   _position = position;
 }
 
+bool Particle::operator==(const Particle &b) const {
+  return b.mass() == _mass && b.position() == _position && b.velocity() == _velocity;
+}
+
 float Particle::mass() const {
   return _mass;
 }

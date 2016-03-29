@@ -129,7 +129,7 @@ set(CORE_SRC
         src/viewer/shaderProgram.cpp
         src/viewer/viewer.cpp
         src/main.cpp
-        src/utils.hpp
+        src/utils.cpp
 )
 
 add_executable(MFluidSolver ${CORE_SRC})

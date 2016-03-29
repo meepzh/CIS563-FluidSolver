@@ -7,29 +7,17 @@
 
 #include <locale>
 #include <string>
+#include <sstream>
 
 namespace MUtils {
   // Float approximate-equality comparison
-  template<typename T> inline bool fequal(T a, T b, T epsilon = 0.0001){
-    if (a == b) {
-      // Shortcut
-      return true;
-    }
+  template<typename T> bool fequal(T a, T b, T epsilon = 0.0001);
 
-    const T diff = std::abs(a - b);
-    if (a * b == 0) {
-      // a or b or both are zero; relative error is not meaningful here
-      return diff < (epsilon * epsilon);
-    }
+  void toLowerInplace(std::string &input);
 
-    return diff / (std::abs(a) + std::abs(b)) < epsilon;
-  }
+  std::string zeroPad(int number, unsigned int digits);
 
-  void inline toLowerInplace(std::string &input) {
-    for (unsigned int i = 0; i < input.length(); ++i) {
-      input[i] = std::tolower(input[i]);
-    }
-  }
+  std::string toHMS(double seconds);
 }
 
 #endif /* MFLUIDSOLVER_UTILS_HPP_ */

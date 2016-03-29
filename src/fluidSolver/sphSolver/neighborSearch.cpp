@@ -32,6 +32,10 @@ void NaiveNeighborSearch::addParticle(SPHParticle *p) {
   particleList.push_back(p);
 }
 
+void NaiveNeighborSearch::clear() {
+  particleList.clear();
+}
+
 UniformGridNeighborSearch::UniformGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize)
 : NeighborSearch(r), grid(nullptr) {
   grid = new SPHUniformGrid(gridMin, gridMax, cellSize);
@@ -64,6 +68,10 @@ void UniformGridNeighborSearch::findNeighbors(SPHParticle *p) {
 
 void UniformGridNeighborSearch::addParticle(SPHParticle *p) {
   grid->addParticle(p);
+}
+
+void UniformGridNeighborSearch::updateParticle(SPHParticle *p) {
+  grid->updateParticle(p);
 }
 
 void UniformGridNeighborSearch::clear() {

@@ -23,6 +23,8 @@ public:
   void setPosition(const glm::vec3 &position);
   virtual void undoUpdate(double deltaT);
 
+  bool operator==(const Particle &b) const;
+
   // Properties
   glm::vec3 color;
   float mass() const;

@@ -21,6 +21,8 @@ public:
   void setSearchRadius(float r);
   virtual void findNeighbors(SPHParticle *p) = 0;
   virtual void addParticle(SPHParticle *p) = 0;
+  virtual void updateParticle(SPHParticle *p) = 0;
+  virtual void clear() = 0;
 
 protected:
   float searchRadius;
@@ -33,6 +35,8 @@ public:
   NaiveNeighborSearch(float r) : NeighborSearch(r) {}
   virtual void findNeighbors(SPHParticle *p);
   virtual void addParticle(SPHParticle *p);
+  virtual void updateParticle(SPHParticle *p) {} // Do nothing
+  virtual void clear();
 
 private:
   std::vector<SPHParticle *> particleList;
@@ -44,7 +48,8 @@ public:
   ~UniformGridNeighborSearch();
   virtual void findNeighbors(SPHParticle *p);
   virtual void addParticle(SPHParticle *p);
-  void clear();
+  virtual void updateParticle(SPHParticle *p);
+  virtual void clear();
 
   #if MFluidSolver_USE_OPENVDB
   void exportVDB();

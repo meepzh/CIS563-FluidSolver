@@ -6,10 +6,11 @@
 
 SPHParticle::SPHParticle(float mass, const glm::vec3 &position)
 : Particle(mass, position),
-  _density(1000.f), _pressure(1000.f), _forceDensity(glm::vec3(0)) {
+  _density(1000.f), _pressure(1000.f), _forceDensity(glm::vec3(0)), _oldPosition(position) {
 }
 
 void SPHParticle::update(double deltaT) {
+  _oldPosition = _position;
   _velocity += _forceDensity / _density * (float)deltaT;
   _position += _velocity * (float)deltaT;
 }
@@ -28,6 +29,10 @@ float SPHParticle::pressure() const {
 
 glm::vec3 SPHParticle::forceDensity() const {
   return _forceDensity;
+}
+
+glm::vec3 SPHParticle::oldPosition() const {
+  return _oldPosition;
 }
 
 void SPHParticle::setDensity(float density) {

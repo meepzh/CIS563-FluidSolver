@@ -8,6 +8,10 @@
 #include <iostream>
 #include <json/json.h>
 
+#if MFluidSolver_RECORD_PERFORMANCE
+#include <ctime>
+#endif
+
 #include "../../utils.hpp"
 
 SPHSolver::SPHSolver()
@@ -107,6 +111,18 @@ void SPHSolver::loadConfig(const std::string &file) {
   dtTimestep = root["sph"].get("dtTimestep", SPHConfig_Default_dtTimestep).asFloat();
   kernelRadius = root["sph"].get("kernelRadius", SPHConfig_Default_kernelRadius).asFloat();
 
+  #if MFluidSolver_RECORD_PERFORMANCE
+  int tempMaxUpdates = root.get("numUpdates", 0).asInt();
+  if (tempMaxUpdates <= 0) {
+    limitNumUpdates = false;
+  } else {
+    maxUpdates = tempMaxUpdates;
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+    std::cout << "INFO: Limiting number of updates to " << maxUpdates << std::endl;
+    #endif
+  }
+  #endif
+
   setFixedTimestep(dtTimestep);
 
   std::string neighborSearchTypeString = root["sph"].get("neighborSearchType", SPHConfig_Default_neighborSearchTypeString).asString();
@@ -138,6 +154,12 @@ void SPHSolver::loadConfig(const std::string &file) {
 }
 
 void SPHSolver::update(double deltaT) {
+  #if MFluidSolver_RECORD_PERFORMANCE
+  if (limitNumUpdates && numUpdates >= maxUpdates) return;
+  std::clock_t startTime = std::clock();
+  #endif
+
+  // NOTE: TIMESTEP IS OVERWRITTEN HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   deltaT = _fixedTimestep;
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
@@ -150,6 +172,9 @@ void SPHSolver::update(double deltaT) {
     for (SPHParticle *p : _particles) {
       nSearch->addParticle(p);
     }
+    /*for (SPHParticle *p : _particles) {
+      nSearch->updateParticle(p);
+    }*/
   }
 
   // Calculate neighbors
@@ -231,6 +256,13 @@ void SPHSolver::update(double deltaT) {
       p->color = glm::normalize(glm::abs(p->velocity()));
     }
   }
+
+  #if MFluidSolver_RECORD_PERFORMANCE
+  std::clock_t endTime = std::clock();
+  double computeTimeInSeconds = (endTime - startTime) / (double) CLOCKS_PER_SEC;
+  ++numUpdates;
+  computeTime += computeTimeInSeconds;
+  #endif
 }
 
 void SPHSolver::addParticleAt(const glm::vec3 &position) {

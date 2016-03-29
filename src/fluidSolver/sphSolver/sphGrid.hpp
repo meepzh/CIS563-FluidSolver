@@ -23,6 +23,7 @@ public:
   SPHGrid(const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float cellSize);
 
   virtual void addParticle(SPHParticle *p) = 0;
+  virtual void updateParticle(SPHParticle *p) = 0;
   virtual void getNeighbors(SPHParticle *p) = 0;
   virtual void clear() = 0;
   virtual glm::ivec3 getGridCoordinates(const glm::vec3 &pt) = 0;
