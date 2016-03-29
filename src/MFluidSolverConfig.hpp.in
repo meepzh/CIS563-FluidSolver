@@ -50,7 +50,7 @@
 #define SPHConfig_Default_dtTimestep 0.001
 #define SPHConfig_Default_kernelRadius 0.100001
 #define SPHConfig_Default_useUniformGrid true
-#define SPHConfig_Default_nSearchType NeighborSearchType::StandardGrid
+#define SPHConfig_Default_nSearchType NeighborSearchType::UniformGrid
 
 // Do not touch
 #define MFluidSolver_LOG_NONE 1000

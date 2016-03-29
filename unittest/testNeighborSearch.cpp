@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_Naive_BasicFail)
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_SameCell)
 {
-  StandardGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f);
+  UniformGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f);
 
   SPHParticle a(glm::vec3(0.25f));
   SPHParticle b(glm::vec3(0.2f));
@@ -84,7 +84,7 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_SameCell)
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsX)
 {
-  StandardGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f);
+  UniformGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f);
 
   SPHParticle a(glm::vec3(0.25f));
   SPHParticle b(glm::vec3(0.6f, 0.25f, 0.25f));
@@ -109,7 +109,7 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsX)
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsY)
 {
-  StandardGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f);
+  UniformGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f);
 
   SPHParticle a(glm::vec3(0.25f));
   SPHParticle b(glm::vec3(0.25f, 0.6f, 0.25f));
@@ -134,7 +134,7 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsY)
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsZ)
 {
-  StandardGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f);
+  UniformGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f);
 
   SPHParticle a(glm::vec3(0.25f));
   SPHParticle b(glm::vec3(0.25f, 0.25f, 0.6f));
@@ -159,7 +159,7 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsZ)
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellNotNeighborsX)
 {
-  StandardGridNeighborSearch nSearch(0.2f, glm::vec3(0), glm::vec3(1), 0.2f);
+  UniformGridNeighborSearch nSearch(0.2f, glm::vec3(0), glm::vec3(1), 0.2f);
 
   SPHParticle a(glm::vec3(0.1f));
   SPHParticle b(glm::vec3(0.9f, 0.1f, 0.1f));
@@ -180,7 +180,7 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellNotNeighborsX)
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellNotNeighborsY)
 {
-  StandardGridNeighborSearch nSearch(0.2f, glm::vec3(0), glm::vec3(1), 0.2f);
+  UniformGridNeighborSearch nSearch(0.2f, glm::vec3(0), glm::vec3(1), 0.2f);
 
   SPHParticle a(glm::vec3(0.1f));
   SPHParticle b(glm::vec3(0.1f, 0.9f, 0.1f));
@@ -201,7 +201,7 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellNotNeighborsY)
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellNotNeighborsZ)
 {
-  StandardGridNeighborSearch nSearch(0.2f, glm::vec3(0), glm::vec3(1), 0.2f);
+  UniformGridNeighborSearch nSearch(0.2f, glm::vec3(0), glm::vec3(1), 0.2f);
 
   SPHParticle a(glm::vec3(0.1f));
   SPHParticle b(glm::vec3(0.1f, 0.1f, 0.9f));
@@ -222,7 +222,7 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellNotNeighborsZ)
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsPositiveOffsetX)
 {
-  StandardGridNeighborSearch nSearch(0.5f, glm::vec3(2), glm::vec3(3), 0.5f);
+  UniformGridNeighborSearch nSearch(0.5f, glm::vec3(2), glm::vec3(3), 0.5f);
 
   SPHParticle a(glm::vec3(2.25f));
   SPHParticle b(glm::vec3(2.6f, 2.25f, 2.25f));
@@ -247,7 +247,7 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsPosi
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsNegativeOffsetX)
 {
-  StandardGridNeighborSearch nSearch(0.5f, glm::vec3(-3), glm::vec3(-2), 0.5f);
+  UniformGridNeighborSearch nSearch(0.5f, glm::vec3(-3), glm::vec3(-2), 0.5f);
 
   SPHParticle a(glm::vec3(-2.75f));
   SPHParticle b(glm::vec3(-2.4f, -2.75f, -2.75f));
@@ -306,7 +306,7 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_StressTest)
   glm::vec3 minBound(0);
   glm::vec3 maxBound(2.5);
 
-  StandardGridNeighborSearch nSearch(0.2f, minBound, maxBound, 0.2f);
+  UniformGridNeighborSearch nSearch(0.2f, minBound, maxBound, 0.2f);
   std::vector<SPHParticle *> particles;
 
   // Init particles

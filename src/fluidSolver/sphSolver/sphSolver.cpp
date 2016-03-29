@@ -35,14 +35,14 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
 
       nSearch = new NaiveNeighborSearch();
       break;
-    case NeighborSearchType::StandardGrid:
+    case NeighborSearchType::UniformGrid:
     default:
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
       std::cout << "INFO: SPH Solver using uniform grid neighbor search" << std::endl;
       #endif
 
       // Note: Assumes grid cell size is equal to kernelRadius
-      nSearch = new StandardGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius);
+      nSearch = new UniformGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius);
       break;
   }
 
@@ -94,7 +94,7 @@ void SPHSolver::loadConfig(const std::string &file) {
   kernelRadius = root["sph"].get("kernelRadius", SPHConfig_Default_kernelRadius).asFloat();
   bool useUniformGrid = root["sph"].get("useUniformGrid", SPHConfig_Default_useUniformGrid).asBool();
   if (useUniformGrid) {
-    nSearchType = NeighborSearchType::StandardGrid;
+    nSearchType = NeighborSearchType::UniformGrid;
   } else {
     nSearchType = NeighborSearchType::Naive;
   }
@@ -117,8 +117,8 @@ void SPHSolver::update(double deltaT) {
   #endif
 
   // Prepare neighbor search
-  if (nSearchType == NeighborSearchType::StandardGrid) {
-    static_cast<StandardGridNeighborSearch *>(nSearch)->clear();
+  if (nSearchType == NeighborSearchType::UniformGrid) {
+    static_cast<UniformGridNeighborSearch *>(nSearch)->clear();
     for (SPHParticle *p : _particles) {
       nSearch->addParticle(p);
     }
@@ -234,8 +234,8 @@ bool SPHSolver::checkInited() {
 }
 
 void SPHSolver::demoCode(SPHParticle *target) {
-  if (nSearchType == NeighborSearchType::StandardGrid) {
-    static_cast<StandardGridNeighborSearch *>(nSearch)->clear();
+  if (nSearchType == NeighborSearchType::UniformGrid) {
+    static_cast<UniformGridNeighborSearch *>(nSearch)->clear();
     for (SPHParticle *p : _particles) {
       nSearch->addParticle(p);
     }
@@ -262,8 +262,8 @@ void SPHSolver::randomDemo() {
 }
 
 void SPHSolver::exportVDB() {
-  if (nSearchType == NeighborSearchType::StandardGrid) {
-    static_cast<StandardGridNeighborSearch *>(nSearch)->exportVDB();
+  if (nSearchType == NeighborSearchType::UniformGrid) {
+    static_cast<UniformGridNeighborSearch *>(nSearch)->exportVDB();
   } else {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
     std::cout << "WARN: Cannot export VDB unless using grid neighbor search" << std::endl;

@@ -18,26 +18,23 @@ struct InvalidSPHGridSizeException : std::exception {
   const char *what() const noexcept {return "Invalid SPH grid size.\n";};
 };
 
-// Grid type XZY (X elements together, then Z, then Y)
 class SPHGrid {
 public:
   SPHGrid(const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float cellSize);
-  ~SPHGrid();
 
-  void addParticle(SPHParticle *p);
-  void getNeighbors(SPHParticle *p);
-  void clear();
-  glm::ivec3 getGridCoordinates(const glm::vec3 &pt);
-  unsigned int getIndex(const glm::ivec3 &c);
-  unsigned int getIndex(unsigned int x, unsigned int y, unsigned int z);
-  void printDiagnostics();
+  virtual void addParticle(SPHParticle *p) = 0;
+  virtual void getNeighbors(SPHParticle *p) = 0;
+  virtual void clear() = 0;
+  virtual glm::ivec3 getGridCoordinates(const glm::vec3 &pt) = 0;
+  virtual unsigned int getIndex(const glm::ivec3 &c) = 0;
+  virtual unsigned int getIndex(unsigned int x, unsigned int y, unsigned int z) = 0;
+  virtual void printDiagnostics() = 0;
 
   #if MFluidSolver_USE_OPENVDB
-  void exportVDB(std::string &file, std::string &gridName);
+  virtual void exportVDB(std::string &file, std::string &gridName) = 0;
   #endif
 
-private:
-  std::vector<std::vector<SPHParticle *>> *data;
+protected:
   glm::vec3 minBounds;
   glm::vec3 maxBounds;
   glm::ivec3 cellBounds;

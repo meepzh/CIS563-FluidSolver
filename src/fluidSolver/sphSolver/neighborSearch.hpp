@@ -9,10 +9,10 @@
 
 #include <vector>
 
-#include "sphGrid.hpp"
+#include "sphUniformGrid.hpp"
 #include "sphParticle.hpp"
 
-enum NeighborSearchType {Naive, StandardGrid};
+enum NeighborSearchType {Naive, UniformGrid};
 
 class NeighborSearch {
 public:
@@ -38,10 +38,10 @@ private:
   std::vector<SPHParticle *> particleList;
 };
 
-class StandardGridNeighborSearch : public NeighborSearch {
+class UniformGridNeighborSearch : public NeighborSearch {
 public:
-  StandardGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize);
-  ~StandardGridNeighborSearch();
+  UniformGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize);
+  ~UniformGridNeighborSearch();
   virtual void findNeighbors(SPHParticle *p);
   virtual void addParticle(SPHParticle *p);
   void clear();
@@ -51,7 +51,7 @@ public:
   #endif
 
 private:
-  SPHGrid *grid;
+  SPHUniformGrid *grid;
 };
 
 #endif /* MFLUIDSOLVER_SPHSOLVER_NEIGHBORSEARCH_HPP_ */

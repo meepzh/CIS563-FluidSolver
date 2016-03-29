@@ -116,6 +116,7 @@ set(CORE_SRC
         src/fluidSolver/sphSolver/sphGrid.cpp
         src/fluidSolver/sphSolver/sphParticle.cpp
         src/fluidSolver/sphSolver/sphSolver.cpp
+        src/fluidSolver/sphSolver/sphUniformGrid.cpp
         src/fluidSolver/fluidSolver.cpp
         src/fluidSolver/particle.cpp
         src/geom/cube.cpp
@@ -141,6 +142,7 @@ set(MNEIGHBORSEARCH_LIB
         src/fluidSolver/sphSolver/neighborSearch.cpp
         src/fluidSolver/sphSolver/sphGrid.cpp
         src/fluidSolver/sphSolver/sphParticle.cpp
+        src/fluidSolver/sphSolver/sphUniformGrid.cpp
         src/fluidSolver/particle.cpp
 )
 add_library(MNeighborSearch ${MNEIGHBORSEARCH_LIB})

@@ -32,16 +32,16 @@ void NaiveNeighborSearch::addParticle(SPHParticle *p) {
   particleList.push_back(p);
 }
 
-StandardGridNeighborSearch::StandardGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize)
+UniformGridNeighborSearch::UniformGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize)
 : NeighborSearch(r), grid(nullptr) {
-  grid = new SPHGrid(gridMin, gridMax, cellSize);
+  grid = new SPHUniformGrid(gridMin, gridMax, cellSize);
 }
 
-StandardGridNeighborSearch::~StandardGridNeighborSearch() {
+UniformGridNeighborSearch::~UniformGridNeighborSearch() {
   delete grid;
 }
 
-void StandardGridNeighborSearch::findNeighbors(SPHParticle *p) {
+void UniformGridNeighborSearch::findNeighbors(SPHParticle *p) {
   grid->getNeighbors(p);
 
   const glm::vec3 pPos = p->position();
@@ -62,16 +62,16 @@ void StandardGridNeighborSearch::findNeighbors(SPHParticle *p) {
   }
 }
 
-void StandardGridNeighborSearch::addParticle(SPHParticle *p) {
+void UniformGridNeighborSearch::addParticle(SPHParticle *p) {
   grid->addParticle(p);
 }
 
-void StandardGridNeighborSearch::clear() {
+void UniformGridNeighborSearch::clear() {
   grid->clear();
 }
 
 #if MFluidSolver_USE_OPENVDB
-void StandardGridNeighborSearch::exportVDB() {
+void UniformGridNeighborSearch::exportVDB() {
   std::string filename = "export.vdb";
   std::string exportname = "MExport";
   grid->exportVDB(filename, exportname);
