@@ -110,10 +110,10 @@ void ParticleShaderProgram::draw() {
   glUseProgram(programID);
 
   // Copy data from particles to RAM buffers
-  std::vector<SPHParticle *> &particles = solver->particles();
+  std::vector<SPHParticle> &particles = solver->particles();
   for (unsigned int i = 0; i < particles.size(); ++i) {
-    particleColorArray[i] = glm::vec3(particles.at(i)->color);
-    particlePositionArray[i] = particles.at(i)->position();
+    particleColorArray[i] = glm::vec3(particles.at(i).color);
+    particlePositionArray[i] = particles.at(i).position();
   }
 
   // Set billboard texture to texture unit 0

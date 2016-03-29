@@ -21,9 +21,6 @@ SPHSolver::SPHSolver()
 
 SPHSolver::~SPHSolver() {
   delete nSearch;
-  for (SPHParticle *p : _particles) {
-    delete p;
-  }
 }
 
 void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
@@ -172,71 +169,71 @@ void SPHSolver::update(double deltaT) {
   // Prepare neighbor search
   if (nSearchType == NeighborSearchType::UniformGrid) {
     nSearch->clear();
-    for (SPHParticle *p : _particles) {
-      nSearch->addParticle(p);
+    for (SPHParticle &p : _particles) {
+      nSearch->addParticle(&p);
     }
-    /*for (SPHParticle *p : _particles) {
+    /*for (SPHParticle &p : _particles) {
       nSearch->updateParticle(p);
     }*/
   }
 
   // Calculate neighbors
-  for (SPHParticle *p : _particles) {
-    p->clearNeighbors();
-    nSearch->findNeighbors(p);
+  for (SPHParticle &p : _particles) {
+    p.clearNeighbors();
+    nSearch->findNeighbors(&p);
   }
 
   // Compute density and pressure
-  for (SPHParticle *p : _particles) {
+  for (SPHParticle &p : _particles) {
     // Density
-    float densitySum = p->mass() * kernelFunctions.computePoly6(glm::vec3(0));
-    if (p->neighbors()->size() > 0) {
-      for (SPHParticle *n : *(p->neighbors())) {
-        densitySum += n->mass() * kernelFunctions.computePoly6(p->position() - n->position());
+    float densitySum = p.mass() * kernelFunctions.computePoly6(glm::vec3(0));
+    if (p.neighbors()->size() > 0) {
+      for (SPHParticle *n : *(p.neighbors())) {
+        densitySum += n->mass() * kernelFunctions.computePoly6(p.position() - n->position());
       }
     }
-    p->setDensity(densitySum);
+    p.setDensity(densitySum);
 
     // Pressure
-    float pressureTemp = kStiffness * (p->density() - dRestDensity);
+    float pressureTemp = kStiffness * (p.density() - dRestDensity);
     if (pressureTemp < 0) pressureTemp = 0;
-    p->setPressure(pressureTemp);
+    p.setPressure(pressureTemp);
   }
 
   // Compute forces
-  for (SPHParticle *p : _particles) {
+  for (SPHParticle &p : _particles) {
     glm::vec3 pressureFD(0);
     glm::vec3 viscosityFD(0);
-    glm::vec3 gravityFD = glm::vec3(0, p->density() * _gravity, 0);
+    glm::vec3 gravityFD = glm::vec3(0, p.density() * _gravity, 0);
 
-    for (SPHParticle *n : *(p->neighbors())) {
+    for (SPHParticle *n : *(p.neighbors())) {
       pressureFD -= n->mass() / n->density() *
-        (p->pressure() + n->pressure()) / 2.f *
-        kernelFunctions.computeSpikyGradient(p->position() - n->position());
+        (p.pressure() + n->pressure()) / 2.f *
+        kernelFunctions.computeSpikyGradient(p.position() - n->position());
     }
 
     if (muViscosity > 0) {
-      for (SPHParticle *n : *(p->neighbors())) {
+      for (SPHParticle *n : *(p.neighbors())) {
         viscosityFD += glm::vec3(n->mass() / n->density() *
-          (n->velocity() - p->velocity()) *
-          (float)kernelFunctions.computeViscousLaplacian(p->position() - n->position()));
+          (n->velocity() - p.velocity()) *
+          (float)kernelFunctions.computeViscousLaplacian(p.position() - n->position()));
       }
 
       viscosityFD *= muViscosity;
     }
 
-    p->setForceDensity(pressureFD + viscosityFD + gravityFD);
+    p.setForceDensity(pressureFD + viscosityFD + gravityFD);
   }
 
   // Compute velocity and position, check bounds
-  for (SPHParticle *p : _particles) {
-    p->update(deltaT);
+  for (SPHParticle &p : _particles) {
+    p.update(deltaT);
 
     // Check bounds
     glm::ivec3 violations;
-    if (!fluidContainer->intersects(p->position(), violations)) {
-      glm::vec3 position = p->position();
-      p->reverseVelocity(violations, 0.1f); // Bounce
+    if (!fluidContainer->intersects(p.position(), violations)) {
+      glm::vec3 position = p.position();
+      p.reverseVelocity(violations, 0.1f); // Bounce
 
       // TODO: Generalize
       glm::vec3 scaleVec = fluidContainer->transform.scale();
@@ -252,11 +249,11 @@ void SPHSolver::update(double deltaT) {
       if (violations.z < 0) position.z = minBounds.z;
       else if (violations.z > 0) position.z = maxBounds.z;
 
-      p->setPosition(position);
+      p.setPosition(position);
     }
 
     if (visualizationType == FluidVisualizationType::Velocity) {
-      p->color = glm::normalize(glm::abs(p->velocity()));
+      p.color = glm::normalize(glm::abs(p.velocity()));
     }
   }
 
@@ -270,13 +267,13 @@ void SPHSolver::update(double deltaT) {
 
 void SPHSolver::addParticleAt(const glm::vec3 &position) {
   if (_particles.size() < _maxParticles) {
-    SPHParticle *p = new SPHParticle(mMass, position);
+    SPHParticle p(mMass, position);
     _particles.push_back(p);
-    nSearch->addParticle(p);
+    nSearch->addParticle(&p);
   }
 }
 
-std::vector<SPHParticle *> &SPHSolver::particles() {
+std::vector<SPHParticle> &SPHSolver::particles() {
   return _particles;
 }
 
@@ -291,12 +288,9 @@ void SPHSolver::setParticleSeparation(float ps) {
 void SPHSolver::setMaxParticles(int mp) {
   FluidSolver::setMaxParticles(mp);
   if (mp <= 0) {
-    for (SPHParticle *p : _particles) {
-      delete p;
-    }
+    _particles.clear();
   } else if (mp > _particles.size()) {
     while (_particles.size() > mp) {
-      delete _particles.at(_particles.size() - 1);
       _particles.erase(_particles.end() - 1);
     }
   }
@@ -315,14 +309,14 @@ bool SPHSolver::checkInited() {
 void SPHSolver::visualizeParticleNeighbors(SPHParticle *target) {
   if (visualizationType != FluidVisualizationType::Neighbors) return;
 
-  for (SPHParticle *p : _particles) {
-    p->color = glm::vec3(0, 0, 1);
+  for (SPHParticle &p : _particles) {
+    p.color = glm::vec3(0, 0, 1);
   }
 
   if (nSearchType == NeighborSearchType::UniformGrid) {
     static_cast<UniformGridNeighborSearch *>(nSearch)->clear();
-    for (SPHParticle *p : _particles) {
-      nSearch->addParticle(p);
+    for (SPHParticle &p : _particles) {
+      nSearch->addParticle(&p);
     }
   }
 
@@ -336,11 +330,11 @@ void SPHSolver::visualizeParticleNeighbors(SPHParticle *target) {
 }
 
 void SPHSolver::visualizeParticle0Neighbors() {
-  visualizeParticleNeighbors(_particles.at(0));
+  visualizeParticleNeighbors(&(_particles.at(0)));
 }
 
 void SPHSolver::visualizeRandomParticlesNeighbors() {
-  visualizeParticleNeighbors(_particles.at(rand() % _particles.size()));
+  visualizeParticleNeighbors(&(_particles.at(rand() % _particles.size())));
 }
 
 #if MFluidSolver_USE_OPENVDB

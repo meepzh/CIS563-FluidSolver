@@ -25,7 +25,7 @@ public:
 
   virtual void update(double deltaT);
   virtual void addParticleAt(const glm::vec3 &position);
-  virtual std::vector<SPHParticle *> &particles();
+  virtual std::vector<SPHParticle> &particles();
   virtual unsigned int numParticles() const;
   virtual void setParticleSeparation(float ps);
   virtual void setMaxParticles(int mp);
@@ -43,7 +43,7 @@ private:
   NeighborSearchType nSearchType;
   KernelFunctions kernelFunctions;
   NeighborSearch *nSearch;
-  std::vector<SPHParticle *> _particles;
+  std::vector<SPHParticle> _particles;
 
   float kStiffness;
   float muViscosity;
