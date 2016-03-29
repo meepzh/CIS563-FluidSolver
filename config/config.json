@@ -15,5 +15,5 @@
 		"neighborSearchType": "uniform"
 	},
 	"visualization": "velocity",
-	"numUpdates": 800
+	"numUpdates": -1
 }

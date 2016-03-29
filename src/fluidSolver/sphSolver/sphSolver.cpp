@@ -117,6 +117,7 @@ void SPHSolver::loadConfig(const std::string &file) {
     limitNumUpdates = false;
   } else {
     maxUpdates = tempMaxUpdates;
+    limitNumUpdates = true;
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
     std::cout << "INFO: Limiting number of updates to " << maxUpdates << std::endl;
     #endif
@@ -155,7 +156,9 @@ void SPHSolver::loadConfig(const std::string &file) {
 
 void SPHSolver::update(double deltaT) {
   #if MFluidSolver_RECORD_PERFORMANCE
-  if (limitNumUpdates && numUpdates >= maxUpdates) return;
+  if (limitNumUpdates && numUpdates >= maxUpdates) {
+    return;
+  }
   std::clock_t startTime = std::clock();
   #endif
 
@@ -168,7 +171,7 @@ void SPHSolver::update(double deltaT) {
 
   // Prepare neighbor search
   if (nSearchType == NeighborSearchType::UniformGrid) {
-    static_cast<UniformGridNeighborSearch *>(nSearch)->clear();
+    nSearch->clear();
     for (SPHParticle *p : _particles) {
       nSearch->addParticle(p);
     }
