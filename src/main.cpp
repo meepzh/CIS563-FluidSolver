@@ -4,7 +4,6 @@
 
 #include "MFluidSolverConfig.hpp"
 
-#include <cstdio>
 #include <fstream>
 
 #include <GL/glew.h>
@@ -23,13 +22,13 @@
 int main() {
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   // Print version info
-  std::printf("INFO: Version %d.%d\n", MFluidSolver_VERSION_MAJOR, MFluidSolver_VERSION_MINOR);
+  std::cout << "INFO: Version " << MFluidSolver_VERSION_MAJOR << "." << MFluidSolver_VERSION_MINOR) << std::endl;
   #endif
 
   // Initialize GLFW
   if (!glfwInit()) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
-    std::fprintf(stderr, "FATAL: Failed to initiaize GLFW\n");
+    std::cerr << "FATAL: Failed to initiaize GLFW" << std::endl;
     #endif
 
     getchar(); // Wait for key before quit
@@ -45,7 +44,7 @@ int main() {
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   // Load config JSON
-  std::printf("INFO: Loading config file: %s\n", configJSON.c_str());
+  std::cout << "INFO: Loading config file: " << configJSON << std::endl;
   #endif
 
   // Read JSON file
@@ -56,7 +55,7 @@ int main() {
   bool success = reader.parse(sceneStream, root, false);
   if (!success) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
-    std::fprintf(stderr, "ERROR: Failed to parse config file %s", configJSON.c_str());
+    std::cerr << "ERROR: Failed to parse config file " << configJSON.c_str() << std::endl;
     #endif
   }
 
@@ -83,7 +82,7 @@ int main() {
   }
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::printf("INFO: OpenGL Version %s\n", glGetString(GL_VERSION));
+  std::cout << "INFO: OpenGL Version " << glGetString(GL_VERSION) << std::endl;
   #endif
 
   // Set a few settings/modes in OpenGL rendering

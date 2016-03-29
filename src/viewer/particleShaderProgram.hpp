@@ -7,6 +7,7 @@
 
 #include "MFluidSolverConfig.hpp"
 
+#include <iostream>
 #include <vector>
 
 #include "../fluidSolver/sphSolver/sphSolver.hpp"

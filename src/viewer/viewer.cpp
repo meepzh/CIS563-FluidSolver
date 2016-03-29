@@ -4,7 +4,6 @@
 
 #include "viewer.hpp"
 
-#include <cstdio>
 #include <cstring>
 
 #include "input.hpp"
@@ -14,12 +13,12 @@ void APIENTRY openglDebugCallbackFunction(GLenum source, GLenum type, GLuint id,
     GLenum severity, GLsizei length, const GLchar* message, void* userParam) {
   std::string sType;
   std::string sSeverity;
-  FILE **outStream = &stdout;
+  std::ostream *outStream = &std::cout;
 
   switch (type) {
     case GL_DEBUG_TYPE_ERROR:
       sType = "ERROR";
-      outStream = &stderr;
+      outStream = &std::cerr;
       break;
     case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
       sType = "DEPRECATED";
@@ -62,7 +61,7 @@ void APIENTRY openglDebugCallbackFunction(GLenum source, GLenum type, GLuint id,
       return;
       #endif
   }
-  std::fprintf(*outStream, "GL:%s(%s): %s\n", sType.c_str(), sSeverity.c_str(), message);
+  *outStream << "GL:" << sType << "(" << sSeverity << "): " << message << std::endl;
 }
 #endif
 
@@ -87,7 +86,7 @@ void Viewer::init(int width, int height) {
   window = glfwCreateWindow(width, height, "MFluidSolver", NULL, NULL);
   if (window == NULL) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_FATAL
-    std::fprintf(stderr, "FATAL: Failed to open GLFW window\n");
+    std::cerr << "FATAL: Failed to open GLFW window" << std::endl;
     #endif
 
     getchar(); // Wait for key before quit
@@ -100,7 +99,7 @@ void Viewer::init(int width, int height) {
   glewExperimental = GL_TRUE;
   if (glewInit() != GLEW_OK) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_FATAL
-    std::fprintf(stderr, "FATAL: Failed to initialize GLEW\n");
+    std::cerr << "FATAL: Failed to initialize GLEW" << std::endl;
     #endif
 
     getchar(); // Wait for key before quit
@@ -121,7 +120,7 @@ void Viewer::init(int width, int height) {
   // Set debug callback
   if (glDebugMessageCallback) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-    std::printf("DEBUG: Registering OpenGL debug callback\n");
+    std::cout << "DEBUG: Registering OpenGL debug callback" << std:: endl;
     #endif
 
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
@@ -131,7 +130,7 @@ void Viewer::init(int width, int height) {
       0, &unusedIds, true);
   } else {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-    std::printf("DEBUG: OpenGL debug callback not available\n");
+    std::cout << "DEBUG: OpenGL debug callback not available" << std::endl;
     #endif
   }
   #endif
@@ -201,7 +200,7 @@ void Viewer::run() {
     // Check for errors
     if ((glErrorCode = glGetError()) != GL_NO_ERROR) {
       glErrorString = gluErrorString(glErrorCode);
-      std::fprintf(stderr, "GL:ERROR: %s\n", glErrorString);
+      std::cerr << "GL:ERROR: " << glErrorString << std::endl;
     }
     #endif
     #endif

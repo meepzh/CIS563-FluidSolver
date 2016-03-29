@@ -4,8 +4,8 @@
 
 #include "sphSolver.hpp"
 
-#include <cstdio>
 #include <fstream>
+#include <iostream>
 #include <json/json.h>
 
 SPHSolver::SPHSolver()
@@ -22,7 +22,7 @@ SPHSolver::~SPHSolver() {
 
 void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::printf("INFO: Initializing SPH Solver\n");
+  std::cout << "INFO: Initializing SPH Solver" << std::endl;
   #endif
 
   kernelFunctions.setKernelRadius(kernelRadius);
@@ -30,7 +30,7 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
   switch (nSearchType) {
     case NeighborSearchType::Naive:
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-      std::printf("INFO: SPH Solver using naive neighbor search\n");
+      std::cout << "INFO: SPH Solver using naive neighbor search" << std::endl;
       #endif
 
       nSearch = new NaiveNeighborSearch();
@@ -38,7 +38,7 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
     case NeighborSearchType::StandardGrid:
     default:
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-      std::printf("INFO: SPH Solver using uniform grid neighbor search\n");
+      std::cout << "INFO: SPH Solver using uniform grid neighbor search" << std::endl;
       #endif
 
       // Note: Assumes grid cell size is equal to kernelRadius
@@ -48,7 +48,7 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   if (muViscosity <= 0) {
-    std::printf("INFO: As per config, viscosity is disabled.\n");
+    std::cout << "INFO: As per config, viscosity is disabled" << std::endl;
   }
   #endif
 
@@ -70,7 +70,7 @@ void SPHSolver::loadConfig(const std::string &file) {
   if (checkInited()) return;
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::printf("INFO: Loading SPH parameters from config file: %s\n", file.c_str());
+  std::cout << "INFO: Loading SPH parameters from config file: " << file << std::endl;
   #endif
 
   // Read JSON file
@@ -81,7 +81,7 @@ void SPHSolver::loadConfig(const std::string &file) {
   bool success = reader.parse(sceneStream, root, false);
   if (!success) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
-    std::fprintf(stderr, "ERROR: Failed to parse config file %s", file.c_str());
+    std::cerr << "ERROR: Failed to parse config file " << file << std::endl;
     #endif
     return;
   }
@@ -100,12 +100,12 @@ void SPHSolver::loadConfig(const std::string &file) {
   }
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::printf("- INFO: Stiffness: %.2f\n", kStiffness);
-  std::printf("- INFO: Viscosity: %.2f\n", muViscosity);
-  std::printf("- INFO: Mass: %.2f\n", mMass);
-  std::printf("- INFO: Rest Density: %.2f\n", dRestDensity);
-  std::printf("- INFO: Timestep: %.2f\n", dtTimestep);
-  std::printf("- INFO: Kernel Radius: %.2f\n", kernelRadius);
+  std::cout << "- INFO: Stiffness: " << kStiffness << std::endl;
+  std::cout << "- INFO: Viscosity: " << muViscosity << std::endl;
+  std::cout << "- INFO: Mass: " << mMass << std::endl;
+  std::cout << "- INFO: Rest Density: " << dRestDensity << std::endl;
+  std::cout << "- INFO: Timestep: " << dtTimestep << std::endl;
+  std::cout << "- INFO: Kernel Radius: " << kernelRadius << std::endl;
   #endif
 }
 
@@ -113,7 +113,7 @@ void SPHSolver::update(double deltaT) {
   deltaT = MFluidSolver_DEFAULT_UPDATE_STEP;
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
-  std::printf("DEBUG: Updating by %.4f seconds\n", deltaT);
+  std::cout << "DEBUG: Updating by " << deltaT << " seconds" << std::endl;
   #endif
 
   // Prepare neighbor search
@@ -226,7 +226,7 @@ void SPHSolver::setParticleSeparation(float ps) {
 bool SPHSolver::checkInited() {
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
   if (inited) {
-    std::fprintf(stderr, "ERROR: Already inited SPH Solver. Config will not be applied");
+    std::cerr << "ERROR: Already inited SPH Solver. Config will not be applied" << std::endl;
   }
   #endif
 
@@ -266,7 +266,7 @@ void SPHSolver::exportVDB() {
     static_cast<StandardGridNeighborSearch *>(nSearch)->exportVDB();
   } else {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
-    std::printf("WARN: Cannot export VDB unless using grid neighbor search\n");
+    std::cout << "WARN: Cannot export VDB unless using grid neighbor search" << std::endl;
     #endif
   }
 }

@@ -5,7 +5,6 @@
 #include "sphGrid.hpp"
 
 #include <cassert>
-#include <cstdio>
 
 #if MFluidSolver_USE_OPENVDB
 #include <openvdb/openvdb.h>
@@ -16,7 +15,7 @@ SPHGrid::SPHGrid(const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float c
   glm::vec3 gridSize = maxBounds - minBounds;
   if (gridSize.x <= 0 || gridSize.y <= 0 || gridSize.z <= 0) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_FATAL
-    std::fprintf(stderr, "FATAL: Grid size (%.2f, %.2f, %.2f) is invalid\n", gridSize.x, gridSize.y, gridSize.z);
+    std::cerr << "FATAL: Grid size (" << gridSize.x << ", " << gridSize.y << ", " << gridSize.z << ") is invalid" << std::endl;
     #endif
     throw InvalidSPHGridSizeException();
   }
@@ -24,7 +23,7 @@ SPHGrid::SPHGrid(const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float c
   cellBounds = (gridSize + 0.5f) / cellSize;
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::printf("INFO: Created grid with cell bounds: (%d, %d, %d)\n", cellBounds.x, cellBounds.y, cellBounds.z);
+  std:: cout << "INFO: Created grid with cell bounds: (" << cellBounds.x << ", " << cellBounds.y << ", " << cellBounds.z << ")" << std::endl;
   #endif
 
   data = new std::vector<std::vector<SPHParticle *>>();
@@ -47,7 +46,7 @@ void SPHGrid::getNeighbors(SPHParticle *p) {
   std::vector<SPHParticle *> *neighbors = p->neighbors();
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
-  std::printf("TRACE: Getting neighbors for cell (%d, %d, %d)\n", pC.x, pC.y, pC.z);
+  std::cout << "TRACE: Getting neighbors for cell (" << pC.x << ", " << pC.y << ", " << pC.z << ")" << std::endl;
   #endif
 
   unsigned int index;
@@ -68,7 +67,7 @@ void SPHGrid::getNeighbors(SPHParticle *p) {
           } // end for l
 
           #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
-          std::printf("TRACE: Accessing cell (%d, %d, %d)\n", coords.x, coords.y, coords.z);
+          std::cout << "TRACE: Accessing cell (" << coords.x << ", " << coords.y << ", " << coords.z << ")" << std::endl;
           #endif
         }
       } // end for k
@@ -100,8 +99,8 @@ unsigned int SPHGrid::getIndex(const glm::ivec3 &c) {
 }
 
 void SPHGrid::printDiagnostics() {
-  std::printf("Grid bounds: (%d, %d, %d)\n", cellBounds.x, cellBounds.y, cellBounds.z);
-  std::printf("Grid size: %d\n", numCells);
+  std::cout << "Grid bounds: (" << cellBounds.x << ", " << cellBounds.y << ", " << cellBounds.z << ")" << std::endl;
+  std::cout << "Grid size: " << numCells << std::endl;
 
   for (unsigned int i = 0; i < cellBounds.x; ++i) {
     for (unsigned int j = 0; j < cellBounds.y; ++j) {
@@ -142,7 +141,7 @@ void SPHGrid::exportVDB(std::string &file, std::string &gridName) {
   fileIO.close();
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::printf("INFO: Exported grid VDB to: %s\n", file.c_str());
+  std::cout << "INFO: Exported grid VDB to: " << file << std::endl;
   #endif
 }
 #endif

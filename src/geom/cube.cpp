@@ -106,7 +106,7 @@ void Cube::spawnParticlesInVolume(FluidSolver *solver) const {
   //solver->addParticle(new Particle(glm::vec3(0)));
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::printf("INFO: Seeded %d particles.\n", count);
+  std::cout << "INFO: Cube (" << name << ") seeded %d particles" << std::endl;
   #endif
 }
 

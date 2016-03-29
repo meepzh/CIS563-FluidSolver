@@ -4,6 +4,8 @@
 
 #include "particleShaderProgram.hpp"
 
+#include <iostream>
+
 ParticleShaderProgram::ParticleShaderProgram(SPHSolver *solver,
   const std::string &vertexShader, const std::string &fragmentShader,
   const std::string &billboardDDS)
@@ -50,23 +52,23 @@ ParticleShaderProgram::ParticleShaderProgram(SPHSolver *solver,
   particlePositionArray = new glm::vec3[solver->maxParticles];
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
-  std::printf("DEBUG:SHADER: Program %d is type particles\n", programID);
+  std::cout << "DEBUG:SHADER: Program " << programId << " is type particles" << std::endl;
   #endif
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
   if (aBillboardVertexArrID == -1) {
-    std::printf("WARN: avs_Billboard is not bound for program %d\n", programID);
+    std::cout << "WARN: avs_Billboard is not bound for program " << programID << std::endl;
   }
   if (uBillboardTextureSamplerID == -1) {
-    std::printf("WARN: u_BillboardTextureSampler is not bound for program %d\n", programID);
+    std::cout << "WARN: u_BillboardTextureSampler is not bound for program " << programID << std::endl;
   }
   if (uCameraRightVecID == -1) {
-    std::printf("WARN: u_CameraRight is not bound for program %d\n", programID);
+    std::cout << "WARN: u_CameraRight is not bound for program " << programID << std::endl;
   }
   if (uCameraUpVecID == -1) {
-    std::printf("WARN: u_CameraUp is not bound for program %d\n", programID);
+    std::cout << "WARN: u_CameraUp is not bound for program " << programID << std::endl;
   }
   if (uParticleSizeFloatID == -1) {
-    std::printf("WARN: u_ParticleSize is not bound for program %d\n", programID);
+    std::cout << "WARN: u_ParticleSize is not bound for program " << programID << std::endl;
   }
   #endif
 }

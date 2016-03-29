@@ -4,9 +4,8 @@
 
 #include "shaderProgram.hpp"
 
-#include <cstdio>
-#include <cstring>
 #include <fstream>
+#include <iostream>
 #include <streambuf>
 #include <vector>
 
@@ -27,20 +26,20 @@ ShaderProgram::ShaderProgram(const std::string &vertexShader, const std::string 
   uViewProjectionMatID = glGetUniformLocation(programID, "u_ViewProjection");
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
-  std::printf("DEBUG:SHADER: Created program ID %d\n", programID);
+  std::cout << "DEBUG:SHADER: Created program ID " << programID << std::endl;
   #endif
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
   if (aVertexColorArrID == -1) {
-    std::printf("WARN: avs_Color is not bound for program %d\n", programID);
+    std::cout << "WARN: avs_Color is not bound for program " << programID << std::endl;
   }
   if (aVertexPositionArrID == -1) {
-    std::printf("WARN: avs_Position is not bound for program %d\n", programID);
+    std::cout << "WARN: avs_Position is not bound for program " << programID << std::endl;
   }
   if (uModelMatID == -1) {
-    std::printf("WARN: u_Model is not bound for program %d\n", programID);
+    std::cout << "WARN: u_Model is not bound for program " << programID << std::endl;
   }
   if (uViewProjectionMatID == -1) {
-    std::printf("WARN: u_ViewProjection is not bound for program %d\n", programID);
+    std::cout << "WARN: u_ViewProjection is not bound for program " << programID << std::endl;
   }
   #endif
 }
@@ -103,7 +102,7 @@ GLuint ShaderProgram::loadDDS(const std::string &file) {
   fp = fopen(file.c_str(), "rb");
   if (fp == NULL) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
-    std::fprintf(stderr, "ERROR: %s could not be opened.\n", file.c_str());
+    std::cerr << "ERROR: " << file << " could not be opened" << std::endl;
     #endif
 
     getchar();
@@ -115,7 +114,7 @@ GLuint ShaderProgram::loadDDS(const std::string &file) {
   fread(filecode, 1, 4, fp);
   if (std::strncmp(filecode, "DDS ", 4) != 0) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
-    std::fprintf(stderr, "ERROR: %s is not a DDS file.\n", file.c_str());
+    std::cerr << "ERROR: " << file << " is not a DDS file" << std::endl;
     #endif
 
     getchar();
@@ -185,7 +184,7 @@ GLuint ShaderProgram::loadDDS(const std::string &file) {
   }
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::printf("INFO: Loaded texture %s\n", file.c_str());
+  std::cout << "INFO: Loaded texture " << file << std::endl;
   #endif
 
   free(buffer);
@@ -194,7 +193,7 @@ GLuint ShaderProgram::loadDDS(const std::string &file) {
 
 void ShaderProgram::compile() {
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::printf("INFO: Loading shader program (VS:%s, FS:%s)\n", _vertexShader.c_str(), _fragmentShader.c_str());
+  std::cout << "INFO: Loading shader program (VS:" << _vertexShader << ", FS:" << _fragmentShader << ")" << std::endl;
   #endif
 
   vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
@@ -220,7 +219,7 @@ void ShaderProgram::compile() {
     glGetShaderInfoLog(vertexShaderID, compileLogLen, NULL, &vsErrMessage[0]);
 
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
-    std::fprintf(stderr, "ERROR: Error compiling vertex shader %s %d: %s\n", _vertexShader.c_str(), &vsErrMessage[0]);
+    std::cerr << "ERROR: Error compiling vertex shader " << _vertexShader << ": " << &vsErrMessage[0] << std::endl;
     #endif
   }
 
@@ -234,7 +233,7 @@ void ShaderProgram::compile() {
     glGetShaderInfoLog(fragmentShaderID, compileLogLen, NULL, &fsErrMessage[0]);
 
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
-    std::fprintf(stderr, "ERROR: Error compiling fragment shader %s: %s\n", _fragmentShader.c_str(), &fsErrMessage[0]);
+    std::cerr << "ERROR: Error compiling fragment shader " << _fragmentShader << ": " << &fsErrMessage[0] << std::endl;
     #endif
   }
 
@@ -250,7 +249,7 @@ void ShaderProgram::compile() {
     glGetProgramInfoLog(programID, compileLogLen, NULL, &programErrMessage[0]);
 
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
-    std::fprintf(stderr, "ERROR: Error linking program (VS:%s, FS:%s): %s\n", _vertexShader.c_str(), _fragmentShader.c_str(), &programErrMessage[0]);
+    std::cerr << "ERROR: Error linking program (VS:" << _vertexShader << ", FS:" << _fragmentShader << "): " << &programErrMessage[0] << std::endl;
     #endif
   }
 

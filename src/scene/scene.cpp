@@ -4,8 +4,8 @@
 
 #include "scene.hpp"
 
-#include <cstdio>
 #include <fstream>
+#include <iostream>
 #include <json/json.h>
 #include "../geom/cube.hpp"
 
@@ -20,7 +20,7 @@ Scene::~Scene() {
 
 void Scene::loadJSON(const std::string &file) {
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::printf("INFO: Loading scene file: %s\n", file.c_str());
+  std::cout << "INFO: Loading scene file: " << file << std::endl;
   #endif
 
   // Read JSON file
@@ -31,7 +31,7 @@ void Scene::loadJSON(const std::string &file) {
   bool success = reader.parse(sceneStream, root, false);
   if (!success) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_FATAL
-    std::fprintf(stderr, "FATAL: Failed to parse scene file %s", file.c_str());
+    std::cerr << "FATAL: Failed to parse scene file " << std::endl;
     #endif
 
     throw InvalidSceneException();
@@ -54,7 +54,9 @@ void Scene::loadJSON(const std::string &file) {
 
   // Create geometry
   solver.fluidContainer = new Cube(glm::vec3(0));
+  solver.fluidContainer->name = "Fluid Container";
   solver.fluidSource = new Cube(glm::vec3(0));
+  solver.fluidSource->name = "Fluid Source";
   objects.push_back(solver.fluidContainer);
   objects.push_back(solver.fluidSource);
 
@@ -65,7 +67,7 @@ void Scene::loadJSON(const std::string &file) {
   seedScene();
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::printf("INFO: Particle count: %d / %d\n", solver.numParticles(), solver.maxParticles);
+  std::cout << "INFO: Particle count: " << solver.numParticles() << " / " solver.maxParticles << std::endl;
   #endif
 
   solver.initialDemo();
