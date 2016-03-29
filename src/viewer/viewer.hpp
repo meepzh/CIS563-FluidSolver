@@ -14,11 +14,18 @@
 #include "../scene/scene.hpp"
 #include "particleShaderProgram.hpp"
 
+struct GLFWWindowInitException : std::exception {
+  const char *what() const noexcept {return "Failed to initialize GLFW window.\n";};
+};
+struct GLEWInitException : std::exception {
+  const char *what() const noexcept {return "Failed to initialize GLEW.\n";};
+};
+
 class Viewer {
 public:
-  Viewer() : Viewer(1024, 768){}
-  Viewer(int width, int height);
+  Viewer();
   ~Viewer();
+  void init(int width = MFluidSolver_DEFAULT_WINDOW_WIDTH, int height = MFluidSolver_DEFAULT_WINDOW_HEIGHT);
   void run();
   void togglePause();
   void stop();

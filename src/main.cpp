@@ -29,7 +29,7 @@ int main() {
   // Initialize GLFW
   if (!glfwInit()) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
-    std::fprintf(stderr, "ERROR: Failed to initiaize GLFW\n");
+    std::fprintf(stderr, "FATAL: Failed to initiaize GLFW\n");
     #endif
 
     getchar(); // Wait for key before quit
@@ -72,6 +72,16 @@ int main() {
   Viewer viewer;
   Input::viewer = &viewer;
 
+  try {
+    viewer.init();
+  } catch (std::exception &e) {
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_FATAL
+    std::cerr << "FATAL: " << e.what() << std::endl;
+    #endif
+
+    return -1;
+  }
+
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   std::printf("INFO: OpenGL Version %s\n", glGetString(GL_VERSION));
   #endif
@@ -99,12 +109,21 @@ int main() {
   viewer.wireShader = new ShaderProgram(wireVShader, wireFShader);
   viewer.particleShader = new ParticleShaderProgram(&(viewer.scene.solver), particleVShader, particleFShader, particleTexture);
   viewer.scene.solver.loadConfig(configJSON);
-  viewer.scene.loadJSON(sceneJSON);
 
-  viewer.run();
+  int returnCode = 0;
+  try {
+    viewer.scene.loadJSON(sceneJSON);
+    viewer.run();
+  } catch (std::exception &e) {
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_FATAL
+    std::cerr << "FATAL: " << e.what() << std::endl;
+    #endif
+
+    returnCode = -1;
+  }
 
   // Cleanup
   glDeleteVertexArrays(1, &vaoID);
 
-  return 0;
+  return returnCode;
 }

@@ -14,7 +14,7 @@
 
 #include "sphParticle.hpp"
 
-struct InvalidSPHGridSize : std::exception {
+struct InvalidSPHGridSizeException : std::exception {
   const char *what() const noexcept {return "Invalid SPH grid size.\n";};
 };
 

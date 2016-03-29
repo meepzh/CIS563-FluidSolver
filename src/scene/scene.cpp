@@ -34,7 +34,7 @@ void Scene::loadJSON(const std::string &file) {
     std::fprintf(stderr, "FATAL: Failed to parse scene file %s", file.c_str());
     #endif
 
-    return;
+    throw InvalidSceneException();
   }
 
   glm::vec3 containerDim;

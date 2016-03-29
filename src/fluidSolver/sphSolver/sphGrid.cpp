@@ -18,7 +18,7 @@ SPHGrid::SPHGrid(const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float c
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_FATAL
     std::fprintf(stderr, "FATAL: Grid size (%.2f, %.2f, %.2f) is invalid\n", gridSize.x, gridSize.y, gridSize.z);
     #endif
-    throw InvalidSPHGridSize();
+    throw InvalidSPHGridSizeException();
   }
 
   cellBounds = (gridSize + 0.5f) / cellSize;

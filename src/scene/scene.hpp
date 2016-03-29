@@ -7,10 +7,15 @@
 
 #include "MFluidSolverConfig.hpp"
 
+#include <exception>
 #include <string>
 #include <vector>
 
 #include "../fluidSolver/sphSolver/sphSolver.hpp"
+
+struct InvalidSceneException : std::exception {
+  const char *what() const noexcept {return "Invalid scene.\n";};
+};
 
 class Scene {
 public:

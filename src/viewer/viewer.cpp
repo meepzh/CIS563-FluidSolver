@@ -52,7 +52,7 @@ void APIENTRY openglDebugCallbackFunction(GLenum source, GLenum type, GLuint id,
       break;
     case GL_DEBUG_SEVERITY_HIGH:
       sSeverity = "HIGH";
-      #if MFluidSolver_LOG_LEVEL > MFluidSolver_LOG_FATAL
+      #if MFluidSolver_LOG_LEVEL > MFluidSolver_LOG_ERROR
       return;
       #endif
       break;
@@ -66,10 +66,13 @@ void APIENTRY openglDebugCallbackFunction(GLenum source, GLenum type, GLuint id,
 }
 #endif
 
-Viewer::Viewer(int width, int height)
+Viewer::Viewer()
 : wireShader(nullptr), particleShader(nullptr),
   oldLeftState(GLFW_RELEASE), oldRightState(GLFW_RELEASE),
   paused(true), shouldStop(false) {
+}
+
+void Viewer::init(int width, int height) {
   // http://www.opengl-tutorial.org/beginners-tutorials/tutorial-1-opening-a-window/
   glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -89,7 +92,7 @@ Viewer::Viewer(int width, int height)
 
     getchar(); // Wait for key before quit
     glfwTerminate();
-    throw -1;
+    throw GLFWWindowInitException();
   }
 
   glfwMakeContextCurrent(window); // Initialize GLEW
@@ -102,7 +105,7 @@ Viewer::Viewer(int width, int height)
 
     getchar(); // Wait for key before quit
     glfwTerminate();
-    throw -1;
+    throw GLEWInitException();
   }
 
   // Sticky keys and mouse buttons
