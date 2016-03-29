@@ -41,15 +41,15 @@ ParticleShaderProgram::ParticleShaderProgram(SPHSolver *solver,
   // Pre-allocate particle buffers
   glGenBuffers(1, &particleColorArrBufferID);
   glBindBuffer(GL_ARRAY_BUFFER, particleColorArrBufferID);
-  glBufferData(GL_ARRAY_BUFFER, solver->maxParticles * sizeof(glm::vec3), NULL, GL_STREAM_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, solver->maxParticles() * sizeof(glm::vec3), NULL, GL_STREAM_DRAW);
 
   glGenBuffers(1, &particlePositionArrBufferID);
   glBindBuffer(GL_ARRAY_BUFFER, particlePositionArrBufferID);
-  glBufferData(GL_ARRAY_BUFFER, solver->maxParticles * sizeof(glm::vec3), NULL, GL_STREAM_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, solver->maxParticles() * sizeof(glm::vec3), NULL, GL_STREAM_DRAW);
 
   // Allocate particle space on RAM
-  particleColorArray = new glm::vec3[solver->maxParticles];
-  particlePositionArray = new glm::vec3[solver->maxParticles];
+  particleColorArray = new glm::vec3[solver->maxParticles()];
+  particlePositionArray = new glm::vec3[solver->maxParticles()];
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
   std::cout << "DEBUG:SHADER: Program " << programID << " is type particles" << std::endl;
@@ -126,12 +126,12 @@ void ParticleShaderProgram::draw() {
   // Update buffers
   if (particleColorArrBufferID != -1) {
     glBindBuffer(GL_ARRAY_BUFFER, particleColorArrBufferID);
-    glBufferData(GL_ARRAY_BUFFER, solver->maxParticles * sizeof(glm::vec3), NULL, GL_STREAM_DRAW); // Buffer orphaning for performance
+    glBufferData(GL_ARRAY_BUFFER, solver->maxParticles() * sizeof(glm::vec3), NULL, GL_STREAM_DRAW); // Buffer orphaning for performance
     glBufferSubData(GL_ARRAY_BUFFER, 0, solver->numParticles() * sizeof(glm::vec3), particleColorArray);
   }
   if (particlePositionArrBufferID != -1) {
     glBindBuffer(GL_ARRAY_BUFFER, particlePositionArrBufferID);
-    glBufferData(GL_ARRAY_BUFFER, solver->maxParticles * sizeof(glm::vec3), NULL, GL_STREAM_DRAW); // Buffer orphaning for performance
+    glBufferData(GL_ARRAY_BUFFER, solver->maxParticles() * sizeof(glm::vec3), NULL, GL_STREAM_DRAW); // Buffer orphaning for performance
     glBufferSubData(GL_ARRAY_BUFFER, 0, solver->numParticles() * sizeof(glm::vec3), particlePositionArray);
   }
 

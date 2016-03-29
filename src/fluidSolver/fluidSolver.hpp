@@ -10,6 +10,8 @@
 #include "../geom/geom.hpp"
 #include "particle.hpp"
 
+enum FluidVisualizationType {Neighbors, None, Velocity};
+
 class FluidSolver {
 public:
   FluidSolver();
@@ -21,13 +23,17 @@ public:
   virtual void addParticleAt(const glm::vec3 &position) = 0;
   virtual unsigned int numParticles() const = 0;
   //virtual std::vector<Particle *> &particles() = 0;
-  unsigned int maxParticles;
 
   void setGravity(float g);
   float gravity() const;
 
+  virtual void setMaxParticles(int mp);
+  int maxParticles() const;
+
   virtual void setParticleSeparation(float ps);
   float particleSeparation() const;
+
+  void setFixedTimestep(float ft);
 
   Geometry *fluidSource;
   Geometry *fluidContainer;
@@ -35,6 +41,9 @@ public:
 protected:
   float _gravity;
   float _particleSeparation;
+  int _maxParticles;
+  FluidVisualizationType visualizationType;
+  float _fixedTimestep;
 };
 
 #endif /* MFLUIDSOLVER_FLUIDSOLVER_HPP_ */

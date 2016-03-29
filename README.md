@@ -11,7 +11,9 @@ the VDB format.
 
 ### Build Instructions (*nix) ###
 By default, the program is set to default debugging mode as set in
-`src/MFluidSolverConfig.hpp.in`.
+`src/MFluidSolverConfig.hpp.in`. There are many other options there including
+logging settings and defaults, but note that defaults will be overwritten by
+the configuration file.
 
     mkdir build
     cd build
@@ -28,12 +30,26 @@ This does include a brief performance test on neighbor search.
 
 ### How To Use ###
 Press P to toggle pausing. Press Press N to randomly pick a particle to show
-its neighbors. Press E to export a VDB file of the graph to `export.vdb`. Press
-R to reseed the scene. Press right to step frame by frame (0.017 seconds).
+its neighbors. Press E to export a VDB file of the graph to `export.vdb` (if
+OpenVDB is enabled in `MFluidSolverConfig`). Press R to reseed the scene
+using the fluid source. Press right to step frame by frame (0.001 seconds).
 
 All SPH parameters, as well as several general program parameters, can be found
 in `config/config.json`. The scene file, which contains dimensions and particle
-separation, can be edited from `scene/scene.json`.
+separation, can be edited from `scene/scene.json`. Note the options available
+for several parameters:
+
+neighborSearchType
+
+- naive
+- uniform
+- uniformZ
+
+visualization
+
+- neighbors
+- none
+- velocity
 
 #### Arcball ####
 The camera uses the arcball interface and can be controlled with the left and
@@ -58,14 +74,9 @@ direction of the mouse. It will look like you're dragging the scene with you.
 
 ### Missing Required Features ###
 
-- Resolve forces
-- Add CFL condition/timestep control
-- Change grid to fluid container rather than fluid source
-- Verify that simulation works
-- Update config to allow more than 2 options for neighbor search
-- Change standard grid to uniform grid
-- Implement Z-index sorting
-- Unit test Z-index
+- Implement particle grid copying (not pointers)
+- Implement Z-curve Uniform Grid
+- Unit test Z-curve Uniform Grid
 - Implement insertion sort
 - Unit test insertion sort
 - Implement Z-index sorting with insertion sort
@@ -73,6 +84,8 @@ direction of the mouse. It will look like you're dragging the scene with you.
 - Run performance tests
 - Write summary of results
 - Optional: Parallelize with TBB
+- Optional: Run `update()` until 0.17 seconds have passed
+- Optional: Add in CFL condition
 
 ### Extra Features ###
 None

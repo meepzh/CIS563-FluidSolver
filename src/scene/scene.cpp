@@ -47,8 +47,23 @@ void Scene::loadJSON(const std::string &file) {
   particleDim.y = root["particleDim"].get("scaleY", 0.5f).asFloat();
   particleDim.z = root["particleDim"].get("scaleZ", 0.5f).asFloat();
 
+  glm::vec3 cameraEye;
+  cameraEye.x = root["camera"].get("eyeX", 0.5f).asFloat();
+  cameraEye.y = root["camera"].get("eyeY", 0.5f).asFloat();
+  cameraEye.z = root["camera"].get("eyeZ", 0.5f).asFloat();
+
+  glm::vec3 cameraRef;
+  cameraRef.x = root["camera"].get("refX", 0.5f).asFloat();
+  cameraRef.y = root["camera"].get("refY", 0.5f).asFloat();
+  cameraRef.z = root["camera"].get("refZ", 0.5f).asFloat();
+
+  camera.setEyeRef(cameraEye, cameraRef);
+
   float particleSeparation = root.get("particleSeparation", 0.1f).asFloat();
   solver.setParticleSeparation(particleSeparation);
+
+  int maxParticles = root.get("maxParticles", MFluidSolver_DEFAULT_MAX_PARTICLES).asInt();
+  solver.setMaxParticles(maxParticles);
 
   solver.init(containerDim * -0.5f, containerDim * 0.5f);
 
@@ -67,10 +82,10 @@ void Scene::loadJSON(const std::string &file) {
   seedScene();
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::cout << "INFO: Particle count: " << solver.numParticles() << " / " << solver.maxParticles << std::endl;
+  std::cout << "INFO: Particle count: " << solver.numParticles() << " / " << solver.maxParticles() << std::endl;
   #endif
 
-  solver.initialDemo();
+  solver.visualizeParticle0Neighbors();
 }
 
 void Scene::seedScene() {

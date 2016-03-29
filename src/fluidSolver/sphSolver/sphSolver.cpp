@@ -8,6 +8,8 @@
 #include <iostream>
 #include <json/json.h>
 
+#include "../../utils.hpp"
+
 SPHSolver::SPHSolver()
  : nSearch(nullptr), inited(false) {
   setDefaultConfig();
@@ -47,6 +49,18 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
   }
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+  switch (visualizationType) {
+    case FluidVisualizationType::Neighbors:
+      std::cout << "INFO: Now visualizing neighbors" << std::endl;
+      break;
+    case FluidVisualizationType::None:
+      std::cout << "INFO: Visualization disabled" << std::endl;
+      break;
+    case FluidVisualizationType::Velocity:
+      std::cout << "INFO: Now visualizing normalized velocity" << std::endl;
+      break;
+  }
+
   if (muViscosity <= 0) {
     std::cout << "INFO: As per config, viscosity is disabled" << std::endl;
   }
@@ -92,11 +106,25 @@ void SPHSolver::loadConfig(const std::string &file) {
   dRestDensity = root["sph"].get("dRestDensity", SPHConfig_Default_dRestDensity).asFloat();
   dtTimestep = root["sph"].get("dtTimestep", SPHConfig_Default_dtTimestep).asFloat();
   kernelRadius = root["sph"].get("kernelRadius", SPHConfig_Default_kernelRadius).asFloat();
-  bool useUniformGrid = root["sph"].get("useUniformGrid", SPHConfig_Default_useUniformGrid).asBool();
-  if (useUniformGrid) {
-    nSearchType = NeighborSearchType::UniformGrid;
-  } else {
+
+  setFixedTimestep(dtTimestep);
+
+  std::string neighborSearchTypeString = root["sph"].get("neighborSearchType", SPHConfig_Default_neighborSearchTypeString).asString();
+  MUtils::toLowerInplace(neighborSearchTypeString);
+  if (neighborSearchTypeString == "naive") {
     nSearchType = NeighborSearchType::Naive;
+  } else if (neighborSearchTypeString == "uniform") {
+    nSearchType = NeighborSearchType::UniformGrid;
+  }
+
+  std::string visualizationTypeString = root.get("visualization", MFluidSolver_DEFAULT_VISUALIZATION_STRING).asString();
+  MUtils::toLowerInplace(visualizationTypeString);
+  if (visualizationTypeString == "neighbors") {
+    visualizationType = FluidVisualizationType::Neighbors;
+  } else if (visualizationTypeString == "none") {
+    visualizationType = FluidVisualizationType::None;
+  } else if (visualizationTypeString == "velocity") {
+    visualizationType = FluidVisualizationType::Velocity;
   }
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
@@ -110,7 +138,7 @@ void SPHSolver::loadConfig(const std::string &file) {
 }
 
 void SPHSolver::update(double deltaT) {
-  deltaT = MFluidSolver_DEFAULT_UPDATE_STEP;
+  deltaT = _fixedTimestep;
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
   std::cout << "DEBUG: Updating by " << deltaT << " seconds" << std::endl;
@@ -199,12 +227,14 @@ void SPHSolver::update(double deltaT) {
       p->setPosition(position);
     }
 
-    p->color = glm::normalize(glm::abs(p->velocity()));
+    if (visualizationType == FluidVisualizationType::Velocity) {
+      p->color = glm::normalize(glm::abs(p->velocity()));
+    }
   }
 }
 
 void SPHSolver::addParticleAt(const glm::vec3 &position) {
-  if (_particles.size() < maxParticles) {
+  if (_particles.size() < _maxParticles) {
     SPHParticle *p = new SPHParticle(mMass, position);
     _particles.push_back(p);
     nSearch->addParticle(p);
@@ -223,6 +253,20 @@ void SPHSolver::setParticleSeparation(float ps) {
   FluidSolver::setParticleSeparation(ps);
 }
 
+void SPHSolver::setMaxParticles(int mp) {
+  FluidSolver::setMaxParticles(mp);
+  if (mp <= 0) {
+    for (SPHParticle *p : _particles) {
+      delete p;
+    }
+  } else if (mp > _particles.size()) {
+    while (_particles.size() > mp) {
+      delete _particles.at(_particles.size() - 1);
+      _particles.erase(_particles.end() - 1);
+    }
+  }
+}
+
 bool SPHSolver::checkInited() {
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
   if (inited) {
@@ -233,7 +277,13 @@ bool SPHSolver::checkInited() {
   return inited;
 }
 
-void SPHSolver::demoCode(SPHParticle *target) {
+void SPHSolver::visualizeParticleNeighbors(SPHParticle *target) {
+  if (visualizationType != FluidVisualizationType::Neighbors) return;
+
+  for (SPHParticle *p : _particles) {
+    p->color = glm::vec3(0, 0, 1);
+  }
+
   if (nSearchType == NeighborSearchType::UniformGrid) {
     static_cast<UniformGridNeighborSearch *>(nSearch)->clear();
     for (SPHParticle *p : _particles) {
@@ -250,17 +300,15 @@ void SPHSolver::demoCode(SPHParticle *target) {
   }
 }
 
-void SPHSolver::initialDemo() {
-  demoCode(_particles.at(0));
+void SPHSolver::visualizeParticle0Neighbors() {
+  visualizeParticleNeighbors(_particles.at(0));
 }
 
-void SPHSolver::randomDemo() {
-  for (SPHParticle *p : _particles) {
-    p->color = glm::vec3(0, 0, 1);
-  }
-  demoCode(_particles.at(rand() % _particles.size()));
+void SPHSolver::visualizeRandomParticlesNeighbors() {
+  visualizeParticleNeighbors(_particles.at(rand() % _particles.size()));
 }
 
+#if MFluidSolver_USE_OPENVDB
 void SPHSolver::exportVDB() {
   if (nSearchType == NeighborSearchType::UniformGrid) {
     static_cast<UniformGridNeighborSearch *>(nSearch)->exportVDB();
@@ -270,3 +318,4 @@ void SPHSolver::exportVDB() {
     #endif
   }
 }
+#endif

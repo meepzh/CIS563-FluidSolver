@@ -9,5 +9,14 @@
 		"scaleY": 1.0,
 		"scaleZ": 1.0
 	},
-	"particleSeparation": 0.05
+	"camera": {
+		"eyeX": 0.0,
+		"eyeY": 0.0,
+		"eyeZ": 3.5,
+		"refX": 0.0,
+		"refY": 0.0,
+		"refZ": 0.0
+	},
+	"particleSeparation": 0.05,
+	"maxParticles": 10000
 }

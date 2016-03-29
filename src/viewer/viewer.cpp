@@ -161,12 +161,12 @@ void Viewer::run() {
     }
 
     // Render particles
-    particleShader->setViewProjectionMat(camera.getViewProjection());
-    particleShader->setCameraVectors(camera.right(), camera.up());
+    particleShader->setViewProjectionMat(scene.camera.getViewProjection());
+    particleShader->setCameraVectors(scene.camera.right(), scene.camera.up());
     particleShader->draw();
 
     // Render boxes
-    wireShader->setViewProjectionMat(camera.getViewProjection());
+    wireShader->setViewProjectionMat(scene.camera.getViewProjection());
     for (Geometry *g : scene.objects) {
       wireShader->setModelMat(g->transform.T());
       wireShader->draw(g);
@@ -180,7 +180,7 @@ void Viewer::run() {
         glfwGetCursorPos(window, &oldPos.x, &oldPos.y);
       } else {
         glfwGetCursorPos(window, &newPos.x, &newPos.y);
-        camera.arcball(oldPos, newPos);
+        scene.camera.arcball(oldPos, newPos);
         oldPos = glm::vec2(newPos);
       }
     }
@@ -189,7 +189,7 @@ void Viewer::run() {
         glfwGetCursorPos(window, &oldPos.x, &oldPos.y);
       } else {
         glfwGetCursorPos(window, &newPos.x, &newPos.y);
-        camera.pan(oldPos, newPos);
+        scene.camera.pan(oldPos, newPos);
         oldPos = glm::vec2(newPos);
       }
     }

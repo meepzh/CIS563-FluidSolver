@@ -28,13 +28,18 @@ public:
   virtual std::vector<SPHParticle *> &particles();
   virtual unsigned int numParticles() const;
   virtual void setParticleSeparation(float ps);
+  virtual void setMaxParticles(int mp);
 
-  void demoCode(SPHParticle *target);
-  void initialDemo();
-  void randomDemo();
+  void visualizeParticle0Neighbors();
+  void visualizeRandomParticlesNeighbors();
+
+  #if MFluidSolver_USE_OPENVDB
   void exportVDB();
+  #endif
 
 private:
+  void visualizeParticleNeighbors(SPHParticle *target);
+
   NeighborSearchType nSearchType;
   KernelFunctions kernelFunctions;
   NeighborSearch *nSearch;

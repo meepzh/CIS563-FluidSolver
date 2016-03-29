@@ -40,6 +40,8 @@
 #define MFluidSolver_DEFAULT_POINT_SIZE 5
 #define MFluidSolver_DEFAULT_SEARCH_RADIUS 0.1f
 #define MFluidSolver_DEFAULT_UPDATE_STEP 0.001
+#define MFluidSolver_DEFAULT_VISUALIZATION FluidVisualizationType::Velocity
+#define MFluidSolver_DEFAULT_VISUALIZATION_STRING "velocity"
 #define MFluidSolver_DEFAULT_WINDOW_WIDTH 1024
 #define MFluidSolver_DEFAULT_WINDOW_HEIGHT 768
 
@@ -49,7 +51,7 @@
 #define SPHConfig_Default_dRestDensity 1000
 #define SPHConfig_Default_dtTimestep 0.001
 #define SPHConfig_Default_kernelRadius 0.100001
-#define SPHConfig_Default_useUniformGrid true
+#define SPHConfig_Default_neighborSearchTypeString "uniform"
 #define SPHConfig_Default_nSearchType NeighborSearchType::UniformGrid
 
 // Do not touch

@@ -5,6 +5,8 @@
 #ifndef MFLUIDSOLVER_CAMERA_HPP_
 #define MFLUIDSOLVER_CAMERA_HPP_
 
+#include "MFluidSolverConfig.hpp"
+
 #include <glm/glm.hpp>
 
 class Camera {
@@ -17,6 +19,7 @@ public:
   // Matrices
   glm::mat4 getViewProjection();
 
+  void setEyeRef(const glm::vec3 &eye, const glm::vec3 &ref);
   void recomputeAttributes();
   void recomputeLocalAxes();
   void recomputeEyeAndRef();

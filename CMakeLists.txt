@@ -110,7 +110,6 @@ endif()
 
 # Add source files you want to compile (.cpp)
 set(CORE_SRC
-        src/camera/camera.cpp
         src/fluidSolver/sphSolver/kernelFunctions.cpp
         src/fluidSolver/sphSolver/neighborSearch.cpp
         src/fluidSolver/sphSolver/sphGrid.cpp
@@ -123,12 +122,14 @@ set(CORE_SRC
         src/geom/drawable.cpp
         src/geom/geom.cpp
         src/geom/transform.cpp
+        src/scene/camera.cpp
         src/scene/scene.cpp
         src/viewer/input.cpp
         src/viewer/particleShaderProgram.cpp
         src/viewer/shaderProgram.cpp
         src/viewer/viewer.cpp
         src/main.cpp
+        src/utils.hpp
 )
 
 add_executable(MFluidSolver ${CORE_SRC})

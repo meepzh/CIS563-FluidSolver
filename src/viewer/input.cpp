@@ -8,7 +8,7 @@ Viewer *Input::viewer = nullptr;
 
 void Input::computeArcballScrollCb(GLFWwindow* window, double xoffset, double yoffset) {
   if (viewer == nullptr) return;
-  viewer->camera.zoom(yoffset);
+  viewer->scene.camera.zoom(yoffset);
 }
 
 void Input::checkKeys(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -20,7 +20,7 @@ void Input::checkKeys(GLFWwindow* window, int key, int scancode, int action, int
   } else if (key == GLFW_KEY_RIGHT && action == GLFW_RELEASE) {
     viewer->scene.solver.updateStep();
   } else if (key == GLFW_KEY_N && action == GLFW_RELEASE) {
-    viewer->scene.solver.randomDemo();
+    viewer->scene.solver.visualizeRandomParticlesNeighbors();
   } else if (key == GLFW_KEY_E && action == GLFW_RELEASE) {
     #if MFluidSolver_USE_OPENVDB
     viewer->scene.solver.exportVDB();

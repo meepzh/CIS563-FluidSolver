@@ -10,8 +10,9 @@
 		"muViscosity": 25,
 		"mMass": 0.125,
 		"dRestDensity": 1000,
-		"dtTimestep": 7,
+		"dtTimestep": 0.001,
 		"kernelRadius": 0.100001,
-		"useUniformGrid": true
-	}
+		"neighborSearchType": "uniform"
+	},
+	"visualization": "velocity"
 }

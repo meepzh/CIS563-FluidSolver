@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "../fluidSolver/sphSolver/sphSolver.hpp"
+#include "camera.hpp"
 
 struct InvalidSceneException : std::exception {
   const char *what() const noexcept {return "Invalid scene.\n";};
@@ -26,6 +27,7 @@ public:
 
   SPHSolver solver;
   std::vector<Geometry *> objects;
+  Camera camera;
 };
 
 #endif /* MFLUIDSOLVER_SCENE_HPP_ */

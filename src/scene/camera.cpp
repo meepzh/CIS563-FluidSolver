@@ -4,6 +4,8 @@
 
 #include "camera.hpp"
 
+#include <iostream>
+
 #define GLM_FORCE_RADIANS
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -26,6 +28,22 @@ glm::mat4 Camera::getViewProjection() {
   glm::mat4 perpMat = glm::perspective(glm::radians(_fovy), _aspect, nearClip, farClip);
   glm::mat4 lookMat = glm::lookAt(glm::vec3(arcballEye), glm::vec3(arcballRef), glm::vec3(arcballUp));
   return perpMat * lookMat;
+}
+
+void Camera::setEyeRef(const glm::vec3 &eye, const glm::vec3 &ref) {
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+  std::cout << "INFO: Set camera to eye (" << eye.x << ", " << eye.y << ", " << eye.z << ") and ref (" << ref.x << ", " << ref.y << ", " << ref.z << ")" << std::endl;
+  #endif
+
+  _eye = eye;
+  _ref = ref;
+  arcballZoom = 1.f;
+  arcballPan = glm::vec4(0);
+  arcballRotationMat = glm::mat4(1.f);
+
+  recomputeAttributes();
+  recomputeLocalAxes();
+  recomputeEyeAndRef();
 }
 
 void Camera::recomputeAttributes() {
