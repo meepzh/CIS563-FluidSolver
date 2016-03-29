@@ -22,7 +22,7 @@
 int main() {
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   // Print version info
-  std::cout << "INFO: Version " << MFluidSolver_VERSION_MAJOR << "." << MFluidSolver_VERSION_MINOR) << std::endl;
+  std::cout << "INFO: Version " << MFluidSolver_VERSION_MAJOR << "." << MFluidSolver_VERSION_MINOR << std::endl;
   #endif
 
   // Initialize GLFW

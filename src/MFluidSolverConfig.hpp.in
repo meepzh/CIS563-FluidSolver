@@ -7,7 +7,7 @@
 #define MFluidSolver_VERSION_MINOR @MFluidSolver_VERSION_MINOR@
 
 // Logging/Debug
-#define MFluidSolver_LOG_LEVEL 3
+#define MFluidSolver_LOG_LEVEL 2
 #define MFluidSolver_OPENGL_DEBUG 1
 #define MFluidSolver_USE_ASSERTS 1
 

@@ -67,7 +67,7 @@ void Scene::loadJSON(const std::string &file) {
   seedScene();
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::cout << "INFO: Particle count: " << solver.numParticles() << " / " solver.maxParticles << std::endl;
+  std::cout << "INFO: Particle count: " << solver.numParticles() << " / " << solver.maxParticles << std::endl;
   #endif
 
   solver.initialDemo();

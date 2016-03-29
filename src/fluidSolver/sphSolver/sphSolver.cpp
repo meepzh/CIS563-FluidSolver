@@ -100,12 +100,12 @@ void SPHSolver::loadConfig(const std::string &file) {
   }
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::cout << "- INFO: Stiffness: " << kStiffness << std::endl;
-  std::cout << "- INFO: Viscosity: " << muViscosity << std::endl;
-  std::cout << "- INFO: Mass: " << mMass << std::endl;
-  std::cout << "- INFO: Rest Density: " << dRestDensity << std::endl;
-  std::cout << "- INFO: Timestep: " << dtTimestep << std::endl;
-  std::cout << "- INFO: Kernel Radius: " << kernelRadius << std::endl;
+  std::cout << "INFO: - Stiffness: " << kStiffness << std::endl;
+  std::cout << "INFO: - Viscosity: " << muViscosity << std::endl;
+  std::cout << "INFO: - Mass: " << mMass << std::endl;
+  std::cout << "INFO: - Rest Density: " << dRestDensity << std::endl;
+  std::cout << "INFO: - Timestep: " << dtTimestep << std::endl;
+  std::cout << "INFO: - Kernel Radius: " << kernelRadius << std::endl;
   #endif
 }
 

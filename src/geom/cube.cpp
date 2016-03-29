@@ -4,6 +4,8 @@
 
 #include "cube.hpp"
 
+#include <iostream>
+
 #define GLM_FORCE_RADIANS
 #include <glm/gtx/norm.hpp>
 
@@ -91,13 +93,18 @@ void Cube::spawnParticlesInVolume(FluidSolver *solver) const {
   glm::vec3 minBound, maxBound;
   getBoundsByTransformedMinMax(glm::vec3(-0.5f), glm::vec3(0.5f), minBound, maxBound);
 
-  double particleSeparation = solver->particleSeparation();
+  float particleSeparation = solver->particleSeparation();
   unsigned int count = 0;
   minBound += particleSeparation / 2.f;
   maxBound -= particleSeparation / 2.f;
-  for (double i = minBound.x; i <= maxBound.x; i += particleSeparation) {
-    for (double j = minBound.y; j <= maxBound.y; j += particleSeparation) {
-      for (double k = minBound.z; k <= maxBound.z; k += particleSeparation) {
+
+  glm::vec3 padding = maxBound - minBound;
+  glm::ivec3 numParticlesOnAxis = (glm::ivec3) (padding / particleSeparation);
+  padding -= (glm::vec3)numParticlesOnAxis * particleSeparation;
+
+  for (float i = minBound.x + padding.x; i <= maxBound.x; i += particleSeparation) {
+    for (float j = minBound.y + padding.y; j <= maxBound.y; j += particleSeparation) {
+      for (float k = minBound.z + padding.z; k <= maxBound.z; k += particleSeparation) {
         solver->addParticleAt(glm::vec3(i, j, k));
         ++count;
       }
@@ -106,7 +113,7 @@ void Cube::spawnParticlesInVolume(FluidSolver *solver) const {
   //solver->addParticle(new Particle(glm::vec3(0)));
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::cout << "INFO: Cube (" << name << ") seeded %d particles" << std::endl;
+  std::cout << "INFO: Cube (" << name << ") seeded " << solver->numParticles() << " particles" << std::endl;
   #endif
 }
 

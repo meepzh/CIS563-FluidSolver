@@ -134,6 +134,11 @@ void Viewer::init(int width, int height) {
     #endif
   }
   #endif
+
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+  if (paused) std::cout << "INFO: We are currently paused!" << std::endl;
+  if (!paused) std::cout << "INFO: We are currently playing!" << std::endl;
+  #endif
 }
 
 void Viewer::run() {
@@ -210,6 +215,11 @@ void Viewer::run() {
 
 void Viewer::togglePause() {
   paused = !paused;
+
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+  if (paused) std::cout << "INFO: Paused!" << std::endl;
+  if (!paused) std::cout << "INFO: Unpaused!" << std::endl;
+  #endif
 }
 
 void Viewer::stop() {

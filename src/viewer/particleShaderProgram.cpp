@@ -52,7 +52,7 @@ ParticleShaderProgram::ParticleShaderProgram(SPHSolver *solver,
   particlePositionArray = new glm::vec3[solver->maxParticles];
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
-  std::cout << "DEBUG:SHADER: Program " << programId << " is type particles" << std::endl;
+  std::cout << "DEBUG:SHADER: Program " << programID << " is type particles" << std::endl;
   #endif
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
   if (aBillboardVertexArrID == -1) {
