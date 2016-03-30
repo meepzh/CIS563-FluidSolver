@@ -77,7 +77,7 @@ focus point's position. Right-click and drag to move the camera in the opposite
 direction of the mouse. It will look like you're dragging the scene with you.
 
 ### Neighbor Search Query Performance ###
-![Exponential Improvement with Uniform Grid over Naive Neighbor Search](images/nsPerfGraph0.png?raw=true "The uniform grid neighbor search dramatically reduces search time to O(n).")
+![Exponential Improvement with Uniform Grid over Naive Neighbor Search](images/nsPerfGraph1.png?raw=true "The uniform grid neighbor search dramatically reduces search time to O(n).")
 
 Note that the labels read from bottom to top for some reason.
 
