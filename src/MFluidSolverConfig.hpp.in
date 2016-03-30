@@ -16,6 +16,9 @@
 // Libraries
 #define MFluidSolver_USE_OPENVDB 1
 
+// Misc
+#define MFluidSolver_ZCURVE_CACHING 0
+
 // Defaults
 #define MFluidSolver_DEFAULT_CONFIG_FILE "config.json"
 
@@ -43,12 +46,12 @@
 #define MFluidSolver_DEFAULT_PARTICLE_SEPARATION 0.1f
 #define MFluidSolver_DEFAULT_POINT_SIZE 5
 #define MFluidSolver_DEFAULT_SEARCH_RADIUS 0.1f
+#define MFluidSolver_DEFAULT_SPH_NEIGHBORSEARCH_USE_ZCURVE true
 #define MFluidSolver_DEFAULT_UPDATE_STEP 0.001
 #define MFluidSolver_DEFAULT_VISUALIZATION FluidVisualizationType::Velocity
 #define MFluidSolver_DEFAULT_VISUALIZATION_STRING "velocity"
 #define MFluidSolver_DEFAULT_WINDOW_WIDTH 1024
 #define MFluidSolver_DEFAULT_WINDOW_HEIGHT 768
-#define MFluidSolver_DEFAULT_SPH_NEIGHBORSEARCH_USE_ZCURVE true
 
 #define SPHConfig_Default_kStiffness 1000
 #define SPHConfig_Default_muViscosity 1

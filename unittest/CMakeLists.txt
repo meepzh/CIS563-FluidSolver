@@ -15,6 +15,7 @@ set(MTEST_SRC
 set(MTEST_LIBS
         MKernelFunctions
         MNeighborSearch
+        MZCurve
         ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
 )
 

@@ -4,12 +4,18 @@
 
 #include "zCurve.hpp"
 
-#include <cassert>
 #include <iostream>
+
+#if MFluidSolver_USE_ASSERTS
+#include <cassert>
+#endif
 
 #define LONG_COORD_LIMIT 2047
 
-unsigned long ZCurve::maxIndex(const glm::ivec3 &cellBounds) {
+ZCurve::ZCurve() {
+}
+
+unsigned long ZCurve::initWithMax(const glm::ivec3 &cellBounds) {
   if (cellBounds.x < 0 || cellBounds.y < 0 || cellBounds.z < 0) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_FATAL
     std::cerr << "FATAL: ZCurve bounds (" << cellBounds.x << ", " << cellBounds.y << ", " << cellBounds.z << ") is negative" << std::endl;
@@ -24,11 +30,34 @@ unsigned long ZCurve::maxIndex(const glm::ivec3 &cellBounds) {
     throw ZCurveTooLargeException();
   }
 
-  return getIndex(cellBounds);
+  #if MFluidSolver_ZCURVE_CACHING
+  maxIndex = calculateIndex(cellBounds);
+  #else
+  maxIndex = getIndex(cellBounds);
+  #endif
+
+  #if MFluidSolver_ZCURVE_CACHING
+  for (unsigned int i = 0; i < cellBounds.x; ++i) {
+    cache.push_back(std::vector<std::vector<unsigned long>>());
+    for (unsigned int j = 0; j < cellBounds.y; ++j) {
+      cache[i].push_back(std::vector<unsigned long>());
+      for (unsigned int k = 0; k < cellBounds.z; ++k) {
+        cache[i][j].push_back(calculateIndex(i, j, k));
+      }
+    }
+  }
+  #endif
+
+  return maxIndex;
 }
 
+#if MFluidSolver_ZCURVE_CACHING
 unsigned long ZCurve::getIndex(const glm::ivec3 &p) {
-  return getIndex(p.x, p.y, p.z);
+  #if MFluidSolver_USE_ASSERTS
+  assert(p.x >= 0 && p.y >= 0 && p.z >= 0);
+  assert(p.x < cache.size() && p.y < cache[0].size() && p.z < cache[0][0].size());
+  #endif
+  return cache[p.x][p.y][p.z];
 }
 
 unsigned long ZCurve::getIndex(unsigned int i, unsigned int j, unsigned int k) {
@@ -36,6 +65,31 @@ unsigned long ZCurve::getIndex(unsigned int i, unsigned int j, unsigned int k) {
   assert(i <= LONG_COORD_LIMIT && j <= LONG_COORD_LIMIT && k <= LONG_COORD_LIMIT);
   #endif
 
+  return getIndex(glm::ivec3(i, j, k));
+}
+
+unsigned long ZCurve::calculateIndex(const glm::ivec3 &p) {
+  #if MFluidSolver_USE_ASSERTS
+  assert(p.x >= 0 && p.y >= 0 && p.z >= 0);
+  #endif
+
+  return calculateIndex(p.x, p.y, p.z);
+}
+#else
+unsigned long ZCurve::getIndex(const glm::ivec3 &p) {
+  #if MFluidSolver_USE_ASSERTS
+  assert(p.x >= 0 && p.y >= 0 && p.z >= 0);
+  #endif
+
+  return getIndex(p.x, p.y, p.z);
+}
+#endif
+
+#if MFluidSolver_ZCURVE_CACHING
+unsigned long ZCurve::calculateIndex(unsigned int i, unsigned int j, unsigned int k) {
+#else
+unsigned long ZCurve::getIndex(unsigned int i, unsigned int j, unsigned int k) {
+#endif
   return (splitBits(k) << 2) | (splitBits(j) << 1) | splitBits(i);
 }
 

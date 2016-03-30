@@ -6,7 +6,7 @@
 
 SPHZIndexSortedUniformGrid::SPHZIndexSortedUniformGrid(const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float cellSize, std::vector<SPHParticle> *master)
  : SPHIndexSortedUniformGrid(minBounds, maxBounds, cellSize, master) {
-  numCells = zCurve.maxIndex(cellBounds);
+  numCells = zCurve.initWithMax(cellBounds);
   cells.resize(numCells);
 }
 

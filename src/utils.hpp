@@ -12,7 +12,7 @@
 
 namespace MUtils {
   // Float approximate-equality comparison
-  template<typename T> bool fequal(T a, T b, T epsilon = 0.0001) {
+  template<typename T> inline bool fequal(T a, T b, T epsilon = 0.0001) {
     if (a == b) {
       // Shortcut
       return true;
@@ -28,7 +28,7 @@ namespace MUtils {
   }
 
   // Based on pseudocode from https://en.wikipedia.org/wiki/Insertion_sort
-  template<class RandomIt, class Compare> void insertionSort(RandomIt first, RandomIt last, Compare comp) {
+  template<class RandomIt, class Compare> inline void insertionSort(RandomIt first, RandomIt last, Compare comp) {
     for (RandomIt i = first + 1; i < last; ++i) {
       for (RandomIt j = i; j > first && comp(*j, *(j - 1)); --j) {
         std::iter_swap(j, j - 1);

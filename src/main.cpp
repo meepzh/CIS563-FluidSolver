@@ -19,6 +19,8 @@
 #include "viewer/input.hpp"
 #include "viewer/particleShaderProgram.hpp"
 
+#define MFluidSolver_MAIN_CATCH_EXCEPTIONS 0
+
 int main() {
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   // Print version info
@@ -110,9 +112,12 @@ int main() {
   viewer.scene.solver.loadConfig(configJSON);
 
   int returnCode = 0;
+  #if MFluidSolver_MAIN_CATCH_EXCEPTIONS
   try {
+  #endif
     viewer.scene.loadJSON(sceneJSON);
     viewer.run();
+  #if MFluidSolver_MAIN_CATCH_EXCEPTIONS
   } catch (std::exception &e) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_FATAL
     std::cerr << "FATAL: " << e.what() << std::endl;
@@ -120,6 +125,7 @@ int main() {
 
     returnCode = -1;
   }
+  #endif
 
   // Performance
   #if MFluidSolver_RECORD_PERFORMANCE
