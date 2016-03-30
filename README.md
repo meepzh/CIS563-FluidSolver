@@ -76,8 +76,14 @@ The right mouse button pans the camera. This changes both the camera's and its
 focus point's position. Right-click and drag to move the camera in the opposite
 direction of the mouse. It will look like you're dragging the scene with you.
 
-### Neighbor Search Performance ###
+### Neighbor Search Query Performance ###
 ![Exponential Improvement with Uniform Grid over Naive Neighbor Search](images/nsPerfGraph0.png?raw=true "The uniform grid neighbor search dramatically reduces search time to O(n).")
+
+Note that the labels read from bottom to top for some reason.
+
+- Index Sorted Uniform Grid search dramatically improves on the uniform grid, likely because access to the particles is very simple without memory offsets due to other grid cells.
+- However, Z Index Sorted Uniform Grid search appears to suffer from its computation of the Z index, which takes a number of operations. My system also may not have enough cache to take advantage of the spatial locality. Caching of the Z indices was attempted, but proved to be about the same.
+- Insertion sort significantly improves query time, however, compared to the standard std::sort, as particles don't change cells frequently.
 
 ### Missing Required Features ###
 None

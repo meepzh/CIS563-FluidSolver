@@ -4,7 +4,11 @@
 
 #include "sphUniformGrid.hpp"
 
+#include <algorithm>
+
+#if MFluidSolver_USE_ASSERTS
 #include <cassert>
+#endif
 
 #if MFluidSolver_USE_OPENVDB
 #include <openvdb/openvdb.h>

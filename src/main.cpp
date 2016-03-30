@@ -4,6 +4,7 @@
 
 #include "MFluidSolverConfig.hpp"
 
+#include <ctime>
 #include <fstream>
 
 #include <GL/glew.h>
