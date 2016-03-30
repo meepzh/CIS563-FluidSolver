@@ -48,6 +48,7 @@
 #define MFluidSolver_DEFAULT_VISUALIZATION_STRING "velocity"
 #define MFluidSolver_DEFAULT_WINDOW_WIDTH 1024
 #define MFluidSolver_DEFAULT_WINDOW_HEIGHT 768
+#define MFluidSolver_DEFAULT_SPH_NEIGHBORSEARCH_USE_ZCURVE true
 
 #define SPHConfig_Default_kStiffness 1000
 #define SPHConfig_Default_muViscosity 1

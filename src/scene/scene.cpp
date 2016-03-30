@@ -86,6 +86,7 @@ void Scene::loadJSON(const std::string &file) {
   #endif
 
   solver.visualizeParticle0Neighbors();
+  solver.prepNeighborSearchAfterSceneLoad();
 }
 
 void Scene::seedScene() {

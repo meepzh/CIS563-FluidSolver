@@ -21,7 +21,7 @@ public:
   virtual void clear();
   virtual void printDiagnostics();
 
-  virtual void resetAndFillCells();
+  virtual void resetAndFillCells(bool initialSort = false);
   virtual void updateParticleIndices();
   virtual void insertSortedParticleListToGrid();
   void sortParticles(bool initialSort = false);

@@ -30,6 +30,8 @@ public:
   virtual void setParticleSeparation(float ps);
   virtual void setMaxParticles(int mp);
 
+  void prepNeighborSearchAfterSceneLoad();
+  void prepNeighborSearch();
   void visualizeParticle0Neighbors();
   void visualizeRandomParticlesNeighbors();
 

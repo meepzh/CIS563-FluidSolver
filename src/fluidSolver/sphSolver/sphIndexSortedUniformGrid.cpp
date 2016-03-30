@@ -85,10 +85,10 @@ void SPHIndexSortedUniformGrid::printDiagnostics() {
   std::cout << "No diagnostics available for index sorted uniform grids." << std::endl;
 }
 
-void SPHIndexSortedUniformGrid::resetAndFillCells() {
+void SPHIndexSortedUniformGrid::resetAndFillCells(bool initialSort) {
   clear();
   updateParticleIndices();
-  sortParticles();
+  sortParticles(initialSort);
   insertSortedParticleListToGrid();
 }
 
@@ -108,7 +108,6 @@ void SPHIndexSortedUniformGrid::insertSortedParticleListToGrid() {
 }
 
 void SPHIndexSortedUniformGrid::sortParticles(bool initialSort) {
-  // TODO: Use timsort
   std::sort(master->begin(), master->end(), SPHParticle::indexCompare);
   endParticle = &(master->at(master->size() - 1));
 }

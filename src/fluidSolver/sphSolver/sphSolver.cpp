@@ -52,6 +52,13 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
 
       nSearch = new IndexSortedUniformGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius, &_particles, true);
       break;
+    case NeighborSearchType::ZIndexSortedUniformGridWithInsertion:
+      #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+      std::cout << "INFO: SPH Solver using Z-curve index sorted uniform grid neighbor search with insertion sort" << std::endl;
+      #endif
+
+      nSearch = new IndexSortedUniformGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius, &_particles, true);
+      break;
     case NeighborSearchType::UniformGrid:
     default:
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
@@ -147,6 +154,8 @@ void SPHSolver::loadConfig(const std::string &file) {
     nSearchType = NeighborSearchType::IndexSortedUniformGrid;
   } else if (neighborSearchTypeString == "zindexsorteduniform") {
     nSearchType = NeighborSearchType::ZIndexSortedUniformGrid;
+  } else if (neighborSearchTypeString == "zindexsorteduniforminsertionsort") {
+    nSearchType = NeighborSearchType::ZIndexSortedUniformGridWithInsertion;
   }
 
   std::string visualizationTypeString = root.get("visualization", MFluidSolver_DEFAULT_VISUALIZATION_STRING).asString();
@@ -184,19 +193,7 @@ void SPHSolver::update(double deltaT) {
   std::cout << "DEBUG: Updating by " << deltaT << " seconds" << std::endl;
   #endif
 
-  // Prepare neighbor search
-  if (nSearchType == NeighborSearchType::UniformGrid) {
-    nSearch->clear();
-    for (SPHParticle &p : _particles) {
-      nSearch->addParticle(&p);
-    }
-    /*for (SPHParticle &p : _particles) {
-      nSearch->updateParticle(p);
-    }*/
-  } else if (nSearchType == NeighborSearchType::IndexSortedUniformGrid || nSearchType == NeighborSearchType::ZIndexSortedUniformGrid) {
-    IndexSortedUniformGridNeighborSearch *isugSearch = static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
-    isugSearch->isuGrid->resetAndFillCells();
-  }
+  prepNeighborSearch();
 
   // Calculate neighbors
   for (SPHParticle &p : _particles) {
@@ -327,6 +324,36 @@ bool SPHSolver::checkInited() {
   return inited;
 }
 
+void SPHSolver::prepNeighborSearchAfterSceneLoad() {
+  if (nSearchType == NeighborSearchType::ZIndexSortedUniformGridWithInsertion) {
+    IndexSortedUniformGridNeighborSearch *isugSearch = static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
+    isugSearch->isuGrid->resetAndFillCells(true);
+  }
+}
+
+void SPHSolver::prepNeighborSearch() {
+  if (nSearchType == NeighborSearchType::UniformGrid) {
+    nSearch->clear();
+    for (SPHParticle &p : _particles) {
+      nSearch->addParticle(&p);
+    }
+    /*for (SPHParticle &p : _particles) {
+      nSearch->updateParticle(p);
+    }*/
+  } else if (nSearchType == NeighborSearchType::IndexSortedUniformGrid || nSearchType == NeighborSearchType::ZIndexSortedUniformGrid) {
+    IndexSortedUniformGridNeighborSearch *isugSearch = static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
+    isugSearch->isuGrid->resetAndFillCells(true);
+  } else if (nSearchType == NeighborSearchType::ZIndexSortedUniformGridWithInsertion) {
+    IndexSortedUniformGridNeighborSearch *isugSearch = static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
+    isugSearch->isuGrid->resetAndFillCells(false);
+  }
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
+  else {
+    std::cout << "DEBUG: No neighbor search prep being done" << std::endl;
+  }
+  #endif
+}
+
 void SPHSolver::visualizeParticleNeighbors(SPHParticle *target) {
   if (visualizationType != FluidVisualizationType::Neighbors) return;
 
@@ -334,15 +361,7 @@ void SPHSolver::visualizeParticleNeighbors(SPHParticle *target) {
     p.color = glm::vec3(0, 0, 1);
   }
 
-  if (nSearchType == NeighborSearchType::UniformGrid) {
-    static_cast<UniformGridNeighborSearch *>(nSearch)->clear();
-    for (SPHParticle &p : _particles) {
-      nSearch->addParticle(&p);
-    }
-  } else if (nSearchType == NeighborSearchType::IndexSortedUniformGrid || nSearchType == NeighborSearchType::ZIndexSortedUniformGrid) {
-    IndexSortedUniformGridNeighborSearch *isugSearch = static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
-    isugSearch->isuGrid->resetAndFillCells();
-  }
+  prepNeighborSearch();
 
   target->clearNeighbors();
   nSearch->findNeighbors(target);
@@ -354,11 +373,25 @@ void SPHSolver::visualizeParticleNeighbors(SPHParticle *target) {
 }
 
 void SPHSolver::visualizeParticle0Neighbors() {
-  visualizeParticleNeighbors(&(_particles.at(0)));
+  if (_particles.size() > 0) {
+    visualizeParticleNeighbors(&(_particles.at(0)));
+  }
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
+  else {
+    std::cout << "WARN: No particles available for neighbor visualization" << std::endl;
+  }
+  #endif
 }
 
 void SPHSolver::visualizeRandomParticlesNeighbors() {
-  visualizeParticleNeighbors(&(_particles.at(rand() % _particles.size())));
+  if (_particles.size() > 0) {
+    visualizeParticleNeighbors(&(_particles.at(rand() % _particles.size())));
+  }
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
+  else {
+    std::cout << "WARN: No particles available for neighbor visualization" << std::endl;
+  }
+  #endif
 }
 
 #if MFluidSolver_USE_OPENVDB

@@ -69,7 +69,7 @@ class IndexSortedUniformGridNeighborSearch : public GridNeighborSearch {
 public:
   IndexSortedUniformGridNeighborSearch(
     float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize,
-    std::vector<SPHParticle> *master, bool useZCurve = true);
+    std::vector<SPHParticle> *master, bool useZCurve = MFluidSolver_DEFAULT_SPH_NEIGHBORSEARCH_USE_ZCURVE);
 
   SPHIndexSortedUniformGrid *isuGrid;
 };

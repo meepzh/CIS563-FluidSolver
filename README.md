@@ -36,14 +36,16 @@ using the fluid source. Press right to step frame by frame (0.001 seconds).
 
 All SPH parameters, as well as several general program parameters, can be found
 in `config/config.json`. The scene file, which contains dimensions and particle
-separation, can be edited from `scene/scene.json`. Note the options available
-for several parameters:
+separation, can be edited from `scene/scene.json`. Note the following
+case-insensitive options available for several parameters:
 
 neighborSearchType
 
 - naive
 - uniform
 - indexSortedUniform
+- zIndexSortedUniform
+- zIndexSortedUniformInsertionSort
 
 visualization
 
