@@ -35,6 +35,7 @@ void SPHIndexSortedUniformGrid::getNeighbors(SPHParticle *p) {
           unsigned long index = getIndex(coords);
 
           #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
+          unsigned int numNeighbors = 0;
           std::cout << "TRACE: Accessing cell (" << coords.x << ", " << coords.y << ", " << coords.z << ")" << std::endl;
           #endif
 
@@ -42,10 +43,31 @@ void SPHIndexSortedUniformGrid::getNeighbors(SPHParticle *p) {
           if (c != nullptr) {
             do {
               neighbors->push_back(c);
-              if (c == endParticle) break;
+
+              #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
+              ++numNeighbors;
+              #endif
+
+              if (c == endParticle) {
+                #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
+                std::cout << "TRACE: Reached end particle" << std::endl;
+                #endif
+                break;
+              }
               ++c;
             } while(p->index == c->index);
           }
+          #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
+          else {
+            std::cout << "TRACE: Cell returned null pointer" << std::endl;
+          }
+          #endif
+
+          #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
+          if (numNeighbors > 0) {
+            std::cout << "TRACE: Found " << numNeighbors << " neighbors" << std::endl;
+          }
+          #endif
         }
       } // end for k
     } // end for j
@@ -68,6 +90,13 @@ void SPHIndexSortedUniformGrid::clear() {
 
 void SPHIndexSortedUniformGrid::printDiagnostics() {
   std::cout << "No diagnostics available for index sorted uniform grids." << std::endl;
+}
+
+void SPHIndexSortedUniformGrid::resetAndFillCells() {
+  clear();
+  updateParticleIndices();
+  sortParticles();
+  insertSortedParticleListToGrid();
 }
 
 void SPHIndexSortedUniformGrid::updateParticleIndices() {

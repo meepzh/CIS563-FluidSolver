@@ -335,54 +335,179 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_UniformGrid_StressTest)
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_IndexSortedUniformGrid_SameCell)
 {
-  SPHParticle a(glm::vec3(0.25f));
-  SPHParticle b(glm::vec3(0.2f));
-
   std::vector<SPHParticle> pList;
-  pList.push_back(a);
-  pList.push_back(b);
+  pList.push_back(SPHParticle(glm::vec3(0.25f)));
+  pList.push_back(SPHParticle(glm::vec3(0.2f)));
+
+  SPHParticle *a = &(pList.at(0));
+  SPHParticle *b = &(pList.at(1));
 
   IndexSortedUniformGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f, &pList);
+  nSearch.isuGrid->resetAndFillCells();
 
   // Check a's neighbors
-  nSearch.findNeighbors(&a);
+  nSearch.findNeighbors(a);
 
-  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
-  if (a.neighbors()->size() > 0)
-    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
+  BOOST_CHECK_EQUAL(1, a->neighbors()->size());
+  if (a->neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(b, a->neighbors()->at(0));
 
   // Check b's neighbors
-  nSearch.findNeighbors(&b);
+  nSearch.findNeighbors(b);
 
-  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
-  if (b.neighbors()->size() > 0)
-    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
+  BOOST_CHECK_EQUAL(1, b->neighbors()->size());
+  if (b->neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(a, b->neighbors()->at(0));
 }
 
 BOOST_AUTO_TEST_CASE(NeighborSearch_IndexSortedUniformGrid_DifferentCellStillNeighborsX)
 {
-  SPHParticle a(glm::vec3(0.25f));
-  SPHParticle b(glm::vec3(0.6f, 0.25f, 0.25f));
-
   std::vector<SPHParticle> pList;
-  pList.push_back(a);
-  pList.push_back(b);
+  pList.push_back(SPHParticle(glm::vec3(0.25f)));
+  pList.push_back(SPHParticle(glm::vec3(0.6f, 0.25f, 0.25f)));
+
+  SPHParticle *a = &(pList.at(0));
+  SPHParticle *b = &(pList.at(1));
 
   IndexSortedUniformGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f, &pList);
+  nSearch.isuGrid->resetAndFillCells();
 
   // Check a's neighbors
-  nSearch.findNeighbors(&a);
+  nSearch.findNeighbors(a);
 
-  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
-  if (a.neighbors()->size() > 0)
-    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
+  BOOST_CHECK_EQUAL(1, a->neighbors()->size());
+  if (a->neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(b, a->neighbors()->at(0));
 
   // Check b's neighbors
-  nSearch.findNeighbors(&b);
+  nSearch.findNeighbors(b);
 
-  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
-  if (b.neighbors()->size() > 0)
-    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
+  BOOST_CHECK_EQUAL(1, b->neighbors()->size());
+  if (b->neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(a, b->neighbors()->at(0));
+}
+
+BOOST_AUTO_TEST_CASE(NeighborSearch_IndexSortedUniformGrid_DifferentCellStillNeighborsY)
+{
+  std::vector<SPHParticle> pList;
+  pList.push_back(SPHParticle(glm::vec3(0.25f)));
+  pList.push_back(SPHParticle(glm::vec3(0.26f, 0.6f, 0.25f)));
+
+  SPHParticle *a = &(pList.at(0));
+  SPHParticle *b = &(pList.at(1));
+
+  IndexSortedUniformGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f, &pList);
+  nSearch.isuGrid->resetAndFillCells();
+
+  // Check a's neighbors
+  nSearch.findNeighbors(a);
+
+  BOOST_CHECK_EQUAL(1, a->neighbors()->size());
+  if (a->neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(b, a->neighbors()->at(0));
+
+  // Check b's neighbors
+  nSearch.findNeighbors(b);
+
+  BOOST_CHECK_EQUAL(1, b->neighbors()->size());
+  if (b->neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(a, b->neighbors()->at(0));
+}
+
+BOOST_AUTO_TEST_CASE(NeighborSearch_IndexSortedUniformGrid_DifferentCellStillNeighborsZ)
+{
+  std::vector<SPHParticle> pList;
+  pList.push_back(SPHParticle(glm::vec3(0.25f)));
+  pList.push_back(SPHParticle(glm::vec3(0.26f, 0.25f, 0.6f)));
+
+  SPHParticle *a = &(pList.at(0));
+  SPHParticle *b = &(pList.at(1));
+
+  IndexSortedUniformGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f, &pList);
+  nSearch.isuGrid->resetAndFillCells();
+
+  // Check a's neighbors
+  nSearch.findNeighbors(a);
+
+  BOOST_CHECK_EQUAL(1, a->neighbors()->size());
+  if (a->neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(b, a->neighbors()->at(0));
+
+  // Check b's neighbors
+  nSearch.findNeighbors(b);
+
+  BOOST_CHECK_EQUAL(1, b->neighbors()->size());
+  if (b->neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(a, b->neighbors()->at(0));
+}
+
+BOOST_AUTO_TEST_CASE(NeighborSearch_IndexSortedUniformGrid_DifferentCellNotNeighborsX)
+{
+  std::vector<SPHParticle> pList;
+  pList.push_back(SPHParticle(glm::vec3(0.1f)));
+  pList.push_back(SPHParticle(glm::vec3(0.9f, 0.1f, 0.1f)));
+
+  SPHParticle *a = &(pList.at(0));
+  SPHParticle *b = &(pList.at(1));
+
+  IndexSortedUniformGridNeighborSearch nSearch(0.2f, glm::vec3(0), glm::vec3(1), 0.2f, &pList);
+  nSearch.isuGrid->resetAndFillCells();
+
+  // Check a's neighbors
+  nSearch.findNeighbors(a);
+
+  BOOST_CHECK_EQUAL(0, a->neighbors()->size());
+
+  // Check b's neighbors
+  nSearch.findNeighbors(b);
+
+  BOOST_CHECK_EQUAL(0, b->neighbors()->size());
+}
+
+BOOST_AUTO_TEST_CASE(NeighborSearch_IndexSortedUniformGrid_DifferentCellNotNeighborsY)
+{
+  std::vector<SPHParticle> pList;
+  pList.push_back(SPHParticle(glm::vec3(0.1f)));
+  pList.push_back(SPHParticle(glm::vec3(0.1f, 0.9f, 0.1f)));
+
+  SPHParticle *a = &(pList.at(0));
+  SPHParticle *b = &(pList.at(1));
+
+  IndexSortedUniformGridNeighborSearch nSearch(0.2f, glm::vec3(0), glm::vec3(1), 0.2f, &pList);
+  nSearch.isuGrid->resetAndFillCells();
+
+  // Check a's neighbors
+  nSearch.findNeighbors(a);
+
+  BOOST_CHECK_EQUAL(0, a->neighbors()->size());
+
+  // Check b's neighbors
+  nSearch.findNeighbors(b);
+
+  BOOST_CHECK_EQUAL(0, b->neighbors()->size());
+}
+
+BOOST_AUTO_TEST_CASE(NeighborSearch_IndexSortedUniformGrid_DifferentCellNotNeighborsZ)
+{
+  std::vector<SPHParticle> pList;
+  pList.push_back(SPHParticle(glm::vec3(0.1f)));
+  pList.push_back(SPHParticle(glm::vec3(0.1f, 0.1f, 0.9f)));
+
+  SPHParticle *a = &(pList.at(0));
+  SPHParticle *b = &(pList.at(1));
+
+  IndexSortedUniformGridNeighborSearch nSearch(0.2f, glm::vec3(0), glm::vec3(1), 0.2f, &pList);
+  nSearch.isuGrid->resetAndFillCells();
+
+  // Check a's neighbors
+  nSearch.findNeighbors(a);
+
+  BOOST_CHECK_EQUAL(0, a->neighbors()->size());
+
+  // Check b's neighbors
+  nSearch.findNeighbors(b);
+
+  BOOST_CHECK_EQUAL(0, b->neighbors()->size());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

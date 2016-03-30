@@ -186,10 +186,7 @@ void SPHSolver::update(double deltaT) {
     }*/
   } else if (nSearchType == NeighborSearchType::IndexSortedUniformGrid) {
     IndexSortedUniformGridNeighborSearch *isugSearch = static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
-    isugSearch->isuGrid->clear();
-    isugSearch->isuGrid->updateParticleIndices();
-    isugSearch->isuGrid->sortParticles();
-    isugSearch->isuGrid->insertSortedParticleListToGrid();
+    isugSearch->isuGrid->resetAndFillCells();
   }
 
   // Calculate neighbors
@@ -333,6 +330,9 @@ void SPHSolver::visualizeParticleNeighbors(SPHParticle *target) {
     for (SPHParticle &p : _particles) {
       nSearch->addParticle(&p);
     }
+  } else if (nSearchType == NeighborSearchType::IndexSortedUniformGrid) {
+    IndexSortedUniformGridNeighborSearch *isugSearch = static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
+    isugSearch->isuGrid->resetAndFillCells();
   }
 
   target->clearNeighbors();
