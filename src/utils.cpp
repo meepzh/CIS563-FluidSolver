@@ -4,20 +4,23 @@
 
 #include "utils.hpp"
 
+
 namespace MUtils {
-  template<typename T> bool fequal(T a, T b, T epsilon) {
-    if (a == b) {
-      // Shortcut
-      return true;
-    }
+  std::string toHMS(double seconds) {
+    std::ostringstream strstm;
 
-    const T diff = std::abs(a - b);
-    if (a * b == 0) {
-      // a or b or both are zero; relative error is not meaningful here
-      return diff < (epsilon * epsilon);
-    }
+    int minutes = seconds / 60;
+    int hours = minutes / 60;
+    int iseconds = (int)seconds - minutes * 60;
+    minutes = minutes % 60;
 
-    return diff / (std::abs(a) + std::abs(b)) < epsilon;
+    double dseconds = seconds - (int)seconds;
+    std::string truncateDSeconds = std::to_string(dseconds);
+    truncateDSeconds = truncateDSeconds.substr(1);
+
+    strstm << zeroPad(hours, 1) << ":" << zeroPad(minutes, 2) << ":" << zeroPad(iseconds, 2) << truncateDSeconds;
+
+    return strstm.str();
   }
 
   void toLowerInplace(std::string &input) {
@@ -53,23 +56,6 @@ namespace MUtils {
       }
       return ret;
     }
-
-    return strstm.str();
-  }
-
-  std::string toHMS(double seconds) {
-    std::ostringstream strstm;
-
-    int minutes = seconds / 60;
-    int hours = minutes / 60;
-    int iseconds = (int)seconds - minutes * 60;
-    minutes = minutes % 60;
-
-    double dseconds = seconds - (int)seconds;
-    std::string truncateDSeconds = std::to_string(dseconds);
-    truncateDSeconds = truncateDSeconds.substr(1);
-
-    strstm << zeroPad(hours, 1) << ":" << zeroPad(minutes, 2) << ":" << zeroPad(iseconds, 2) << truncateDSeconds;
 
     return strstm.str();
   }

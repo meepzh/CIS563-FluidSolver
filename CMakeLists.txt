@@ -157,6 +157,7 @@ set(MNEIGHBORSEARCH_LIB
         src/fluidSolver/sphSolver/sphZIndexSortedUniformGrid.cpp
         src/fluidSolver/particle.cpp
         src/fluidSolver/zCurve.cpp
+        src/utils.cpp
 )
 add_library(MNeighborSearch ${MNEIGHBORSEARCH_LIB})
 target_link_libraries(MNeighborSearch ${CORE_LIBS})

@@ -5,6 +5,7 @@
 #include "sphIndexSortedUniformGrid.hpp"
 
 #include <algorithm>
+#include "../../utils.hpp"
 
 SPHIndexSortedUniformGrid::SPHIndexSortedUniformGrid(const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float cellSize, std::vector<SPHParticle> *master)
  : SPHGrid(minBounds, maxBounds, cellSize), master(master){
@@ -108,7 +109,11 @@ void SPHIndexSortedUniformGrid::insertSortedParticleListToGrid() {
 }
 
 void SPHIndexSortedUniformGrid::sortParticles(bool initialSort) {
-  std::sort(master->begin(), master->end(), SPHParticle::indexCompare);
+  if (initialSort) {
+    std::sort(master->begin(), master->end(), SPHParticle::indexCompare);
+  } else {
+    MUtils::insertionSort(master->begin(), master->end(), SPHParticle::indexCompare);
+  }
   endParticle = &(master->at(master->size() - 1));
 }
 

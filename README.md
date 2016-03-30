@@ -80,19 +80,7 @@ direction of the mouse. It will look like you're dragging the scene with you.
 ![Exponential Improvement with Uniform Grid over Naive Neighbor Search](images/nsPerfGraph0.png?raw=true "The uniform grid neighbor search dramatically reduces search time to O(n).")
 
 ### Missing Required Features ###
-
-- Implement particle grid copying (not pointers)
-- Implement Z-curve Index Sorted Uniform Grid
-- Unit test Z-curve Index Sorted Uniform Grid
-- Implement insertion sort
-- Unit test insertion sort
-- Implement Z-index sorting with insertion sort
-- Add performance timers
-- Run performance tests
-- Write summary of results
-- Optional: Parallelize with TBB
-- Optional: Run `update()` until 0.17 seconds have passed
-- Optional: Add in CFL condition
+None
 
 ### Extra Features ###
 None
