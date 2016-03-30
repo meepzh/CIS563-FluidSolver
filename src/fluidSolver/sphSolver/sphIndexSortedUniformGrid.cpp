@@ -32,16 +32,20 @@ void SPHIndexSortedUniformGrid::getNeighbors(SPHParticle *p) {
         // If not at original cell, add all neighbors (process later in kernel)
         if (coords.x >= 0 && coords.y >= 0 && coords.z >= 0 &&
             coords.x < cellBounds.x && coords.y < cellBounds.y && coords.z < cellBounds.z) {
-          SPHParticle *c = cells.at(getIndex(coords));
-          do {
-            neighbors->push_back(c);
-            if (c == endParticle) break;
-            ++c;
-          } while(p->index == c->index);
+          unsigned long index = getIndex(coords);
 
           #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
           std::cout << "TRACE: Accessing cell (" << coords.x << ", " << coords.y << ", " << coords.z << ")" << std::endl;
           #endif
+
+          SPHParticle *c = cells.at(index);
+          if (c != nullptr) {
+            do {
+              neighbors->push_back(c);
+              if (c == endParticle) break;
+              ++c;
+            } while(p->index == c->index);
+          }
         }
       } // end for k
     } // end for j

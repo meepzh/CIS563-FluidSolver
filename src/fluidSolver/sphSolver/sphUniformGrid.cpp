@@ -31,7 +31,7 @@ void SPHUniformGrid::getNeighbors(SPHParticle *p) {
   std::cout << "TRACE: Getting neighbors for cell (" << pC.x << ", " << pC.y << ", " << pC.z << ")" << std::endl;
   #endif
 
-  unsigned int index;
+  unsigned long index;
   std::vector<SPHParticle *> *vec;
 
   glm::ivec3 coords;

@@ -38,6 +38,13 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
 
       nSearch = new NaiveNeighborSearch();
       break;
+    case NeighborSearchType::IndexSortedUniformGrid:
+      #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+      std::cout << "INFO: SPH Solver using index sorted uniform grid neighbor search" << std::endl;
+      #endif
+
+      nSearch = new IndexSortedUniformGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius, &_particles);
+      break;
     case NeighborSearchType::UniformGrid:
     default:
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
@@ -129,6 +136,8 @@ void SPHSolver::loadConfig(const std::string &file) {
     nSearchType = NeighborSearchType::Naive;
   } else if (neighborSearchTypeString == "uniform") {
     nSearchType = NeighborSearchType::UniformGrid;
+  } else if (neighborSearchTypeString == "indexsorteduniform") {
+    nSearchType = NeighborSearchType::IndexSortedUniformGrid;
   }
 
   std::string visualizationTypeString = root.get("visualization", MFluidSolver_DEFAULT_VISUALIZATION_STRING).asString();
@@ -177,6 +186,7 @@ void SPHSolver::update(double deltaT) {
     }*/
   } else if (nSearchType == NeighborSearchType::IndexSortedUniformGrid) {
     IndexSortedUniformGridNeighborSearch *isugSearch = static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
+    isugSearch->isuGrid->clear();
     isugSearch->isuGrid->updateParticleIndices();
     isugSearch->isuGrid->sortParticles();
     isugSearch->isuGrid->insertSortedParticleListToGrid();

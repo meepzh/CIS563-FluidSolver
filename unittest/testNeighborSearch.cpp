@@ -57,219 +57,6 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_Naive_BasicFail)
   BOOST_CHECK_EQUAL(0, b.neighbors()->size());
 }
 
-BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_SameCell)
-{
-  UniformGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f);
-
-  SPHParticle a(glm::vec3(0.25f));
-  SPHParticle b(glm::vec3(0.2f));
-
-  nSearch.addParticle(&a);
-  nSearch.addParticle(&b);
-
-  // Check a's neighbors
-  nSearch.findNeighbors(&a);
-
-  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
-  if (a.neighbors()->size() > 0)
-    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
-
-  // Check b's neighbors
-  nSearch.findNeighbors(&b);
-
-  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
-  if (b.neighbors()->size() > 0)
-    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
-}
-
-BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsX)
-{
-  UniformGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f);
-
-  SPHParticle a(glm::vec3(0.25f));
-  SPHParticle b(glm::vec3(0.6f, 0.25f, 0.25f));
-
-  nSearch.addParticle(&a);
-  nSearch.addParticle(&b);
-
-  // Check a's neighbors
-  nSearch.findNeighbors(&a);
-
-  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
-  if (a.neighbors()->size() > 0)
-    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
-
-  // Check b's neighbors
-  nSearch.findNeighbors(&b);
-
-  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
-  if (b.neighbors()->size() > 0)
-    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
-}
-
-BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsY)
-{
-  UniformGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f);
-
-  SPHParticle a(glm::vec3(0.25f));
-  SPHParticle b(glm::vec3(0.25f, 0.6f, 0.25f));
-
-  nSearch.addParticle(&a);
-  nSearch.addParticle(&b);
-
-  // Check a's neighbors
-  nSearch.findNeighbors(&a);
-
-  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
-  if (a.neighbors()->size() > 0)
-    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
-
-  // Check b's neighbors
-  nSearch.findNeighbors(&b);
-
-  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
-  if (b.neighbors()->size() > 0)
-    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
-}
-
-BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsZ)
-{
-  UniformGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f);
-
-  SPHParticle a(glm::vec3(0.25f));
-  SPHParticle b(glm::vec3(0.25f, 0.25f, 0.6f));
-
-  nSearch.addParticle(&a);
-  nSearch.addParticle(&b);
-
-  // Check a's neighbors
-  nSearch.findNeighbors(&a);
-
-  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
-  if (a.neighbors()->size() > 0)
-    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
-
-  // Check b's neighbors
-  nSearch.findNeighbors(&b);
-
-  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
-  if (b.neighbors()->size() > 0)
-    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
-}
-
-BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellNotNeighborsX)
-{
-  UniformGridNeighborSearch nSearch(0.2f, glm::vec3(0), glm::vec3(1), 0.2f);
-
-  SPHParticle a(glm::vec3(0.1f));
-  SPHParticle b(glm::vec3(0.9f, 0.1f, 0.1f));
-
-  nSearch.addParticle(&a);
-  nSearch.addParticle(&b);
-
-  // Check a's neighbors
-  nSearch.findNeighbors(&a);
-
-  BOOST_CHECK_EQUAL(0, a.neighbors()->size());
-
-  // Check b's neighbors
-  nSearch.findNeighbors(&b);
-
-  BOOST_CHECK_EQUAL(0, b.neighbors()->size());
-}
-
-BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellNotNeighborsY)
-{
-  UniformGridNeighborSearch nSearch(0.2f, glm::vec3(0), glm::vec3(1), 0.2f);
-
-  SPHParticle a(glm::vec3(0.1f));
-  SPHParticle b(glm::vec3(0.1f, 0.9f, 0.1f));
-
-  nSearch.addParticle(&a);
-  nSearch.addParticle(&b);
-
-  // Check a's neighbors
-  nSearch.findNeighbors(&a);
-
-  BOOST_CHECK_EQUAL(0, a.neighbors()->size());
-
-  // Check b's neighbors
-  nSearch.findNeighbors(&b);
-
-  BOOST_CHECK_EQUAL(0, b.neighbors()->size());
-}
-
-BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellNotNeighborsZ)
-{
-  UniformGridNeighborSearch nSearch(0.2f, glm::vec3(0), glm::vec3(1), 0.2f);
-
-  SPHParticle a(glm::vec3(0.1f));
-  SPHParticle b(glm::vec3(0.1f, 0.1f, 0.9f));
-
-  nSearch.addParticle(&a);
-  nSearch.addParticle(&b);
-
-  // Check a's neighbors
-  nSearch.findNeighbors(&a);
-
-  BOOST_CHECK_EQUAL(0, a.neighbors()->size());
-
-  // Check b's neighbors
-  nSearch.findNeighbors(&b);
-
-  BOOST_CHECK_EQUAL(0, b.neighbors()->size());
-}
-
-BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsPositiveOffsetX)
-{
-  UniformGridNeighborSearch nSearch(0.5f, glm::vec3(2), glm::vec3(3), 0.5f);
-
-  SPHParticle a(glm::vec3(2.25f));
-  SPHParticle b(glm::vec3(2.6f, 2.25f, 2.25f));
-
-  nSearch.addParticle(&a);
-  nSearch.addParticle(&b);
-
-  // Check a's neighbors
-  nSearch.findNeighbors(&a);
-
-  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
-  if (a.neighbors()->size() > 0)
-    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
-
-  // Check b's neighbors
-  nSearch.findNeighbors(&b);
-
-  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
-  if (b.neighbors()->size() > 0)
-    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
-}
-
-BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_DifferentCellStillNeighborsNegativeOffsetX)
-{
-  UniformGridNeighborSearch nSearch(0.5f, glm::vec3(-3), glm::vec3(-2), 0.5f);
-
-  SPHParticle a(glm::vec3(-2.75f));
-  SPHParticle b(glm::vec3(-2.4f, -2.75f, -2.75f));
-
-  nSearch.addParticle(&a);
-  nSearch.addParticle(&b);
-
-  // Check a's neighbors
-  nSearch.findNeighbors(&a);
-
-  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
-  if (a.neighbors()->size() > 0)
-    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
-
-  // Check b's neighbors
-  nSearch.findNeighbors(&b);
-
-  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
-  if (b.neighbors()->size() > 0)
-    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
-}
-
 BOOST_AUTO_TEST_CASE(NeighborSearch_Naive_StressTest)
 {
   NaiveNeighborSearch nSearch(0.2f);
@@ -301,7 +88,220 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_Naive_StressTest)
   printf("INFO: Naive neighbor search took %.6f seconds for %d particles\n", timeInSeconds, particles.size());
 }
 
-BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_StressTest)
+BOOST_AUTO_TEST_CASE(NeighborSearch_UniformGrid_SameCell)
+{
+  UniformGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f);
+
+  SPHParticle a(glm::vec3(0.25f));
+  SPHParticle b(glm::vec3(0.2f));
+
+  nSearch.addParticle(&a);
+  nSearch.addParticle(&b);
+
+  // Check a's neighbors
+  nSearch.findNeighbors(&a);
+
+  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
+  if (a.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
+
+  // Check b's neighbors
+  nSearch.findNeighbors(&b);
+
+  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
+  if (b.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
+}
+
+BOOST_AUTO_TEST_CASE(NeighborSearch_UniformGrid_DifferentCellStillNeighborsX)
+{
+  UniformGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f);
+
+  SPHParticle a(glm::vec3(0.25f));
+  SPHParticle b(glm::vec3(0.6f, 0.25f, 0.25f));
+
+  nSearch.addParticle(&a);
+  nSearch.addParticle(&b);
+
+  // Check a's neighbors
+  nSearch.findNeighbors(&a);
+
+  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
+  if (a.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
+
+  // Check b's neighbors
+  nSearch.findNeighbors(&b);
+
+  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
+  if (b.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
+}
+
+BOOST_AUTO_TEST_CASE(NeighborSearch_UniformGrid_DifferentCellStillNeighborsY)
+{
+  UniformGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f);
+
+  SPHParticle a(glm::vec3(0.25f));
+  SPHParticle b(glm::vec3(0.25f, 0.6f, 0.25f));
+
+  nSearch.addParticle(&a);
+  nSearch.addParticle(&b);
+
+  // Check a's neighbors
+  nSearch.findNeighbors(&a);
+
+  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
+  if (a.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
+
+  // Check b's neighbors
+  nSearch.findNeighbors(&b);
+
+  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
+  if (b.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
+}
+
+BOOST_AUTO_TEST_CASE(NeighborSearch_UniformGrid_DifferentCellStillNeighborsZ)
+{
+  UniformGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f);
+
+  SPHParticle a(glm::vec3(0.25f));
+  SPHParticle b(glm::vec3(0.25f, 0.25f, 0.6f));
+
+  nSearch.addParticle(&a);
+  nSearch.addParticle(&b);
+
+  // Check a's neighbors
+  nSearch.findNeighbors(&a);
+
+  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
+  if (a.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
+
+  // Check b's neighbors
+  nSearch.findNeighbors(&b);
+
+  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
+  if (b.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
+}
+
+BOOST_AUTO_TEST_CASE(NeighborSearch_UniformGrid_DifferentCellNotNeighborsX)
+{
+  UniformGridNeighborSearch nSearch(0.2f, glm::vec3(0), glm::vec3(1), 0.2f);
+
+  SPHParticle a(glm::vec3(0.1f));
+  SPHParticle b(glm::vec3(0.9f, 0.1f, 0.1f));
+
+  nSearch.addParticle(&a);
+  nSearch.addParticle(&b);
+
+  // Check a's neighbors
+  nSearch.findNeighbors(&a);
+
+  BOOST_CHECK_EQUAL(0, a.neighbors()->size());
+
+  // Check b's neighbors
+  nSearch.findNeighbors(&b);
+
+  BOOST_CHECK_EQUAL(0, b.neighbors()->size());
+}
+
+BOOST_AUTO_TEST_CASE(NeighborSearch_UniformGrid_DifferentCellNotNeighborsY)
+{
+  UniformGridNeighborSearch nSearch(0.2f, glm::vec3(0), glm::vec3(1), 0.2f);
+
+  SPHParticle a(glm::vec3(0.1f));
+  SPHParticle b(glm::vec3(0.1f, 0.9f, 0.1f));
+
+  nSearch.addParticle(&a);
+  nSearch.addParticle(&b);
+
+  // Check a's neighbors
+  nSearch.findNeighbors(&a);
+
+  BOOST_CHECK_EQUAL(0, a.neighbors()->size());
+
+  // Check b's neighbors
+  nSearch.findNeighbors(&b);
+
+  BOOST_CHECK_EQUAL(0, b.neighbors()->size());
+}
+
+BOOST_AUTO_TEST_CASE(NeighborSearch_UniformGrid_DifferentCellNotNeighborsZ)
+{
+  UniformGridNeighborSearch nSearch(0.2f, glm::vec3(0), glm::vec3(1), 0.2f);
+
+  SPHParticle a(glm::vec3(0.1f));
+  SPHParticle b(glm::vec3(0.1f, 0.1f, 0.9f));
+
+  nSearch.addParticle(&a);
+  nSearch.addParticle(&b);
+
+  // Check a's neighbors
+  nSearch.findNeighbors(&a);
+
+  BOOST_CHECK_EQUAL(0, a.neighbors()->size());
+
+  // Check b's neighbors
+  nSearch.findNeighbors(&b);
+
+  BOOST_CHECK_EQUAL(0, b.neighbors()->size());
+}
+
+BOOST_AUTO_TEST_CASE(NeighborSearch_UniformGrid_DifferentCellStillNeighborsPositiveOffsetX)
+{
+  UniformGridNeighborSearch nSearch(0.5f, glm::vec3(2), glm::vec3(3), 0.5f);
+
+  SPHParticle a(glm::vec3(2.25f));
+  SPHParticle b(glm::vec3(2.6f, 2.25f, 2.25f));
+
+  nSearch.addParticle(&a);
+  nSearch.addParticle(&b);
+
+  // Check a's neighbors
+  nSearch.findNeighbors(&a);
+
+  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
+  if (a.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
+
+  // Check b's neighbors
+  nSearch.findNeighbors(&b);
+
+  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
+  if (b.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
+}
+
+BOOST_AUTO_TEST_CASE(NeighborSearch_UniformGrid_DifferentCellStillNeighborsNegativeOffsetX)
+{
+  UniformGridNeighborSearch nSearch(0.5f, glm::vec3(-3), glm::vec3(-2), 0.5f);
+
+  SPHParticle a(glm::vec3(-2.75f));
+  SPHParticle b(glm::vec3(-2.4f, -2.75f, -2.75f));
+
+  nSearch.addParticle(&a);
+  nSearch.addParticle(&b);
+
+  // Check a's neighbors
+  nSearch.findNeighbors(&a);
+
+  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
+  if (a.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
+
+  // Check b's neighbors
+  nSearch.findNeighbors(&b);
+
+  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
+  if (b.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
+}
+
+BOOST_AUTO_TEST_CASE(NeighborSearch_UniformGrid_StressTest)
 {
   glm::vec3 minBound(0);
   glm::vec3 maxBound(2.5);
@@ -331,6 +331,58 @@ BOOST_AUTO_TEST_CASE(NeighborSearch_StandardGrid_StressTest)
 
   double timeInSeconds = (endTime - startTime) / (double) CLOCKS_PER_SEC;
   printf("INFO: Uniform grid neighbor search took %.6f seconds for %d particles\n", timeInSeconds, particles.size());
+}
+
+BOOST_AUTO_TEST_CASE(NeighborSearch_IndexSortedUniformGrid_SameCell)
+{
+  SPHParticle a(glm::vec3(0.25f));
+  SPHParticle b(glm::vec3(0.2f));
+
+  std::vector<SPHParticle> pList;
+  pList.push_back(a);
+  pList.push_back(b);
+
+  IndexSortedUniformGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f, &pList);
+
+  // Check a's neighbors
+  nSearch.findNeighbors(&a);
+
+  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
+  if (a.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
+
+  // Check b's neighbors
+  nSearch.findNeighbors(&b);
+
+  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
+  if (b.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
+}
+
+BOOST_AUTO_TEST_CASE(NeighborSearch_IndexSortedUniformGrid_DifferentCellStillNeighborsX)
+{
+  SPHParticle a(glm::vec3(0.25f));
+  SPHParticle b(glm::vec3(0.6f, 0.25f, 0.25f));
+
+  std::vector<SPHParticle> pList;
+  pList.push_back(a);
+  pList.push_back(b);
+
+  IndexSortedUniformGridNeighborSearch nSearch(0.5f, glm::vec3(0), glm::vec3(1), 0.5f, &pList);
+
+  // Check a's neighbors
+  nSearch.findNeighbors(&a);
+
+  BOOST_CHECK_EQUAL(1, a.neighbors()->size());
+  if (a.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&b, a.neighbors()->at(0));
+
+  // Check b's neighbors
+  nSearch.findNeighbors(&b);
+
+  BOOST_CHECK_EQUAL(1, b.neighbors()->size());
+  if (b.neighbors()->size() > 0)
+    BOOST_CHECK_EQUAL(&a, b.neighbors()->at(0));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

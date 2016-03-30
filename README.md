@@ -43,7 +43,7 @@ neighborSearchType
 
 - naive
 - uniform
-- uniformZ
+- indexSortedUniform
 
 visualization
 

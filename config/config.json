@@ -12,8 +12,8 @@
 		"dRestDensity": 1000,
 		"dtTimestep": 0.001,
 		"kernelRadius": 0.100001,
-		"neighborSearchType": "uniform"
+		"neighborSearchType": "indexSortedUniform"
 	},
-	"visualization": "velocity",
+	"visualization": "neighbors",
 	"numUpdates": -1
 }
