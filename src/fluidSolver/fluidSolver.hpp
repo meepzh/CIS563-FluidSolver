@@ -43,6 +43,7 @@ protected:
   int _maxParticles;
   FluidVisualizationType visualizationType;
   float _fixedTimestep;
+
   double computeTime;
   unsigned int numUpdates;
   unsigned int maxUpdates;

@@ -29,6 +29,7 @@ public:
   virtual unsigned int numParticles() const;
   virtual void setParticleSeparation(float ps);
   virtual void setMaxParticles(int mp);
+  virtual void printPerformanceStats();
 
   void prepNeighborSearchAfterSceneLoad();
   void prepNeighborSearch();

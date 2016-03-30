@@ -314,6 +314,11 @@ void SPHSolver::setMaxParticles(int mp) {
   }
 }
 
+void SPHSolver::printPerformanceStats() {
+  FluidSolver::printPerformanceStats();
+  nSearch->printPerformanceStats();
+}
+
 bool SPHSolver::checkInited() {
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
   if (inited) {

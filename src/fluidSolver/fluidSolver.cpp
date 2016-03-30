@@ -57,8 +57,10 @@ void FluidSolver::setFixedTimestep(float ft) {
 }
 
 void FluidSolver::printPerformanceStats() {
+  #if MFluidSolver_RECORD_PERFORMANCE
   std::cout << "PERF: Fluid solver averaged " <<
     (computeTime / (double)numUpdates) <<
     " seconds over " << numUpdates << " updates" << std::endl;
   std::cout << "PERF: Overall simulation ran for " << MUtils::toHMS(computeTime) << std::endl;
+  #endif
 }

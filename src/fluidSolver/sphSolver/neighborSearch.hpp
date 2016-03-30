@@ -20,6 +20,7 @@ public:
   NeighborSearch() : NeighborSearch(MFluidSolver_DEFAULT_SEARCH_RADIUS) {}
   NeighborSearch(float r);
   void setSearchRadius(float r);
+  void printPerformanceStats();
   virtual void findNeighbors(SPHParticle *p) = 0;
   virtual void addParticle(SPHParticle *p) = 0;
   virtual void updateParticle(SPHParticle *p) = 0;
@@ -28,6 +29,9 @@ public:
 protected:
   float searchRadius;
   float searchRadius2;
+
+  double computeTime;
+  unsigned int numSearches;
 };
 
 class NaiveNeighborSearch : public NeighborSearch {
