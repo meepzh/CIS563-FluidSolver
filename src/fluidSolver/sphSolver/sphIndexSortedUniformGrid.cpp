@@ -55,18 +55,11 @@ void SPHIndexSortedUniformGrid::getNeighbors(SPHParticle *p) {
                 break;
               }
               ++c;
-            } while(p->index == c->index);
+            } while(index == c->index);
           }
-          #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
-          else {
-            std::cout << "TRACE: Cell returned null pointer" << std::endl;
-          }
-          #endif
 
           #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
-          if (numNeighbors > 0) {
-            std::cout << "TRACE: Found " << numNeighbors << " neighbors" << std::endl;
-          }
+          std::cout << "TRACE: Found " << numNeighbors << " neighbor(s)" << std::endl;
           #endif
         }
       } // end for k
@@ -115,7 +108,7 @@ void SPHIndexSortedUniformGrid::insertSortedParticleListToGrid() {
 }
 
 void SPHIndexSortedUniformGrid::sortParticles() {
-  // Todo: Use timsort
+  // TODO: Use timsort
   std::sort(master->begin(), master->end(), SPHParticle::indexCompare);
   endParticle = &(master->at(master->size() - 1));
 }

@@ -42,14 +42,20 @@ void SPHUniformGrid::getNeighbors(SPHParticle *p) {
         // If not at original cell, add all neighbors (process later in kernel)
         if (coords.x >= 0 && coords.y >= 0 && coords.z >= 0 &&
             coords.x < cellBounds.x && coords.y < cellBounds.y && coords.z < cellBounds.z) {
+
+          #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
+          std::cout << "TRACE: Accessing cell (" << coords.x << ", " << coords.y << ", " << coords.z << ")" << std::endl;
+          #endif
+
           index = getIndex(coords);
           vec = &(data.at(index));
+
           for (unsigned int l = 0; l < vec->size(); ++l) {
             neighbors->push_back(vec->at(l));
           } // end for l
 
           #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
-          std::cout << "TRACE: Accessing cell (" << coords.x << ", " << coords.y << ", " << coords.z << ")" << std::endl;
+          std::cout << "TRACE: Found " << vec->size() << " neighbor(s)" << std::endl;
           #endif
         }
       } // end for k
