@@ -107,7 +107,7 @@ void SPHIndexSortedUniformGrid::insertSortedParticleListToGrid() {
   }
 }
 
-void SPHIndexSortedUniformGrid::sortParticles() {
+void SPHIndexSortedUniformGrid::sortParticles(bool initialSort) {
   // TODO: Use timsort
   std::sort(master->begin(), master->end(), SPHParticle::indexCompare);
   endParticle = &(master->at(master->size() - 1));

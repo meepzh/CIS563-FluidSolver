@@ -21,10 +21,8 @@ struct ZCurveTooLargeException : std::exception {
 class ZCurve {
 public:
   unsigned long maxIndex(const glm::ivec3 &cellBounds);
-
-private:
   unsigned long getIndex(const glm::ivec3 &p);
-  unsigned long getIndex(int i, int j, int k);
+  unsigned long getIndex(unsigned int i, unsigned int j, unsigned int k);
   unsigned long splitBits(unsigned long i);
 };
 

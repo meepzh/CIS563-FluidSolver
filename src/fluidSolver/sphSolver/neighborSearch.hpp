@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "sphUniformGrid.hpp"
-#include "sphIndexSortedUniformGrid.hpp"
+#include "sphZIndexSortedUniformGrid.hpp"
 #include "sphParticle.hpp"
 
 enum NeighborSearchType {Naive, UniformGrid, IndexSortedUniformGrid};
@@ -67,7 +67,9 @@ public:
 
 class IndexSortedUniformGridNeighborSearch : public GridNeighborSearch {
 public:
-  IndexSortedUniformGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize, std::vector<SPHParticle> *master);
+  IndexSortedUniformGridNeighborSearch(
+    float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize,
+    std::vector<SPHParticle> *master, bool useZCurve = true);
 
   SPHIndexSortedUniformGrid *isuGrid;
 };

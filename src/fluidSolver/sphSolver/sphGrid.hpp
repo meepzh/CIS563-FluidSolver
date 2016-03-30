@@ -43,7 +43,7 @@ protected:
   glm::vec3 minBounds;
   glm::vec3 maxBounds;
   glm::ivec3 cellBounds;
-  unsigned int numCells;
+  unsigned long numCells;
   float cellSize;
 };
 

@@ -24,13 +24,13 @@ public:
   virtual void resetAndFillCells();
   virtual void updateParticleIndices();
   virtual void insertSortedParticleListToGrid();
-  void sortParticles();
+  void sortParticles(bool initialSort = false);
 
   #if MFluidSolver_USE_OPENVDB
   virtual void exportVDB(std::string &file, std::string &gridName);
   #endif
 
-private:
+protected:
   std::vector<SPHParticle> *master;
   std::vector<SPHParticle *> cells;
   SPHParticle *endParticle;

@@ -117,6 +117,7 @@ set(CORE_SRC
         src/fluidSolver/sphSolver/sphParticle.cpp
         src/fluidSolver/sphSolver/sphSolver.cpp
         src/fluidSolver/sphSolver/sphUniformGrid.cpp
+        src/fluidSolver/sphSolver/sphZIndexSortedUniformGrid.cpp
         src/fluidSolver/fluidSolver.cpp
         src/fluidSolver/particle.cpp
         src/fluidSolver/zCurve.cpp
@@ -140,6 +141,12 @@ target_link_libraries(MFluidSolver ${CORE_LIBS})
 ##### Testing #####
 add_subdirectory(unittest)
 
+# KernelFunctions Library
+set(MKERNELFUNCTIONS_LIB
+        src/fluidSolver/sphSolver/kernelFunctions.cpp
+)
+add_library(MKernelFunctions ${MKERNELFUNCTIONS_LIB})
+
 # NeighborSearch Library
 set(MNEIGHBORSEARCH_LIB
         src/fluidSolver/sphSolver/neighborSearch.cpp
@@ -147,16 +154,18 @@ set(MNEIGHBORSEARCH_LIB
         src/fluidSolver/sphSolver/sphIndexSortedUniformGrid.cpp
         src/fluidSolver/sphSolver/sphParticle.cpp
         src/fluidSolver/sphSolver/sphUniformGrid.cpp
+        src/fluidSolver/sphSolver/sphZIndexSortedUniformGrid.cpp
         src/fluidSolver/particle.cpp
+        src/fluidSolver/zCurve.cpp
 )
 add_library(MNeighborSearch ${MNEIGHBORSEARCH_LIB})
 target_link_libraries(MNeighborSearch ${CORE_LIBS})
 
-# KernelFunctions Library
-set(MKERNELFUNCTIONS_LIB
-        src/fluidSolver/sphSolver/kernelFunctions.cpp
+# ZCurve Library
+set(MZCURVE_LIB
+        src/fluidSolver/zCurve.cpp
 )
-add_library(MKernelFunctions ${MKERNELFUNCTIONS_LIB})
+add_library(MZCurve ${MZCURVE_LIB})
 
 # Tests
 enable_testing()

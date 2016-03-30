@@ -7,3 +7,4 @@
 
 #include "testKernelFunctions.cpp"
 #include "testNeighborSearch.cpp"
+#include "testZCurve.cpp"

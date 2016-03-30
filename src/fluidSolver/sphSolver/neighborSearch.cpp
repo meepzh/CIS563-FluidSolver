@@ -96,8 +96,14 @@ UniformGridNeighborSearch::UniformGridNeighborSearch(float r, const glm::vec3 &g
   grid = new SPHUniformGrid(gridMin, gridMax, cellSize);
 }
 
-IndexSortedUniformGridNeighborSearch::IndexSortedUniformGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize, std::vector<SPHParticle> *master)
+IndexSortedUniformGridNeighborSearch::IndexSortedUniformGridNeighborSearch(
+  float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize,
+  std::vector<SPHParticle> *master, bool useZCurve)
  : GridNeighborSearch(r) {
-  isuGrid = new SPHIndexSortedUniformGrid(gridMin, gridMax, cellSize, master);
+  if (useZCurve) {
+    isuGrid = new SPHZIndexSortedUniformGrid(gridMin, gridMax, cellSize, master);
+  } else {
+    isuGrid = new SPHIndexSortedUniformGrid(gridMin, gridMax, cellSize, master);
+  }
   grid = isuGrid;
 }

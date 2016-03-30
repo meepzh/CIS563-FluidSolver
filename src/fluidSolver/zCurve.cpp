@@ -31,9 +31,8 @@ unsigned long ZCurve::getIndex(const glm::ivec3 &p) {
   return getIndex(p.x, p.y, p.z);
 }
 
-unsigned long ZCurve::getIndex(int i, int j, int k) {
+unsigned long ZCurve::getIndex(unsigned int i, unsigned int j, unsigned int k) {
   #if MFluidSolver_USE_ASSERTS
-  assert(i >= 0 && j >= 0 && k >= 0);
   assert(i <= LONG_COORD_LIMIT && j <= LONG_COORD_LIMIT && k <= LONG_COORD_LIMIT);
   #endif
 
@@ -46,4 +45,5 @@ unsigned long ZCurve::splitBits(unsigned long i) {
   i = (i | (i <<  8)) & 0x0300F00F;
   i = (i | (i <<  4)) & 0x030C30C3;
   i = (i | (i <<  2)) & 0x09249249;
+  return i;
 }
