@@ -13,7 +13,7 @@
 #include "sphZIndexSortedUniformGrid.hpp"
 #include "sphParticle.hpp"
 
-enum NeighborSearchType {Naive, UniformGrid, IndexSortedUniformGrid};
+enum NeighborSearchType {Naive, UniformGrid, IndexSortedUniformGrid, ZIndexSortedUniformGrid, ZIndexSortedUniformGridWithInsertion};
 
 class NeighborSearch {
 public:

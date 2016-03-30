@@ -43,7 +43,14 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
       std::cout << "INFO: SPH Solver using index sorted uniform grid neighbor search" << std::endl;
       #endif
 
-      nSearch = new IndexSortedUniformGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius, &_particles);
+      nSearch = new IndexSortedUniformGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius, &_particles, false);
+      break;
+    case NeighborSearchType::ZIndexSortedUniformGrid:
+      #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+      std::cout << "INFO: SPH Solver using Z-curve index sorted uniform grid neighbor search" << std::endl;
+      #endif
+
+      nSearch = new IndexSortedUniformGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius, &_particles, true);
       break;
     case NeighborSearchType::UniformGrid:
     default:
@@ -138,6 +145,8 @@ void SPHSolver::loadConfig(const std::string &file) {
     nSearchType = NeighborSearchType::UniformGrid;
   } else if (neighborSearchTypeString == "indexsorteduniform") {
     nSearchType = NeighborSearchType::IndexSortedUniformGrid;
+  } else if (neighborSearchTypeString == "zindexsorteduniform") {
+    nSearchType = NeighborSearchType::ZIndexSortedUniformGrid;
   }
 
   std::string visualizationTypeString = root.get("visualization", MFluidSolver_DEFAULT_VISUALIZATION_STRING).asString();
@@ -184,7 +193,7 @@ void SPHSolver::update(double deltaT) {
     /*for (SPHParticle &p : _particles) {
       nSearch->updateParticle(p);
     }*/
-  } else if (nSearchType == NeighborSearchType::IndexSortedUniformGrid) {
+  } else if (nSearchType == NeighborSearchType::IndexSortedUniformGrid || nSearchType == NeighborSearchType::ZIndexSortedUniformGrid) {
     IndexSortedUniformGridNeighborSearch *isugSearch = static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
     isugSearch->isuGrid->resetAndFillCells();
   }
@@ -330,7 +339,7 @@ void SPHSolver::visualizeParticleNeighbors(SPHParticle *target) {
     for (SPHParticle &p : _particles) {
       nSearch->addParticle(&p);
     }
-  } else if (nSearchType == NeighborSearchType::IndexSortedUniformGrid) {
+  } else if (nSearchType == NeighborSearchType::IndexSortedUniformGrid || nSearchType == NeighborSearchType::ZIndexSortedUniformGrid) {
     IndexSortedUniformGridNeighborSearch *isugSearch = static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
     isugSearch->isuGrid->resetAndFillCells();
   }
