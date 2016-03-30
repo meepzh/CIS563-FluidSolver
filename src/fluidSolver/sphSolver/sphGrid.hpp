@@ -9,6 +9,7 @@
 
 #include <exception>
 #include <glm/glm.hpp>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -22,13 +23,16 @@ class SPHGrid {
 public:
   SPHGrid(const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float cellSize);
 
+  virtual void getNeighbors(SPHParticle *p) = 0;
+
+  virtual glm::ivec3 getGridCoordinates(const glm::vec3 &pt);
+  virtual unsigned long getIndex(const glm::vec3 &pt);
+  virtual unsigned long getIndex(const glm::ivec3 &c);
+  virtual unsigned long getIndex(unsigned int x, unsigned int y, unsigned int z);
+
   virtual void addParticle(SPHParticle *p) = 0;
   virtual void updateParticle(SPHParticle *p) = 0;
-  virtual void getNeighbors(SPHParticle *p) = 0;
   virtual void clear() = 0;
-  virtual glm::ivec3 getGridCoordinates(const glm::vec3 &pt) = 0;
-  virtual unsigned int getIndex(const glm::ivec3 &c) = 0;
-  virtual unsigned int getIndex(unsigned int x, unsigned int y, unsigned int z) = 0;
   virtual void printDiagnostics() = 0;
 
   #if MFluidSolver_USE_OPENVDB

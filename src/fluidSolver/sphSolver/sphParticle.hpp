@@ -33,6 +33,9 @@ public:
   std::vector<SPHParticle *> *neighbors();
   void clearNeighbors();
 
+  unsigned long index;
+  static bool indexCompare(const SPHParticle &a, const SPHParticle &b);
+
 protected:
   float _density;
   float _pressure;

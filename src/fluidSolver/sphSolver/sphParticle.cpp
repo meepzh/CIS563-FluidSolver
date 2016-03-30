@@ -58,3 +58,7 @@ std::vector<SPHParticle *> *SPHParticle::neighbors() {
 void SPHParticle::clearNeighbors() {
   _neighbors.clear();
 }
+
+bool SPHParticle::indexCompare(const SPHParticle &a, const SPHParticle &b) {
+  return a.index < b.index;
+}

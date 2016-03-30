@@ -175,11 +175,15 @@ void SPHSolver::update(double deltaT) {
     /*for (SPHParticle &p : _particles) {
       nSearch->updateParticle(p);
     }*/
+  } else if (nSearchType == NeighborSearchType::IndexSortedUniformGrid) {
+    IndexSortedUniformGridNeighborSearch *isugSearch = static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
+    isugSearch->isuGrid->updateParticleIndices();
+    isugSearch->isuGrid->sortParticles();
+    isugSearch->isuGrid->insertSortedParticleListToGrid();
   }
 
   // Calculate neighbors
   for (SPHParticle &p : _particles) {
-    p.clearNeighbors();
     nSearch->findNeighbors(&p);
   }
 
@@ -269,6 +273,7 @@ void SPHSolver::addParticleAt(const glm::vec3 &position) {
   if (_particles.size() < _maxParticles) {
     SPHParticle p(mMass, position);
     _particles.push_back(p);
+    p.index = _particles.size();
     nSearch->addParticle(&p);
   }
 }

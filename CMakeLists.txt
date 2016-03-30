@@ -113,10 +113,10 @@ set(CORE_SRC
         src/fluidSolver/sphSolver/kernelFunctions.cpp
         src/fluidSolver/sphSolver/neighborSearch.cpp
         src/fluidSolver/sphSolver/sphGrid.cpp
+        src/fluidSolver/sphSolver/sphIndexSortedUniformGrid.cpp
         src/fluidSolver/sphSolver/sphParticle.cpp
         src/fluidSolver/sphSolver/sphSolver.cpp
         src/fluidSolver/sphSolver/sphUniformGrid.cpp
-        src/fluidSolver/sphSolver/sphZIndexSortedUniformGrid.cpp
         src/fluidSolver/fluidSolver.cpp
         src/fluidSolver/particle.cpp
         src/fluidSolver/zCurve.cpp
@@ -144,6 +144,7 @@ add_subdirectory(unittest)
 set(MNEIGHBORSEARCH_LIB
         src/fluidSolver/sphSolver/neighborSearch.cpp
         src/fluidSolver/sphSolver/sphGrid.cpp
+        src/fluidSolver/sphSolver/sphIndexSortedUniformGrid.cpp
         src/fluidSolver/sphSolver/sphParticle.cpp
         src/fluidSolver/sphSolver/sphUniformGrid.cpp
         src/fluidSolver/particle.cpp

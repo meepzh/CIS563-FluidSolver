@@ -22,39 +22,10 @@ SPHUniformGrid::SPHUniformGrid(const glm::vec3 &minBounds, const glm::vec3 &maxB
 SPHUniformGrid::~SPHUniformGrid() {
 }
 
-void SPHUniformGrid::addParticle(SPHParticle *p) {
-  glm::ivec3 pC = getGridCoordinates(p->position());
-  unsigned int pI = getIndex(pC);
-  data.at(pI).push_back(p);
-}
-
-void SPHUniformGrid::updateParticle(SPHParticle *p) {
-  glm::ivec3 oldCoords = getGridCoordinates(p->oldPosition());
-  glm::ivec3 newCoords = getGridCoordinates(p->position());
-  if (oldCoords != newCoords) {
-    unsigned int oldIndex = getIndex(oldCoords);
-    unsigned int newIndex = getIndex(newCoords);
-
-    std::vector<SPHParticle *> *oldCell = &(data.at(oldIndex));
-    auto oldIt = std::find(std::begin(*oldCell), std::end(*oldCell), p);
-    if (oldIt != std::end(*oldCell)) {
-      oldCell->erase(oldIt);
-      data.at(newIndex).push_back(p);
-    } else {
-      #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
-      std::cerr << "ERROR: Could not find particle at (" <<
-        p->position().x << ", " << p->position().y << ", " << p->position().z <<
-        ") based on old position (" <<
-        p->oldPosition().x << ", " << p->oldPosition().y << ", " << p->oldPosition().z <<
-        "), index " << oldIndex << std::endl;
-      #endif
-    }
-  }
-}
-
 void SPHUniformGrid::getNeighbors(SPHParticle *p) {
   glm::ivec3 pC = getGridCoordinates(p->position());
   std::vector<SPHParticle *> *neighbors = p->neighbors();
+  neighbors->clear();
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
   std::cout << "TRACE: Getting neighbors for cell (" << pC.x << ", " << pC.y << ", " << pC.z << ")" << std::endl;
@@ -86,27 +57,42 @@ void SPHUniformGrid::getNeighbors(SPHParticle *p) {
   } // end for i
 }
 
+void SPHUniformGrid::addParticle(SPHParticle *p) {
+  glm::ivec3 pC = getGridCoordinates(p->position());
+  unsigned int pI = getIndex(pC);
+  p->index = pI;
+  data.at(pI).push_back(p);
+}
+
+void SPHUniformGrid::updateParticle(SPHParticle *p) {
+  glm::ivec3 oldCoords = getGridCoordinates(p->oldPosition());
+  glm::ivec3 newCoords = getGridCoordinates(p->position());
+  if (oldCoords != newCoords) {
+    unsigned int oldIndex = getIndex(oldCoords);
+    unsigned int newIndex = getIndex(newCoords);
+
+    std::vector<SPHParticle *> *oldCell = &(data.at(oldIndex));
+    auto oldIt = std::find(std::begin(*oldCell), std::end(*oldCell), p);
+    if (oldIt != std::end(*oldCell)) {
+      oldCell->erase(oldIt);
+      p->index = newIndex;
+      data.at(newIndex).push_back(p);
+    } else {
+      #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
+      std::cerr << "ERROR: Could not find particle at (" <<
+        p->position().x << ", " << p->position().y << ", " << p->position().z <<
+        ") based on old position (" <<
+        p->oldPosition().x << ", " << p->oldPosition().y << ", " << p->oldPosition().z <<
+        "), index " << oldIndex << std::endl;
+      #endif
+    }
+  }
+}
+
 void SPHUniformGrid::clear() {
   for (unsigned int i = 0; i < numCells; ++i) {
     data.at(i).clear();
   }
-}
-
-glm::ivec3 SPHUniformGrid::getGridCoordinates(const glm::vec3 &pt) {
-  return glm::ivec3((int)((pt.x - minBounds.x) / cellSize), (int)((pt.y - minBounds.y) / cellSize), (int)((pt.z - minBounds.z) / cellSize));
-}
-
-unsigned int SPHUniformGrid::getIndex(unsigned int x, unsigned int y, unsigned int z) {
-  return y * cellBounds.z * cellBounds.x + z * cellBounds.x + x;
-}
-
-unsigned int SPHUniformGrid::getIndex(const glm::ivec3 &c) {
-  #if MFluidSolver_USE_ASSERTS
-  assert(c.x >= 0 && c.y >= 0 && c.z >= 0);
-  assert(c.x < cellBounds.x && c.y < cellBounds.y && c.z < cellBounds.z);
-  #endif
-
-  return getIndex(c.x, c.y, c.z);
 }
 
 void SPHUniformGrid::printDiagnostics() {

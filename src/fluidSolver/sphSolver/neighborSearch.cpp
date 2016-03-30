@@ -19,6 +19,8 @@ void NeighborSearch::setSearchRadius(float r) {
 void NaiveNeighborSearch::findNeighbors(SPHParticle *p) {
   const glm::vec3 pPos = p->position();
   std::vector<SPHParticle *> *neighbors = p->neighbors();
+  neighbors->clear();
+
   for (SPHParticle *n : particleList) {
     if (n != p) {
       if (glm::distance2(n->position(), pPos) < searchRadius2) {
@@ -36,16 +38,15 @@ void NaiveNeighborSearch::clear() {
   particleList.clear();
 }
 
-UniformGridNeighborSearch::UniformGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize)
+GridNeighborSearch::GridNeighborSearch(float r)
 : NeighborSearch(r), grid(nullptr) {
-  grid = new SPHUniformGrid(gridMin, gridMax, cellSize);
 }
 
-UniformGridNeighborSearch::~UniformGridNeighborSearch() {
+GridNeighborSearch::~GridNeighborSearch() {
   delete grid;
 }
 
-void UniformGridNeighborSearch::findNeighbors(SPHParticle *p) {
+void GridNeighborSearch::findNeighbors(SPHParticle *p) {
   grid->getNeighbors(p);
 
   const glm::vec3 pPos = p->position();
@@ -66,22 +67,37 @@ void UniformGridNeighborSearch::findNeighbors(SPHParticle *p) {
   }
 }
 
-void UniformGridNeighborSearch::addParticle(SPHParticle *p) {
+void GridNeighborSearch::addParticle(SPHParticle *p) {
   grid->addParticle(p);
 }
 
-void UniformGridNeighborSearch::updateParticle(SPHParticle *p) {
+void GridNeighborSearch::updateParticle(SPHParticle *p) {
   grid->updateParticle(p);
 }
 
-void UniformGridNeighborSearch::clear() {
+void GridNeighborSearch::clear() {
   grid->clear();
 }
 
+void GridNeighborSearch::printDiagnostics() {
+  grid->printDiagnostics();
+}
+
 #if MFluidSolver_USE_OPENVDB
-void UniformGridNeighborSearch::exportVDB() {
+void GridNeighborSearch::exportVDB() {
   std::string filename = "export.vdb";
   std::string exportname = "MExport";
   grid->exportVDB(filename, exportname);
 }
 #endif
+
+UniformGridNeighborSearch::UniformGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize)
+ : GridNeighborSearch(r) {
+  grid = new SPHUniformGrid(gridMin, gridMax, cellSize);
+}
+
+IndexSortedUniformGridNeighborSearch::IndexSortedUniformGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize, std::vector<SPHParticle> *master)
+ : GridNeighborSearch(r) {
+  isuGrid = new SPHIndexSortedUniformGrid(gridMin, gridMax, cellSize, master);
+  grid = isuGrid;
+}

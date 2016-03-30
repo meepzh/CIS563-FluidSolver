@@ -10,9 +10,10 @@
 #include <vector>
 
 #include "sphUniformGrid.hpp"
+#include "sphIndexSortedUniformGrid.hpp"
 #include "sphParticle.hpp"
 
-enum NeighborSearchType {Naive, UniformGrid};
+enum NeighborSearchType {Naive, UniformGrid, IndexSortedUniformGrid};
 
 class NeighborSearch {
 public:
@@ -42,21 +43,33 @@ private:
   std::vector<SPHParticle *> particleList;
 };
 
-class UniformGridNeighborSearch : public NeighborSearch {
+class GridNeighborSearch : public NeighborSearch {
 public:
-  UniformGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize);
-  ~UniformGridNeighborSearch();
+  GridNeighborSearch(float r);
+  ~GridNeighborSearch();
   virtual void findNeighbors(SPHParticle *p);
   virtual void addParticle(SPHParticle *p);
   virtual void updateParticle(SPHParticle *p);
   virtual void clear();
+  virtual void printDiagnostics();
 
   #if MFluidSolver_USE_OPENVDB
-  void exportVDB();
+  virtual void exportVDB();
   #endif
 
-private:
-  SPHUniformGrid *grid;
+  SPHGrid *grid;
+};
+
+class UniformGridNeighborSearch : public GridNeighborSearch {
+public:
+  UniformGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize);
+};
+
+class IndexSortedUniformGridNeighborSearch : public GridNeighborSearch {
+public:
+  IndexSortedUniformGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize, std::vector<SPHParticle> *master);
+
+  SPHIndexSortedUniformGrid *isuGrid;
 };
 
 #endif /* MFLUIDSOLVER_SPHSOLVER_NEIGHBORSEARCH_HPP_ */
