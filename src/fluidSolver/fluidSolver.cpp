@@ -13,7 +13,7 @@ FluidSolver::FluidSolver()
    _particleSeparation(MFluidSolver_DEFAULT_PARTICLE_SEPARATION),
    visualizationType(MFluidSolver_DEFAULT_VISUALIZATION),
    _fixedTimestep(MFluidSolver_DEFAULT_UPDATE_STEP),
-   computeTime(0), numUpdates(0),
+   computeTime(0), numUpdates(0), endedSimulation(false),
    maxUpdates(MFluidSolver_DEFAULT_MAX_UPDATES), limitNumUpdates(MFluidSolver_DEFAULT_LIMIT_UPDATES),
    fluidSource(nullptr), fluidContainer(nullptr) {
 

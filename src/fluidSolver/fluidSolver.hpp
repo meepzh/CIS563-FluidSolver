@@ -48,6 +48,7 @@ protected:
   unsigned int numUpdates;
   unsigned int maxUpdates;
   bool limitNumUpdates;
+  bool endedSimulation;
 };
 
 #endif /* MFLUIDSOLVER_FLUIDSOLVER_HPP_ */

@@ -5,6 +5,7 @@
 #include "viewer.hpp"
 
 #include <cstring>
+#include <ctime>
 
 #include "input.hpp"
 
@@ -217,8 +218,9 @@ void Viewer::togglePause() {
   paused = !paused;
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  if (paused) std::cout << "INFO: Paused!" << std::endl;
-  if (!paused) std::cout << "INFO: Unpaused!" << std::endl;
+  if (paused) std::cout << "INFO: Paused at ";
+  if (!paused) std::cout << "INFO: Unpaused at ";
+  std::cout << (std::clock()  / (double) CLOCKS_PER_SEC) << std::endl;
   #endif
 }
 

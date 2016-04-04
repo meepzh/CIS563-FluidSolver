@@ -4,6 +4,7 @@
 
 #include "sphSolver.hpp"
 
+#include <ctime>
 #include <fstream>
 #include <iostream>
 #include <json/json.h>
@@ -178,9 +179,16 @@ void SPHSolver::loadConfig(const std::string &file) {
 
 void SPHSolver::update(double deltaT) {
   if (limitNumUpdates && numUpdates >= maxUpdates) {
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+    if (!endedSimulation) {
+      std::cout << "INFO: Ended simulation at " << (std::clock()  / (double) CLOCKS_PER_SEC) << std::endl;
+    }
+    #endif
+    endedSimulation = true;
     return;
+  } else {
+    ++numUpdates;
   }
-  ++numUpdates;
 
   // NOTE: TIMESTEP IS OVERWRITTEN HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   deltaT = _fixedTimestep;
@@ -210,13 +218,13 @@ void SPHSolver::update(double deltaT) {
   #endif
 
   // Compute density and pressure
-  /*#if MFluidSolver_USE_TBB
+  #if MFluidSolver_USE_TBB
   tbb::parallel_for(tbb::blocked_range<size_t>(0, _particles.size()),
     [&](const tbb::blocked_range<size_t> &r) {
       for (unsigned int i = r.begin(); i != r.end(); ++i) {
-  #else*/
+  #else
       for (unsigned int i = 0; i < _particles.size(); ++i) {
-  // #endif
+  #endif
         SPHParticle &p = _particles.at(i);
         // Density
         float densitySum = p.mass() * kernelFunctions.computePoly6(glm::vec3(0));
@@ -231,13 +239,13 @@ void SPHSolver::update(double deltaT) {
         float pressureTemp = kStiffness * (p.density() - dRestDensity);
         if (pressureTemp < 0) pressureTemp = 0;
         p.setPressure(pressureTemp);
-  /*#if MFluidSolver_USE_TBB
+  #if MFluidSolver_USE_TBB
       }
     }
   );
-  #else*/
+  #else
   }
-  // #endif
+  #endif
 
   // Compute forces
   #if MFluidSolver_USE_TBB
