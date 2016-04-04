@@ -178,12 +178,14 @@ void SPHSolver::loadConfig(const std::string &file) {
 }
 
 void SPHSolver::update(double deltaT) {
+  if (firstRun) {
+    startTime = tbb::tick_count::now();
+    firstRun = false;
+  }
   if (limitNumUpdates && numUpdates >= maxUpdates) {
-    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
     if (!endedSimulation) {
-      std::cout << "INFO: Ended simulation at " << (std::clock()  / (double) CLOCKS_PER_SEC) << std::endl;
+      endTime = tbb::tick_count::now();
     }
-    #endif
     endedSimulation = true;
     return;
   } else {

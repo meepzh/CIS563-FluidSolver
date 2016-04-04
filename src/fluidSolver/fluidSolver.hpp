@@ -7,6 +7,8 @@
 
 #include "MFluidSolverConfig.hpp"
 
+#include <tbb/tick_count.h>
+
 #include "../geom/geom.hpp"
 #include "particle.hpp"
 
@@ -31,6 +33,7 @@ public:
   virtual void setParticleSeparation(float ps);
   float particleSeparation() const;
   void setFixedTimestep(float ft);
+  bool hasEndedSimulation();
 
   virtual void printPerformanceStats();
 
@@ -45,10 +48,11 @@ protected:
   float _fixedTimestep;
 
   double computeTime;
+  tbb::tick_count startTime, endTime;
   unsigned int numUpdates;
   unsigned int maxUpdates;
   bool limitNumUpdates;
-  bool endedSimulation;
+  bool firstRun, endedSimulation;
 };
 
 #endif /* MFLUIDSOLVER_FLUIDSOLVER_HPP_ */

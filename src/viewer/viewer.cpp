@@ -159,6 +159,9 @@ void Viewer::run() {
     // Update and render particles
     if (!paused) {
       scene.solver.update(deltaT);
+      if (scene.solver.hasEndedSimulation()) {
+        togglePause();
+      }
     }
 
     // Render particles
@@ -218,9 +221,8 @@ void Viewer::togglePause() {
   paused = !paused;
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  if (paused) std::cout << "INFO: Paused at ";
-  if (!paused) std::cout << "INFO: Unpaused at ";
-  std::cout << (std::clock()  / (double) CLOCKS_PER_SEC) << std::endl;
+  if (paused) std::cout << "INFO: Paused!" << std::endl;
+  if (!paused) std::cout << "INFO: Unpaused!" << std::endl;
   #endif
 }
 

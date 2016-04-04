@@ -13,7 +13,7 @@ FluidSolver::FluidSolver()
    _particleSeparation(MFluidSolver_DEFAULT_PARTICLE_SEPARATION),
    visualizationType(MFluidSolver_DEFAULT_VISUALIZATION),
    _fixedTimestep(MFluidSolver_DEFAULT_UPDATE_STEP),
-   computeTime(0), numUpdates(0), endedSimulation(false),
+   computeTime(0), numUpdates(0), firstRun(true), endedSimulation(false),
    maxUpdates(MFluidSolver_DEFAULT_MAX_UPDATES), limitNumUpdates(MFluidSolver_DEFAULT_LIMIT_UPDATES),
    fluidSource(nullptr), fluidContainer(nullptr) {
 
@@ -56,11 +56,11 @@ void FluidSolver::setFixedTimestep(float ft) {
   _fixedTimestep = ft;
 }
 
+bool FluidSolver::hasEndedSimulation() {
+  return endedSimulation;
+}
+
 void FluidSolver::printPerformanceStats() {
-  #if MFluidSolver_RECORD_PERFORMANCE
-  std::cout << "PERF: Fluid solver averaged " <<
-    (computeTime / (double)numUpdates) <<
-    " seconds over " << numUpdates << " updates" << std::endl;
-  std::cout << "PERF: Overall simulation ran for " << MUtils::toHMS(computeTime) << std::endl;
-  #endif
+  computeTime = (endTime - startTime).seconds();
+  std::cout << "PERF: Overall simulation ran for " << MUtils::toHMS(computeTime) << " over " << numUpdates << " frames" << std::endl;
 }
