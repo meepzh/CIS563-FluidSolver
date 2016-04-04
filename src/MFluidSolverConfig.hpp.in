@@ -11,10 +11,11 @@
 #define MFluidSolver_OPENGL_DEBUG 1
 #define MFluidSolver_USE_ASSERTS 1
 
-#define MFluidSolver_RECORD_PERFORMANCE 1
+#define MFluidSolver_RECORD_PERFORMANCE 0
 
 // Libraries
 #define MFluidSolver_USE_OPENVDB 1
+#define MFluidSolver_USE_TBB 1
 
 // Misc
 #define MFluidSolver_ZCURVE_CACHING 0

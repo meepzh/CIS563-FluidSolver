@@ -5,6 +5,11 @@
 #include "sphIndexSortedUniformGrid.hpp"
 
 #include <algorithm>
+
+#if MFluidSolver_USE_TBB
+#include <tbb/parallel_for.h>
+#endif
+
 #include "../../utils.hpp"
 
 SPHIndexSortedUniformGrid::SPHIndexSortedUniformGrid(const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float cellSize, std::vector<SPHParticle> *master)
@@ -101,11 +106,24 @@ void SPHIndexSortedUniformGrid::updateParticleIndices() {
 
 void SPHIndexSortedUniformGrid::insertSortedParticleListToGrid() {
   cells.at(master->at(0).index) = &(master->at(0));
-  for (unsigned int i = 1; i < master->size(); ++i) {
-    if (master->at(i).index != master->at(i - 1).index) {
-      cells.at(master->at(i).index) = &(master->at(i));
+
+  #if MFluidSolver_USE_TBB
+  tbb::parallel_for(tbb::blocked_range<size_t>(1, master->size()),
+    [&](const tbb::blocked_range<size_t> &r) {
+      for (unsigned int i = r.begin(); i != r.end(); ++i) {
+  #else
+      for (unsigned int i = 1; i < master->size(); ++i) {
+  #endif
+        if (master->at(i).index != master->at(i - 1).index) {
+          cells.at(master->at(i).index) = &(master->at(i));
+        }
+  #if MFluidSolver_USE_TBB
+      }
     }
+  );
+  #else
   }
+  #endif
 }
 
 void SPHIndexSortedUniformGrid::sortParticles(bool initialSort) {

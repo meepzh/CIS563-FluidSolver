@@ -54,9 +54,8 @@ visualization
 - velocity
 
 The `numUpdates` parameter can be used to set the number of frames to simulate
-in order to get accurate and comparable performance ratings. Set `numUpdates`
-to a non-positive number to disable this feature. Note that the
-`RECORD_PERFORMANCE` configuration needs to be enabled for this feature.
+in order to get accurate and comparable performance ratings. Note that
+performance recording currently doesn't work.
 
 #### Arcball ####
 The camera uses the arcball interface and can be controlled with the left and

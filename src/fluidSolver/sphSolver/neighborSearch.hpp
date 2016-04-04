@@ -29,9 +29,6 @@ public:
 protected:
   float searchRadius;
   float searchRadius2;
-
-  double computeTime;
-  unsigned int numSearches;
 };
 
 class NaiveNeighborSearch : public NeighborSearch {

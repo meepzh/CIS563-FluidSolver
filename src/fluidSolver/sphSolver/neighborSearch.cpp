@@ -7,13 +7,7 @@
 #define GLM_FORCE_RADIANS
 #include <glm/gtx/norm.hpp>
 
-#if MFluidSolver_RECORD_PERFORMANCE
-#include <ctime>
-#include "../../utils.hpp"
-#endif
-
-NeighborSearch::NeighborSearch(float r)
- : computeTime(0), numSearches(0) {
+NeighborSearch::NeighborSearch(float r) {
   setSearchRadius(r);
 }
 
@@ -23,19 +17,9 @@ void NeighborSearch::setSearchRadius(float r) {
 }
 
 void NeighborSearch::printPerformanceStats() {
-  #if MFluidSolver_RECORD_PERFORMANCE
-  std::cout << "PERF: Neighbor search averaged " <<
-    (computeTime / (double)numSearches) <<
-    " seconds over " << numSearches << " searches" << std::endl;
-  std::cout << "PERF: Overall search time was " << MUtils::toHMS(computeTime) << std::endl;
-  #endif
 }
 
 void NaiveNeighborSearch::findNeighbors(SPHParticle *p) {
-  #if MFluidSolver_RECORD_PERFORMANCE
-  std::clock_t startTime = std::clock();
-  #endif
-
   const glm::vec3 pPos = p->position();
   std::vector<SPHParticle *> *neighbors = p->neighbors();
   neighbors->clear();
@@ -47,13 +31,6 @@ void NaiveNeighborSearch::findNeighbors(SPHParticle *p) {
       }
     }
   }
-
-  #if MFluidSolver_RECORD_PERFORMANCE
-  std::clock_t endTime = std::clock();
-  double computeTimeInSeconds = (endTime - startTime) / (double) CLOCKS_PER_SEC;
-  ++numSearches;
-  computeTime += computeTimeInSeconds;
-  #endif
 }
 
 void NaiveNeighborSearch::addParticle(SPHParticle *p) {
@@ -73,10 +50,6 @@ GridNeighborSearch::~GridNeighborSearch() {
 }
 
 void GridNeighborSearch::findNeighbors(SPHParticle *p) {
-  #if MFluidSolver_RECORD_PERFORMANCE
-  std::clock_t startTime = std::clock();
-  #endif
-
   grid->getNeighbors(p);
 
   const glm::vec3 pPos = p->position();
@@ -95,13 +68,6 @@ void GridNeighborSearch::findNeighbors(SPHParticle *p) {
     }
     count++;
   }
-
-  #if MFluidSolver_RECORD_PERFORMANCE
-  std::clock_t endTime = std::clock();
-  double computeTimeInSeconds = (endTime - startTime) / (double) CLOCKS_PER_SEC;
-  ++numSearches;
-  computeTime += computeTimeInSeconds;
-  #endif
 }
 
 void GridNeighborSearch::addParticle(SPHParticle *p) {
