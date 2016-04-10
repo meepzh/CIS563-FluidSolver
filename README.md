@@ -1,4 +1,4 @@
-# CIS563-FluidSolver #
+# MFluidSolver #
 ### How Does It Work ###
 This fluid solver uses GLFW, GLM, and GLEW. It reads a JSON configuration file
 and a JSON scene file, creating a fluid container and a scene container. The
@@ -13,7 +13,7 @@ the VDB format.
 By default, the program is set to default debugging mode as set in
 `src/MFluidSolverConfig.hpp.in`. There are many other options there including
 logging settings and defaults, but note that defaults will be overwritten by
-the configuration file.
+the configuration file `config/config.json`.
 
     mkdir build
     cd build
@@ -81,9 +81,12 @@ focus point's position. Right-click and drag to move the camera in the opposite
 direction of the mouse. It will look like you're dragging the scene with you.
 
 ### Neighbor Search Query Performance ###
+CPU: Intel i7-4800MQ limited to 2.4GHz
+GPU: NVIDIA GeForce GTX 765M
+
 ![Exponential Improvement with Uniform Grid over Naive Neighbor Search](images/nsPerfGraph1.png?raw=true "The uniform grid neighbor search dramatically reduces search time to O(n).")
 
-- Index Sorted Uniform Grid search dramatically improves on the uniform grid, likely because access to the particles is very simple without memory offsets due to other grid cells.
+- Index Sorted Uniform Grid search dramatically improves on the uniform grid,likely because access to the particles is very simple without memory offsets due to other grid cells.
 - However, Z Index Sorted Uniform Grid search appears to suffer from its computation of the Z index, which takes a number of operations. My system also may not have enough cache to take advantage of the spatial locality. Caching of the Z indices was attempted, but proved to be about the same.
 - Insertion sort significantly improves query time, however, compared to the standard std::sort, as particles don't change cells frequently.
 
