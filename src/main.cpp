@@ -130,6 +130,7 @@ int main() {
 
   // Performance
   #if MFluidSolver_RECORD_PERFORMANCE
+  viewer.scene.solver.endSimulation();
   viewer.scene.solver.printPerformanceStats();
   #endif
 

@@ -60,7 +60,14 @@ bool FluidSolver::hasEndedSimulation() {
   return endedSimulation;
 }
 
+void FluidSolver::endSimulation() {
+  if (!endedSimulation) {
+    endTime = tbb::tick_count::now();
+    endedSimulation = true;
+  }
+}
+
 void FluidSolver::printPerformanceStats() {
   computeTime = (endTime - startTime).seconds();
-  std::cout << "PERF: Overall simulation ran for " << MUtils::toHMS(computeTime) << " over " << numUpdates << " frames" << std::endl;
+  std::cout << "PERF: Overall simulation ran for " << MUtils::toHMS(computeTime) << " over " << numUpdates << " frames (" << computeTime << " seconds)" << std::endl;
 }

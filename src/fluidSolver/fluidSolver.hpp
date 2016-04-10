@@ -24,16 +24,18 @@ public:
 
   virtual void addParticleAt(const glm::vec3 &position) = 0;
   virtual unsigned int numParticles() const = 0;
-  //virtual std::vector<Particle *> &particles() = 0;
 
-  void setGravity(float g);
-  float gravity() const;
-  virtual void setMaxParticles(int mp);
-  int maxParticles() const;
-  virtual void setParticleSeparation(float ps);
-  float particleSeparation() const;
   void setFixedTimestep(float ft);
+  void setGravity(float g);
+  virtual void setMaxParticles(int mp);
+  virtual void setParticleSeparation(float ps);
+
+  float gravity() const;
+  int maxParticles() const;
+  float particleSeparation() const;
+
   bool hasEndedSimulation();
+  void endSimulation();
 
   virtual void printPerformanceStats();
 

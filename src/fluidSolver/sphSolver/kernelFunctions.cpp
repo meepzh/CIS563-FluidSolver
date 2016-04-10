@@ -4,8 +4,6 @@
 
 #include "kernelFunctions.hpp"
 
-#include <cmath>
-
 #define GLM_FORCE_RADIANS
 #include <glm/gtx/norm.hpp>
 
@@ -33,12 +31,14 @@ void KernelFunctions::setKernelRadius(const double &h) {
 double KernelFunctions::computePoly6(const glm::vec3 &r) {
   double _r2 = glm::length2(r);
   if (_r2 > _h2) return 0;
-  return POLY6_CONST * std::pow(_h2 - _r2, 3) / _h9;
+  double h2MinusR2 = _h2 - _r2;
+  return POLY6_CONST * h2MinusR2 * h2MinusR2 * h2MinusR2 / _h9;
 }
 
 double KernelFunctions::computeSpiky(const glm::vec3 &r) {
   double _r = glm::length(r);
-  return SPIKY_CONST * std::pow(_h - _r, 3) / _h6;
+  double hMinusR = _h - _r;
+  return SPIKY_CONST * hMinusR * hMinusR * hMinusR / _h6;
 }
 
 glm::vec3 KernelFunctions::computeSpikyGradient(const glm::vec3 &r) {
