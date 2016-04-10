@@ -7,7 +7,7 @@
 #include <fstream>
 #include <iostream>
 #include <json/json.h>
-#include "../geom/cube.hpp"
+#include "geom/cube.hpp"
 
 Scene::Scene() {
 }

@@ -5,7 +5,7 @@
 #include <boost/test/unit_test.hpp>
 #include <ctime>
 
-#include "../src/fluidSolver/sphSolver/neighborSearch.hpp"
+#include "fluidSolver/sphSolver/neighborSearch.hpp"
 
 BOOST_AUTO_TEST_SUITE(NeighborSearchTests)
 

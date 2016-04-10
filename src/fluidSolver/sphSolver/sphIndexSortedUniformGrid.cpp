@@ -10,7 +10,7 @@
 #include <tbb/parallel_for.h>
 #endif
 
-#include "../../utils.hpp"
+#include "utils.hpp"
 
 SPHIndexSortedUniformGrid::SPHIndexSortedUniformGrid(const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float cellSize, std::vector<SPHParticle> *master)
  : SPHGrid(minBounds, maxBounds, cellSize), master(master){

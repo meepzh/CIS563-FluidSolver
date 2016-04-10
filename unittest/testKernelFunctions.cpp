@@ -4,7 +4,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "../src/fluidSolver/sphSolver/kernelFunctions.hpp"
+#include "fluidSolver/sphSolver/kernelFunctions.hpp"
 
 BOOST_AUTO_TEST_SUITE(KernelFunctionsTests)
 

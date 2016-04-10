@@ -12,7 +12,7 @@ class FluidSolver;
 #include <string>
 #include <vector>
 
-#include "../fluidSolver/fluidSolver.hpp"
+#include "fluidSolver/fluidSolver.hpp"
 #include "drawable.hpp"
 #include "transform.hpp"
 

@@ -10,7 +10,7 @@
 #include <iostream>
 #include <vector>
 
-#include "../fluidSolver/sphSolver/sphSolver.hpp"
+#include "fluidSolver/sphSolver/sphSolver.hpp"
 #include "shaderProgram.hpp"
 
 class ParticleShaderProgram : public ShaderProgram {

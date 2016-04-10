@@ -9,7 +9,7 @@
 
 #include <tbb/tick_count.h>
 
-#include "../geom/geom.hpp"
+#include "geom/geom.hpp"
 #include "particle.hpp"
 
 enum FluidVisualizationType {Neighbors, None, Pressure, Velocity, VelocityDir};
@@ -19,30 +19,42 @@ public:
   FluidSolver();
   ~FluidSolver();
 
+  // Solver
   virtual void update(double deltaT);
   void updateStep();
 
+  // Particles
   virtual void addParticleAt(const glm::vec3 &position) = 0;
   virtual unsigned int numParticles() const = 0;
 
+  // Getters
+  float gravity() const;
+  int maxParticles() const;
+  float particleSeparation() const;
+
+  // Setters
   void setFixedTimestep(float ft);
   void setGravity(float g);
   virtual void setMaxParticles(int mp);
   virtual void setParticleSeparation(float ps);
 
-  float gravity() const;
-  int maxParticles() const;
-  float particleSeparation() const;
-
-  bool hasEndedSimulation();
+  // Simulation End
+  inline bool checkIfEnded();
+  inline bool hasEndedSimulation();
   void endSimulation();
 
+  // Misc
   virtual void printPerformanceStats();
 
+  // Containers
   Geometry *fluidSource;
   Geometry *fluidContainer;
 
 protected:
+  // Helpers
+  inline void logTimestep();
+
+  // Parameters
   float _gravity;
   float _particleSeparation;
   int _maxParticles;
@@ -62,5 +74,7 @@ protected:
   bool limitNumUpdates;
   bool firstRun, endedSimulation;
 };
+
+#include "fluidSolver/fluidSolver.inline.hpp"
 
 #endif /* MFLUIDSOLVER_FLUIDSOLVER_HPP_ */

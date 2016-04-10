@@ -31,6 +31,7 @@ file(COPY ${CONFIG_FILE} DESTINATION "${PROJECT_BINARY_DIR}/")
 set(NUPARU "nuparu")
 # Add include and src directories to path
 include_directories(
+        ${PROJECT_SOURCE_DIR}/src
         ${NUPARU}/include
         ${NUPARU}/src
 )
@@ -110,6 +111,7 @@ endif()
 
 # Add source files you want to compile (.cpp)
 set(CORE_SRC
+        src/fluidSolver/sphSolver/iiSphSolver.cpp
         src/fluidSolver/sphSolver/kernelFunctions.cpp
         src/fluidSolver/sphSolver/neighborSearch.cpp
         src/fluidSolver/sphSolver/sphGrid.cpp

@@ -4,7 +4,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "../src/fluidSolver/zCurve.hpp"
+#include "fluidSolver/zCurve.hpp"
 
 BOOST_AUTO_TEST_SUITE(ZCurveTests)
 

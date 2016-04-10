@@ -6,7 +6,7 @@
 #define MFLUIDSOLVER_FLUIDSOLVER_SPHZINDEXSORTEDUNIFORMGRID_HPP_
 
 #include "sphIndexSortedUniformGrid.hpp"
-#include "../zCurve.hpp"
+#include "fluidSolver/zCurve.hpp"
 
 // Grid type XZY (X elements together, then Z, then Y)
 class SPHZIndexSortedUniformGrid : public SPHIndexSortedUniformGrid {

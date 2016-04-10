@@ -11,7 +11,7 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
-#include "../geom/geom.hpp"
+#include "geom/geom.hpp"
 
 class ShaderProgram {
 public:

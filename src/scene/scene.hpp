@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 
-#include "../fluidSolver/sphSolver/sphSolver.hpp"
+#include "fluidSolver/sphSolver/sphSolver.hpp"
 #include "camera.hpp"
 
 struct InvalidSceneException : std::exception {

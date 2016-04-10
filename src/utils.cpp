@@ -4,7 +4,6 @@
 
 #include "utils.hpp"
 
-
 namespace MUtils {
   std::string toHMS(double seconds) {
     std::ostringstream strstm;

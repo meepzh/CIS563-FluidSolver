@@ -7,7 +7,7 @@
 
 #include <vector>
 
-#include "../particle.hpp"
+#include "fluidSolver/particle.hpp"
 
 class SPHParticle : public Particle {
 public:
@@ -15,21 +15,21 @@ public:
   SPHParticle(const glm::vec3 &position) : SPHParticle(1, position) {}
   SPHParticle(float mass, const glm::vec3 &position);
 
-  virtual void update(const glm::vec3 &newVel, const glm::vec3 &newPos);
+  virtual inline void update(const glm::vec3 &newVel, const glm::vec3 &newPos);
 
   // Properties
-  float density() const;
-  float pressure() const;
-  glm::vec3 forceDensity() const;
-  glm::vec3 oldPosition() const;
+  inline float density() const;
+  inline float pressure() const;
+  inline glm::vec3 forceDensity() const;
+  inline glm::vec3 oldPosition() const;
 
-  void setDensity(float density);
-  void setPressure(float pressure);
-  void setForceDensity(const glm::vec3 &forceDensity);
-  void addForceDensity(const glm::vec3 &forceDensity);
+  inline void setDensity(float density);
+  inline void setPressure(float pressure);
+  inline void setForceDensity(const glm::vec3 &forceDensity);
+  inline void addForceDensity(const glm::vec3 &forceDensity);
 
-  std::vector<SPHParticle *> *neighbors();
-  void clearNeighbors();
+  inline std::vector<SPHParticle *> *neighbors();
+  inline void clearNeighbors();
 
   unsigned long index;
   static bool indexCompare(const SPHParticle &a, const SPHParticle &b);
@@ -41,5 +41,7 @@ protected:
   glm::vec3 _oldPosition;
   std::vector<SPHParticle *> _neighbors;
 };
+
+#include "sphParticle.inline.hpp"
 
 #endif /* MFLUIDSOLVER_FLUIDSOLVER_SPHSOLVER_SPHPARTICLE_HPP_ */

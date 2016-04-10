@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-#include "../utils.hpp"
+#include "utils.hpp"
 
 FluidSolver::FluidSolver()
  : _maxParticles(MFluidSolver_DEFAULT_MAX_PARTICLES), _gravity(MFluidSolver_DEFAULT_GRAVITY),
@@ -19,50 +19,44 @@ FluidSolver::FluidSolver()
    computeTime(0), numUpdates(0), firstRun(true), endedSimulation(false),
    maxUpdates(MFluidSolver_DEFAULT_MAX_UPDATES), limitNumUpdates(MFluidSolver_DEFAULT_LIMIT_UPDATES),
    fluidSource(nullptr), fluidContainer(nullptr) {
-
 }
 
 FluidSolver::~FluidSolver() {
-
 }
 
+// Solver
 void FluidSolver::update(double deltaT) {
-
 }
-
 void FluidSolver::updateStep() {
   update(_fixedTimestep);
 }
 
-void FluidSolver::setGravity(float g) {
-  _gravity = g;
-}
+// Getters
 float FluidSolver::gravity() const {
   return _gravity;
 }
-
-void FluidSolver::setMaxParticles(int mp) {
-  _maxParticles = mp;
-}
 int FluidSolver::maxParticles() const {
   return _maxParticles;
-}
-
-void FluidSolver::setParticleSeparation(float ps) {
-  _particleSeparation = ps;
 }
 float FluidSolver::particleSeparation() const {
   return _particleSeparation;
 }
 
+// Setters
+void FluidSolver::setGravity(float g) {
+  _gravity = g;
+}
+void FluidSolver::setMaxParticles(int mp) {
+  _maxParticles = mp;
+}
+void FluidSolver::setParticleSeparation(float ps) {
+  _particleSeparation = ps;
+}
 void FluidSolver::setFixedTimestep(float ft) {
   _fixedTimestep = ft;
 }
 
-bool FluidSolver::hasEndedSimulation() {
-  return endedSimulation;
-}
-
+// Simulation End
 void FluidSolver::endSimulation() {
   if (!endedSimulation) {
     endTime = tbb::tick_count::now();
@@ -70,6 +64,7 @@ void FluidSolver::endSimulation() {
   }
 }
 
+// Misc
 void FluidSolver::printPerformanceStats() {
   if (numUpdates > 0) {
     computeTime = (endTime - startTime).seconds();
