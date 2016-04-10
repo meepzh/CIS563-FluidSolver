@@ -59,7 +59,7 @@ protected:
 
   // Helpers
   inline void calculateDensity(SPHParticle &p);
-  virtual inline void calculateNonPressureForceDensity(SPHParticle &p);
+  virtual inline void calculateNonPressureForce(SPHParticle &p);
   inline void enforceBounds(SPHParticle &p);
   virtual inline void visualizeParticle(SPHParticle &p);
 

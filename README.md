@@ -100,6 +100,7 @@ standard std::sort, as particles don't change cells frequently.
 
 - IISPH
 - Performance Analysis
+- Optional: Cache neighbor distances
 
 ### Extra Features ###
 None

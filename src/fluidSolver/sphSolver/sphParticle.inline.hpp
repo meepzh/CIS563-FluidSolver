@@ -13,12 +13,12 @@ inline float SPHParticle::density() const {
   return _density;
 }
 
-inline glm::vec3 SPHParticle::forceDensity() const {
-  return _nonPressureForceDensity + _pressureForceDensity;
+inline glm::vec3 SPHParticle::force() const {
+  return _nonPressureForce + _pressureForce;
 }
 
-inline glm::vec3 SPHParticle::nonPressureForceDensity() const {
-  return _nonPressureForceDensity;
+inline glm::vec3 SPHParticle::nonPressureForce() const {
+  return _nonPressureForce;
 }
 
 inline glm::vec3 SPHParticle::oldPosition() const {
@@ -29,8 +29,8 @@ inline float SPHParticle::pressure() const {
   return _pressure;
 }
 
-inline glm::vec3 SPHParticle::pressureForceDensity() const {
-  return _pressureForceDensity;
+inline glm::vec3 SPHParticle::pressureForce() const {
+  return _pressureForce;
 }
 
 // Setters
@@ -38,16 +38,16 @@ inline void SPHParticle::setDensity(float density) {
   _density = density;
 }
 
-inline void SPHParticle::setNonPressureForceDensity(const glm::vec3 &forceDensity) {
-  _nonPressureForceDensity = forceDensity;
+inline void SPHParticle::setNonPressureForce(const glm::vec3 &force) {
+  _nonPressureForce = force;
 }
 
 inline void SPHParticle::setPressure(float pressure) {
   _pressure = pressure;
 }
 
-inline void SPHParticle::setPressureForceDensity(const glm::vec3 &forceDensity) {
-  _pressureForceDensity = forceDensity;
+inline void SPHParticle::setPressureForce(const glm::vec3 &force) {
+  _pressureForce = force;
 }
 
 // Neighbors

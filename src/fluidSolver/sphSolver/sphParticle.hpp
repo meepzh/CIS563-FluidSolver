@@ -20,15 +20,15 @@ public:
   // Properties
   inline float density() const;
   inline float pressure() const;
-  inline glm::vec3 forceDensity() const;
-  inline glm::vec3 nonPressureForceDensity() const;
+  inline glm::vec3 force() const;
+  inline glm::vec3 nonPressureForce() const;
   inline glm::vec3 oldPosition() const;
-  inline glm::vec3 pressureForceDensity() const;
+  inline glm::vec3 pressureForce() const;
 
   inline void setDensity(float density);
-  inline void setNonPressureForceDensity(const glm::vec3 &forceDensity);
+  inline void setNonPressureForce(const glm::vec3 &force);
   inline void setPressure(float pressure);
-  inline void setPressureForceDensity(const glm::vec3 &forceDensity);
+  inline void setPressureForce(const glm::vec3 &force);
 
   inline std::vector<SPHParticle *> *neighbors();
   inline void clearNeighbors();
@@ -39,8 +39,8 @@ public:
 protected:
   float _density;
   float _pressure;
-  glm::vec3 _nonPressureForceDensity;
-  glm::vec3 _pressureForceDensity;
+  glm::vec3 _nonPressureForce;
+  glm::vec3 _pressureForce;
   glm::vec3 _oldPosition;
   std::vector<SPHParticle *> _neighbors;
 };
