@@ -7,6 +7,8 @@
 #include <cassert>
 #include <cmath>
 
+#define checkValidNumber(X) assert(!std::isnan(X) && !std::isinf(X))
+
 void IISPHSolver::update(double deltaT) {
   if (checkIfEnded()) return;
 
@@ -22,14 +24,12 @@ void IISPHSolver::update(double deltaT) {
   // Procedure: Predict Advection
   iter_all_sphparticles_start
     calculateDensity(p);
-  iter_all_sphparticles_end
 
-  iter_all_sphparticles_start
     calculateNonPressureForce(p);
 
     // Calculate intermediate velocity
-    p.setVelocity(p.velocity() + p.nonPressureForce() / p.mass() * deltaTF);
-    assert(!std::isnan(p.velocity().x));
+    p.setVelocityIntermediate(p.velocity() + p.nonPressureForce() / p.mass() * deltaTF);
+    checkValidNumber(p.velocityIntermediate().x);
 
     // Calculate self displacement
     glm::vec3 d(0);
@@ -38,7 +38,7 @@ void IISPHSolver::update(double deltaT) {
       d -= n->mass() / density2 * kernelFunctions.computeSpikyGradient(p.position() - n->position());
     }
     p.setDSelf(d * deltaTF2);
-    assert(!std::isnan(p.dSelf().x));
+    checkValidNumber(p.dSelf().x);
   iter_all_sphparticles_end
 
   iter_all_sphparticles_start
@@ -46,23 +46,25 @@ void IISPHSolver::update(double deltaT) {
     float aTemp = 0;
     float densityNTemp = 0;
     for (SPHParticle *n : *(p.neighbors())) {
-      glm::vec3 spikyTemp = kernelFunctions.computeSpikyGradient(p.position() - n->position());
+      const glm::vec3 spikyTemp = kernelFunctions.computeSpikyGradient(p.position() - n->position());
 
-      densityNTemp += n->mass() *
-        glm::dot(p.velocity() - n->velocity(), spikyTemp);
-
-      glm::vec3 dJI = -1 * p.mass() / (n->density() * n->density()) * spikyTemp;
+      glm::vec3 dJI = -1 * p.mass() / (p.density() * p.density()) * spikyTemp;
       dJI *= deltaTF2;
 
-      aTemp += n->mass() * glm::dot(p.dSelf() - dJI, kernelFunctions.computeSpikyGradient(p.position() - n->position()));
+      densityNTemp += n->mass() *
+        glm::dot(p.velocityIntermediate() - n->velocityIntermediate(), spikyTemp);
+
+      aTemp += n->mass() * glm::dot(p.dSelf() - dJI,
+        kernelFunctions.computeSpikyGradient(n->position() - p.position()));
     }
-    assert(!std::isnan(densityNTemp));
+    checkValidNumber(densityNTemp);
     p.setDensityIntermediate(p.density() + densityNTemp * deltaTF);
-    assert(!std::isnan(aTemp));
+    checkValidNumber(aTemp);
+    if (p.neighbors()->size() == 0) aTemp = 1.f;
     p.setASelf(aTemp);
 
     // Set iteration=0 pressure
-    assert(!std::isnan(p.pressure()));
+    checkValidNumber(p.pressure());
     p.setPressure(0.5f * p.pressure()); // TODO: check if using correct pressure
   iter_all_sphparticles_end
 
@@ -78,10 +80,12 @@ void IISPHSolver::update(double deltaT) {
       glm::vec3 displacementNTemp(0);
       float density2 = p.density() * p.density();
       for (SPHParticle *n : *(p.neighbors())) {
-        displacementNTemp -= n->mass() / density2 * n->pressure() *
+        displacementNTemp -= n->mass() / (n->density() * n->density()) * n->pressure() *
           kernelFunctions.computeSpikyGradient(p.position() - n->position());
+        checkValidNumber(displacementNTemp.x);
       }
       p.setDNeighbors(displacementNTemp);
+      checkValidNumber(displacementNTemp.x);
     iter_all_sphparticles_end
 
     iter_all_sphparticles_start
@@ -92,26 +96,27 @@ void IISPHSolver::update(double deltaT) {
       for (SPHParticle *n : *(p.neighbors())) {
         glm::vec3 spikyTemp = kernelFunctions.computeSpikyGradient(n->position() - p.position());
 
-        glm::vec3 dJI = -1 * p.mass() / (n->density() * n->density()) * spikyTemp;
+        glm::vec3 dJI = -1 * p.mass() / (p.density() * p.density()) * spikyTemp;
         dJI *= deltaTF2;
 
         dTemp += n->mass() * glm::dot(p.dSelf() - dJI, spikyTemp);
         nTemp += n->mass() * glm::dot(p.dNeighbors() - n->dSelf() - n->dNeighbors() + dJI * p.pressure(), spikyTemp);
+        checkValidNumber(dTemp);
+        checkValidNumber(nTemp);
       }
-      assert(!std::isnan(dTemp));
-      assert(!std::isnan(nTemp));
-      float pressureTemp = dRestDensity - p.density() - nTemp;
+      float pressureTemp = dRestDensity - p.densityIntermediate() - nTemp;
       pressureTemp *= omega / p.aSelf();
       pressureTemp += (1.f - omega) * p.pressure();
 
       // Sum for average density
-      avgDensity += p.density() + p.pressure() * dTemp + nTemp;
+      avgDensity += p.densityIntermediate() + p.pressure() * dTemp + nTemp; // TODO: can't use parallel_for
 
-      assert(!std::isnan(pressureTemp));
+      checkValidNumber(pressureTemp);
       p.setPressure(pressureTemp);
     iter_all_sphparticles_end
 
-    avgDensity /= _particles.size();
+    checkValidNumber(avgDensity);
+    avgDensity /= (float)_particles.size();
     ++iteration;
   }
 
@@ -122,7 +127,7 @@ void IISPHSolver::update(double deltaT) {
 
   iter_all_sphparticles_start
     // Update
-    glm::vec3 newVel = p.velocity() + p.pressureForce() / p.mass() * deltaTF;
+    glm::vec3 newVel = p.velocityIntermediate() + p.pressureForce() / p.mass() * deltaTF;
     glm::vec3 newPos = p.position() + newVel * deltaTF;
     p.update(newVel, newPos);
 

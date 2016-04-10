@@ -80,6 +80,10 @@ inline float SPHParticle::densityIntermediate() const {
   return _densityIntermediate;
 }
 
+inline glm::vec3 SPHParticle::velocityIntermediate() const {
+  return _velocityIntermediate;
+}
+
 // IISPH Setters
 inline void SPHParticle::setASelf(float a) {
   _aSelf = a;
@@ -95,4 +99,8 @@ inline void SPHParticle::setDNeighbors(const glm::vec3 &d) {
 
 inline void SPHParticle::setDensityIntermediate(float d) {
   _densityIntermediate = d;
+}
+
+inline void SPHParticle::setVelocityIntermediate(const glm::vec3 &v) {
+  _velocityIntermediate = v;
 }

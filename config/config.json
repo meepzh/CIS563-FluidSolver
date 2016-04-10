@@ -7,7 +7,7 @@
 	"particleTexture": "texture/particle.dds",
 	"sph": {
 		"kStiffness": 1000,
-		"muViscosity": 0.028,
+		"muViscosity": 0.1,
 		"mMass": 0.125,
 		"dRestDensity": 1000,
 		"dtTimestep": 0.001,
