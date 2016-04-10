@@ -98,8 +98,8 @@ standard std::sort, as particles don't change cells frequently.
 
 ### Missing Required Features ###
 
-- Bicubic spline kernel
 - IISPH
+- Test bicubic spline kernel
 - Performance Analysis
 - Optional: Cache neighbor distances
 

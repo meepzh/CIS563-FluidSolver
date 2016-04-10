@@ -13,6 +13,11 @@ public:
 
   void setKernelRadius(const double &h);
 
+  inline double computeBicubicSpline(const glm::vec3 &r);
+  inline double computeBicubicSplineFirstDerivativeDivHHalf(const double q);
+  inline double computeBicubicSplineFirstDerivativeDivHWhole(const double invQ);
+  inline glm::vec3 computeBicubicSplineGradient(const glm::vec3 &r);
+  inline double computeBicubicSplineLaplacian(const glm::vec3 &r);
   inline double computePoly6(const glm::vec3 &r);
   inline double computeSpiky(const glm::vec3 &r);
   inline glm::vec3 computeSpikyGradient(const glm::vec3 &r);
@@ -23,6 +28,8 @@ private:
   double _h;
   double _h2;
   double _h3;
+  double _h4;
+  double _h5;
   double _h6;
   double _h9;
 };
