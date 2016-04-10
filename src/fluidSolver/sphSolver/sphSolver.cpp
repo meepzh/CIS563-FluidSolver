@@ -237,26 +237,16 @@ void SPHSolver::update(double deltaT) {
   // Compute forces
   iter_all_particles_start
     SPHParticle &p = _particles.at(i);
-    glm::vec3 pressureFD(0);
-    glm::vec3 viscosityFD(0);
-    glm::vec3 gravityFD = glm::vec3(0, p.density() * _gravity, 0);
 
+    calculateNonPressureForceDensity(p);
+
+    glm::vec3 pressureFD(0);
     for (SPHParticle *n : *(p.neighbors())) {
       pressureFD -= n->mass() / n->density() *
         (p.pressure() + n->pressure()) / 2.f *
         kernelFunctions.computeSpikyGradient(p.position() - n->position());
     }
-
-    if (muViscosity > 0) {
-      for (SPHParticle *n : *(p.neighbors())) {
-        viscosityFD += glm::vec3(n->mass() / n->density() *
-          (n->velocity() - p.velocity()) *
-          (float)kernelFunctions.computeViscousLaplacian(p.position() - n->position()));
-      }
-      viscosityFD *= muViscosity;
-    }
-
-    p.setForceDensity(pressureFD + viscosityFD + gravityFD);
+    p.setPressureForceDensity(pressureFD);
   iter_all_particles_end
 
   // Compute velocity and position, check bounds
@@ -281,6 +271,22 @@ inline void SPHSolver::calculateDensity(SPHParticle &p) {
     }
   }
   p.setDensity(densitySum);
+}
+
+inline void SPHSolver::calculateNonPressureForceDensity(SPHParticle &p) {
+  glm::vec3 viscosityFD(0);
+  glm::vec3 gravityFD = glm::vec3(0, p.density() * _gravity, 0);
+
+  for (SPHParticle *n : *(p.neighbors())) {
+    if (muViscosity > 0) {
+      viscosityFD += glm::vec3(n->mass() / n->density() *
+        (n->velocity() - p.velocity()) *
+        (float)kernelFunctions.computeViscousLaplacian(p.position() - n->position()));
+    }
+  }
+  viscosityFD *= muViscosity;
+
+  p.setNonPressureForceDensity(viscosityFD + gravityFD);
 }
 
 inline void SPHSolver::enforceBounds(SPHParticle &p) {
