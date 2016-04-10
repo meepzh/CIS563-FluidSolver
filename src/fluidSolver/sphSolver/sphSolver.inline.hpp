@@ -28,6 +28,18 @@ inline void SPHSolver::calculateNonPressureForce(SPHParticle &p) {
   p.setNonPressureForce(viscosityForce + gravityForce);
 }
 
+inline void SPHSolver::calculatePressureForce(SPHParticle &p) {
+  glm::vec3 pressureForce(0);
+  float density2 = p.density() * p.density();
+  for (SPHParticle *n : *(p.neighbors())) {
+    pressureForce += n->mass() *
+      (p.pressure() / density2 + n->pressure() / (n->density() * n->density())) *
+      kernelFunctions.computeSpikyGradient(p.position() - n->position());
+  }
+  pressureForce *= -1 * p.mass();
+  p.setPressureForce(pressureForce);
+}
+
 inline void SPHSolver::enforceBounds(SPHParticle &p) {
   glm::ivec3 violations;
   if (!fluidContainer->intersects(p.position(), violations)) {

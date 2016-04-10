@@ -227,16 +227,7 @@ void SPHSolver::update(double deltaT) {
   // Compute forces
   iter_all_sphparticles_start
     calculateNonPressureForce(p);
-
-    glm::vec3 pressureForce(0);
-    float density2 = p.density() * p.density();
-    for (SPHParticle *n : *(p.neighbors())) {
-      pressureForce += n->mass() *
-        (p.pressure() / density2 + n->pressure() / (n->density() * n->density())) *
-        kernelFunctions.computeSpikyGradient(p.position() - n->position());
-    }
-    pressureForce *= -1 * p.mass();
-    p.setPressureForce(pressureForce);
+    calculatePressureForce(p);
   iter_all_sphparticles_end
 
   // Compute velocity and position, check bounds

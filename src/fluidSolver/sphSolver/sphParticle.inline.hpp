@@ -76,6 +76,10 @@ inline glm::vec3 SPHParticle::dNeighbors() const {
   return _dNeighbors;
 }
 
+inline float SPHParticle::densityIntermediate() const {
+  return _densityIntermediate;
+}
+
 // IISPH Setters
 inline void SPHParticle::setASelf(float a) {
   _aSelf = a;
@@ -87,4 +91,8 @@ inline void SPHParticle::setDSelf(const glm::vec3 &d) {
 
 inline void SPHParticle::setDNeighbors(const glm::vec3 &d) {
   _dNeighbors = d;
+}
+
+inline void SPHParticle::setDensityIntermediate(float d) {
+  _densityIntermediate = d;
 }

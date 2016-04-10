@@ -38,10 +38,12 @@ public:
   inline float aSelf() const;
   inline glm::vec3 dSelf() const;
   inline glm::vec3 dNeighbors() const;
+  inline float densityIntermediate() const;
 
   inline void setASelf(float a);
   inline void setDSelf(const glm::vec3 &d);
   inline void setDNeighbors(const glm::vec3 &d);
+  inline void setDensityIntermediate(float d);
 
   // Index
   unsigned long index;
@@ -59,6 +61,7 @@ protected:
   float _aSelf;
   glm::vec3 _dSelf;
   glm::vec3 _dNeighbors;
+  float _densityIntermediate;
 };
 
 #include "sphParticle.inline.hpp"

@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 
-#include "fluidSolver/sphSolver/sphSolver.hpp"
+#include "fluidSolver/sphSolver/iiSphSolver.hpp"
 #include "camera.hpp"
 
 struct InvalidSceneException : std::exception {
@@ -25,7 +25,7 @@ public:
   void loadJSON(const std::string &file);
   void seedScene();
 
-  SPHSolver solver;
+  IISPHSolver solver;
   std::vector<Geometry *> objects;
   Camera camera;
 };
