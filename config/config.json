@@ -12,7 +12,7 @@
 		"dRestDensity": 1000,
 		"dtTimestep": 0.001,
 		"kernelRadius": 0.100001,
-		"neighborSearchType": "zindexSortedUniformInsertionSort"
+		"neighborSearchType": "indexSortedUniformInsertionSort"
 	},
 	"visualization": "velocity",
 	"numUpdates": -1

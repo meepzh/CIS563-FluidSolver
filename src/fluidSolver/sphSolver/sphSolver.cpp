@@ -46,6 +46,13 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
 
       nSearch = new IndexSortedUniformGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius, &_particles, false);
       break;
+    case NeighborSearchType::IndexSortedUniformGridWithInsertion:
+      #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+      std::cout << "INFO: SPH Solver using index sorted uniform grid neighbor search with insertion sort" << std::endl;
+      #endif
+
+      nSearch = new IndexSortedUniformGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius, &_particles, false);
+      break;
     case NeighborSearchType::ZIndexSortedUniformGrid:
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
       std::cout << "INFO: SPH Solver using Z-curve index sorted uniform grid neighbor search" << std::endl;
@@ -151,6 +158,8 @@ void SPHSolver::loadConfig(const std::string &file) {
     nSearchType = NeighborSearchType::UniformGrid;
   } else if (neighborSearchTypeString == "indexsorteduniform") {
     nSearchType = NeighborSearchType::IndexSortedUniformGrid;
+  } else if (neighborSearchTypeString == "indexsorteduniforminsertionsort") {
+    nSearchType = NeighborSearchType::IndexSortedUniformGridWithInsertion;
   } else if (neighborSearchTypeString == "zindexsorteduniform") {
     nSearchType = NeighborSearchType::ZIndexSortedUniformGrid;
   } else if (neighborSearchTypeString == "zindexsorteduniforminsertionsort") {
@@ -384,7 +393,7 @@ bool SPHSolver::checkInited() {
 }
 
 void SPHSolver::prepNeighborSearchAfterSceneLoad() {
-  if (nSearchType == NeighborSearchType::ZIndexSortedUniformGridWithInsertion) {
+  if (nSearchType == NeighborSearchType::IndexSortedUniformGridWithInsertion || nSearchType == NeighborSearchType::ZIndexSortedUniformGridWithInsertion) {
     IndexSortedUniformGridNeighborSearch *isugSearch = static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
     isugSearch->isuGrid->resetAndFillCells(true);
   }
@@ -402,7 +411,7 @@ void SPHSolver::prepNeighborSearch() {
   } else if (nSearchType == NeighborSearchType::IndexSortedUniformGrid || nSearchType == NeighborSearchType::ZIndexSortedUniformGrid) {
     IndexSortedUniformGridNeighborSearch *isugSearch = static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
     isugSearch->isuGrid->resetAndFillCells(true);
-  } else if (nSearchType == NeighborSearchType::ZIndexSortedUniformGridWithInsertion) {
+  } else if (nSearchType == NeighborSearchType::IndexSortedUniformGridWithInsertion || nSearchType == NeighborSearchType::ZIndexSortedUniformGridWithInsertion) {
     IndexSortedUniformGridNeighborSearch *isugSearch = static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
     isugSearch->isuGrid->resetAndFillCells(false);
   }

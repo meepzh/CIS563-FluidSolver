@@ -44,6 +44,7 @@ neighborSearchType
 - naive
 - uniform
 - indexSortedUniform
+- indexSortedUniformInsertionSort
 - zIndexSortedUniform
 - zIndexSortedUniformInsertionSort
 
