@@ -40,7 +40,7 @@ public:
   void exportVDB();
   #endif
 
-private:
+protected:
   void visualizeParticleNeighbors(SPHParticle *target);
 
   NeighborSearchType nSearchType;

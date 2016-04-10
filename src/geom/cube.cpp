@@ -90,6 +90,13 @@ bool Cube::intersects(const glm::vec3 &point) const {
 }
 
 void Cube::spawnParticlesInVolume(FluidSolver *solver) const {
+  unsigned int oldParticleCount = solver->numParticles();
+  if (oldParticleCount == solver->maxParticles()) {
+    std::cout << "INFO: Reached max number of particles (" << solver->maxParticles() << ")!" << std::endl;
+    return;
+  }
+
+  unsigned int particlesLeft = solver->maxParticles() - oldParticleCount;
   glm::vec3 minBound, maxBound;
   getBoundsByTransformedMinMax(glm::vec3(-0.5f), glm::vec3(0.5f), minBound, maxBound);
 
@@ -107,13 +114,20 @@ void Cube::spawnParticlesInVolume(FluidSolver *solver) const {
       for (float k = minBound.z + padding.z; k <= maxBound.z; k += particleSeparation) {
         solver->addParticleAt(glm::vec3(i, j, k));
         ++count;
+        if (count > particlesLeft) break;
       }
+      if (count > particlesLeft) break;
     }
+    if (count > particlesLeft) break;
   }
   //solver->addParticle(new Particle(glm::vec3(0)));
 
+  if (solver->numParticles() == solver->maxParticles()) {
+    std::cout << "INFO: Reached max number of particles (" << solver->maxParticles() << ")!" << std::endl;
+  }
+
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::cout << "INFO: Cube (" << name << ") seeded " << solver->numParticles() << " particles" << std::endl;
+  std::cout << "INFO: Cube (" << name << ") seeded " << (solver->numParticles() - oldParticleCount) << " particles" << std::endl;
   #endif
 }
 

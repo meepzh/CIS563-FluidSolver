@@ -49,10 +49,15 @@ neighborSearchType
 - zIndexSortedUniformInsertionSort
 
 visualization
-
-- neighbors
-- none
-- velocity
+- type
+    - neighbors
+    - none
+    - pressure
+    - velocity
+    - velocityDir
+- maxPressure
+- maxVelocity
+- velocityColor (8-bit rgb array)
 
 The `numUpdates` parameter can be used to set the number of frames to simulate
 in order to get accurate and comparable performance ratings.

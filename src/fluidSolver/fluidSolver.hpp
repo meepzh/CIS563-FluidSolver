@@ -12,7 +12,7 @@
 #include "../geom/geom.hpp"
 #include "particle.hpp"
 
-enum FluidVisualizationType {Neighbors, None, Velocity};
+enum FluidVisualizationType {Neighbors, None, Pressure, Velocity, VelocityDir};
 
 class FluidSolver {
 public:
@@ -46,9 +46,15 @@ protected:
   float _gravity;
   float _particleSeparation;
   int _maxParticles;
-  FluidVisualizationType visualizationType;
   float _fixedTimestep;
 
+  // Visualization
+  FluidVisualizationType visualizationType;
+  float visualizationMaxPressure;
+  float visualizationMaxVelocity;
+  glm::vec3 visualizationVelocityColor;
+
+  // Performance measuring
   double computeTime;
   tbb::tick_count startTime, endTime;
   unsigned int numUpdates;
