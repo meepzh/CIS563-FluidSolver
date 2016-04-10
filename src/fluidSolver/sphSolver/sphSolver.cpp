@@ -11,17 +11,6 @@
 
 #include "utils.hpp"
 
-#if MFluidSolver_USE_TBB
-  #include <tbb/parallel_for.h>
-  #define iter_all_particles_start tbb::parallel_for(tbb::blocked_range<size_t>(0, _particles.size()), \
-    [&](const tbb::blocked_range<size_t> &r) { \
-      for (unsigned int i = r.begin(); i != r.end(); ++i) {
-  #define iter_all_particles_end }});
-#else
-  #define iter_all_particles_start for (unsigned int i = 0; i < _particles.size(); ++i) {
-  #define iter_all_particles_end }
-#endif
-
 // Constructor / Destructor
 SPHSolver::SPHSolver()
  : nSearch(nullptr), inited(false) {
@@ -223,21 +212,17 @@ void SPHSolver::update(double deltaT) {
   runNeighborSearch();
 
   // Compute density and pressure
-  iter_all_particles_start
-    SPHParticle &p = _particles.at(i);
-    // Density
+  iter_all_sphparticles_start
     calculateDensity(p);
 
     // Pressure
     double pressureTemp = kStiffness * (p.density() - dRestDensity);
     if (pressureTemp < 0) pressureTemp = 0;
     p.setPressure(pressureTemp);
-  iter_all_particles_end
+  iter_all_sphparticles_end
 
   // Compute forces
-  iter_all_particles_start
-    SPHParticle &p = _particles.at(i);
-
+  iter_all_sphparticles_start
     calculateNonPressureForce(p);
 
     glm::vec3 pressureForce(0);
@@ -249,12 +234,10 @@ void SPHSolver::update(double deltaT) {
     }
     pressureForce *= -1 * p.mass();
     p.setPressureForce(pressureForce);
-  iter_all_particles_end
+  iter_all_sphparticles_end
 
   // Compute velocity and position, check bounds
-  iter_all_particles_start
-    SPHParticle &p = _particles.at(i);
-
+  iter_all_sphparticles_start
     // Update
     glm::vec3 newVel = p.velocity() + p.force() / p.mass() * (float)deltaT;
     glm::vec3 newPos = p.position() + newVel * (float)deltaT;
@@ -262,71 +245,7 @@ void SPHSolver::update(double deltaT) {
 
     enforceBounds(p);
     visualizeParticle(p);
-  iter_all_particles_end
-}
-
-inline void SPHSolver::calculateDensity(SPHParticle &p) {
-  float densitySum = p.mass() * kernelFunctions.computePoly6(glm::vec3(0));
-  if (p.neighbors()->size() > 0) {
-    for (SPHParticle *n : *(p.neighbors())) {
-      densitySum += n->mass() * kernelFunctions.computePoly6(p.position() - n->position());
-    }
-  }
-  p.setDensity(densitySum);
-}
-
-inline void SPHSolver::calculateNonPressureForce(SPHParticle &p) {
-  glm::vec3 viscosityForce(0);
-  glm::vec3 gravityForce = glm::vec3(0, p.mass() * _gravity, 0);
-
-  if (muViscosity > 0) {
-    for (SPHParticle *n : *(p.neighbors())) {
-      viscosityForce += glm::vec3(n->mass() *
-        (n->velocity() - p.velocity()) *
-        (float)kernelFunctions.computeViscousLaplacian(p.position() - n->position()));
-    }
-  }
-  viscosityForce *= muViscosity / p.density() * p.mass();
-
-  p.setNonPressureForce(viscosityForce + gravityForce);
-}
-
-inline void SPHSolver::enforceBounds(SPHParticle &p) {
-  glm::ivec3 violations;
-  if (!fluidContainer->intersects(p.position(), violations)) {
-    glm::vec3 position = p.position();
-    p.reverseVelocity(violations, 0.1f); // Bounce
-
-    // TODO: Generalize
-    glm::vec3 scaleVec = fluidContainer->transform.scale();
-    glm::vec3 minBounds = -0.5f * scaleVec;
-    glm::vec3 maxBounds = 0.5f * scaleVec;
-
-    if (violations.x < 0) position.x = minBounds.x;
-    else if (violations.x > 0) position.x = maxBounds.x;
-
-    if (violations.y < 0) position.y = minBounds.y;
-    else if (violations.y > 0) position.y = maxBounds.y;
-
-    if (violations.z < 0) position.z = minBounds.z;
-    else if (violations.z > 0) position.z = maxBounds.z;
-
-    p.setPosition(position);
-  }
-}
-
-inline void SPHSolver::visualizeParticle(SPHParticle &p) {
-  if (visualizationType == FluidVisualizationType::Pressure) {
-    float pressureNormalized = p.pressure() / visualizationMaxPressure;
-    if (pressureNormalized > 1.f) pressureNormalized = 1.f;
-    p.color = pressureNormalized * glm::vec3(1.f);
-  } else if (visualizationType == FluidVisualizationType::Velocity) {
-    float velocityScalar = glm::length(p.velocity()) / visualizationMaxVelocity;
-    if (velocityScalar > 1.f) velocityScalar = 1.f;
-    p.color = (1 - velocityScalar) * visualizationVelocityColor + velocityScalar * glm::vec3(1.f);
-  } else if (visualizationType == FluidVisualizationType::VelocityDir) {
-    p.color = glm::normalize(glm::abs(p.velocity()));
-  }
+  iter_all_sphparticles_end
 }
 
 // Particles
@@ -365,39 +284,12 @@ void SPHSolver::setParticleSeparation(float ps) {
 }
 
 // Neighbor Search
-inline void SPHSolver::runNeighborSearch() {
-  iter_all_particles_start
-    SPHParticle &p = _particles.at(i);
-    nSearch->findNeighbors(&p);
-  iter_all_particles_end
-}
-
 void SPHSolver::prepNeighborSearchAfterSceneLoad() {
   // Initially sort particles with standard sort
   if (nSearchType == NeighborSearchType::IndexSortedUniformGridWithInsertion || nSearchType == NeighborSearchType::ZIndexSortedUniformGridWithInsertion) {
     IndexSortedUniformGridNeighborSearch *isugSearch = static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
     isugSearch->isuGrid->resetAndFillCells(true);
   }
-}
-
-inline void SPHSolver::prepNeighborSearch() {
-  if (nSearchType == NeighborSearchType::UniformGrid) {
-    nSearch->clear();
-    for (SPHParticle &p : _particles) {
-      nSearch->addParticle(&p);
-    }
-  } else if (nSearchType == NeighborSearchType::IndexSortedUniformGrid || nSearchType == NeighborSearchType::ZIndexSortedUniformGrid) {
-    IndexSortedUniformGridNeighborSearch *isugSearch = static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
-    isugSearch->isuGrid->resetAndFillCells(true);
-  } else if (nSearchType == NeighborSearchType::IndexSortedUniformGridWithInsertion || nSearchType == NeighborSearchType::ZIndexSortedUniformGridWithInsertion) {
-    IndexSortedUniformGridNeighborSearch *isugSearch = static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
-    isugSearch->isuGrid->resetAndFillCells(false); // Use insertion sort
-  }
-  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
-  else {
-    std::cout << "DEBUG: No neighbor search prep being done" << std::endl;
-  }
-  #endif
 }
 
 // Neighbor Visualization

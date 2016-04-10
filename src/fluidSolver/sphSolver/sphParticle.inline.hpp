@@ -50,6 +50,10 @@ inline void SPHParticle::setPressureForce(const glm::vec3 &force) {
   _pressureForce = force;
 }
 
+inline void SPHParticle::setVelocity(const glm::vec3 &velocity) {
+  _velocity = velocity;
+}
+
 // Neighbors
 inline std::vector<SPHParticle *> *SPHParticle::neighbors() {
   return &_neighbors;
@@ -57,4 +61,30 @@ inline std::vector<SPHParticle *> *SPHParticle::neighbors() {
 
 inline void SPHParticle::clearNeighbors() {
   _neighbors.clear();
+}
+
+// IISPH Getters
+inline float SPHParticle::aSelf() const {
+  return _aSelf;
+}
+
+inline glm::vec3 SPHParticle::dSelf() const {
+  return _dSelf;
+}
+
+inline glm::vec3 SPHParticle::dNeighbors() const {
+  return _dNeighbors;
+}
+
+// IISPH Setters
+inline void SPHParticle::setASelf(float a) {
+  _aSelf = a;
+}
+
+inline void SPHParticle::setDSelf(const glm::vec3 &d) {
+  _dSelf = d;
+}
+
+inline void SPHParticle::setDNeighbors(const glm::vec3 &d) {
+  _dNeighbors = d;
 }
