@@ -15,5 +15,5 @@
 		"neighborSearchType": "zindexSortedUniformInsertionSort"
 	},
 	"visualization": "velocity",
-	"numUpdates": 700
+	"numUpdates": -1
 }

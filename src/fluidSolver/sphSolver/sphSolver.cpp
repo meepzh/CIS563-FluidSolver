@@ -290,13 +290,16 @@ void SPHSolver::update(double deltaT) {
   // Compute velocity and position, check bounds
   #if MFluidSolver_USE_TBB
   tbb::parallel_for(tbb::blocked_range<size_t>(0, _particles.size()),
-    [&](const tbb::blocked_range<size_t> &r) {
+    [this, deltaT](const tbb::blocked_range<size_t> &r) {
       for (unsigned int i = r.begin(); i != r.end(); ++i) {
   #else
       for (unsigned int i = 0; i < _particles.size(); ++i) {
   #endif
         SPHParticle &p = _particles.at(i);
-        p.update(deltaT);
+        // Update
+        glm::vec3 newVel = p.velocity() + p.forceDensity() / p.density() * (float)deltaT;
+        glm::vec3 newPos = p.position() + newVel * (float)deltaT;
+        p.update(newVel, newPos);
 
         // Check bounds
         glm::ivec3 violations;

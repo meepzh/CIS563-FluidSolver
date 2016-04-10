@@ -82,7 +82,9 @@ direction of the mouse. It will look like you're dragging the scene with you.
 - Insertion sort significantly improves query time, however, compared to the standard std::sort, as particles don't change cells frequently.
 
 ### Missing Required Features ###
-None
+
+- IISPH
+- Performance Analysis
 
 ### Extra Features ###
 None

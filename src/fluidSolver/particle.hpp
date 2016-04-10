@@ -17,13 +17,11 @@ public:
   Particle(float mass, const glm::vec3 &position);
 
   // Update
-  virtual void update(double deltaT);
   void reverseVelocity(const glm::ivec3 &directions, float bounceCoefficient = MFluidSolver_DEFAULT_PARTICLE_BOUNCE);
   void stopVelocity(const glm::ivec3 &directions);
   void setPosition(const glm::vec3 &position);
-  virtual void undoUpdate(double deltaT);
 
-  bool operator==(const Particle &b) const;
+  virtual bool operator==(const Particle &b) const;
 
   // Properties
   glm::vec3 color;

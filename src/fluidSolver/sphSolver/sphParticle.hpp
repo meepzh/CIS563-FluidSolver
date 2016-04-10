@@ -15,9 +15,7 @@ public:
   SPHParticle(const glm::vec3 &position) : SPHParticle(1, position) {}
   SPHParticle(float mass, const glm::vec3 &position);
 
-  // Computation
-  virtual void update(double deltaT);
-  virtual void undoUpdate(double deltaT);
+  virtual void update(const glm::vec3 &newVel, const glm::vec3 &newPos);
 
   // Properties
   float density() const;

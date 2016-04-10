@@ -9,14 +9,6 @@ Particle::Particle(float mass, const glm::vec3 &position)
    _mass(mass), _position(position), _velocity(glm::vec3(0)) {
 }
 
-void Particle::update(double deltaT) {
-  _position += _velocity * (float)deltaT;
-}
-
-void Particle::undoUpdate(double deltaT) {
-  _position -= _velocity * (float)deltaT;
-}
-
 void Particle::reverseVelocity(const glm::ivec3 &directions, float bounceCoefficient) {
   if (directions.x != 0) _velocity.x *= -1 * bounceCoefficient;
   if (directions.y != 0) _velocity.y *= -1 * bounceCoefficient;
