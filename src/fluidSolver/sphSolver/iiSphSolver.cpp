@@ -60,7 +60,12 @@ void IISPHSolver::update(double deltaT) {
     checkValidNumber(neighborDensityEstimate);
     p.setDensityIntermediate(p.density() + neighborDensityEstimate * deltaTF);
     checkValidNumber(aSelf);
-    if (aSelf == 0.f) assert(false);
+    if (aSelf == 0.f) {
+      if (p.neighbors()->size() != 0) {
+        std::cout << "FATAL: Particle has neighbors yet aSelf is zero" << std::endl;
+        assert(false);
+      }
+    }
     p.setASelf(aSelf);
 
     // Set iteration=0 pressure p^0_i
@@ -89,6 +94,11 @@ void IISPHSolver::update(double deltaT) {
     iter_all_sphparticles_end
 
     iter_all_sphparticles_start
+      if (p.aSelf() == 0.f) {
+        p.setPressure(0); // TODO: Check what pressure to set
+        continue;
+      }
+
       // Calculate next pressure
       const float omega = 0.5f;
       float aSelfNew = 0;
@@ -107,8 +117,9 @@ void IISPHSolver::update(double deltaT) {
       // Sum for average density
       // Note that density depends on old pressure
       float densityNew = p.densityIntermediate() + p.pressure() * aSelfNew + aNeighbors;
+      p.setDensity(densityNew); // TODO: Check if we should do this
 
-      // Update average density. TODO: can't use parallel_for
+      // Update average density. TODO: Can't use parallel_for
       avgDensity += densityNew;
 
       // Calculate new pressure
