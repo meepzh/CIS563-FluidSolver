@@ -33,10 +33,10 @@ inline void SPHSolver::calculateNonPressureForce(SPHParticle &p) {
 
 inline void SPHSolver::calculatePressureForce(SPHParticle &p) {
   glm::vec3 pressureForce(0);
-  float density2 = p.density() * p.density();
+  float pDensity2 = p.density() * p.density();
   for (SPHParticle *n : *(p.neighbors())) {
     pressureForce += n->mass() *
-      (p.pressure() / density2 + n->pressure() / (n->density() * n->density())) *
+      (p.pressure() / pDensity2 + n->pressure() / (n->density() * n->density())) *
       kernelFunctions.computeSpikyGradient(p.position() - n->position());
     assert(!std::isnan(pressureForce.x) && !std::isinf(pressureForce.x));
   }
