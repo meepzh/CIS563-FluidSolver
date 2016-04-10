@@ -9,6 +9,8 @@ void IISPHSolver::update(double deltaT) {
 
   // NOTE: TIMESTEP IS OVERWRITTEN HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   deltaT = _fixedTimestep;
+  const float deltaTF = (float)deltaT;
+  const float deltaTF2 = (float)(deltaT * deltaT);
 
   logTimestep();
   prepNeighborSearch();
@@ -23,7 +25,7 @@ void IISPHSolver::update(double deltaT) {
     calculateNonPressureForce(p);
 
     // Calculate intermediate velocity
-    p.setVelocity(p.velocity() + p.nonPressureForce() / p.mass() * (float)deltaT);
+    p.setVelocity(p.velocity() + p.nonPressureForce() / p.mass() * deltaTF);
 
     // Calculate self displacement
     glm::vec3 d(0);
@@ -31,7 +33,7 @@ void IISPHSolver::update(double deltaT) {
     for (SPHParticle *n : *(p.neighbors())) {
       d -= n->mass() / density2 * kernelFunctions.computeSpikyGradient(p.position() - n->position());
     }
-    d *= (float)(deltaT * deltaT);
+    d *= deltaTF2;
   iter_all_sphparticles_end
 
   iter_all_sphparticles_start
@@ -41,7 +43,7 @@ void IISPHSolver::update(double deltaT) {
       densityNTemp += n->mass() *
         glm::dot(p.velocity() - n->velocity(), kernelFunctions.computeSpikyGradient(p.position() - n->position()));
     }
-    p.setDensity(p.density() + densityNTemp * (float)deltaT);
+    p.setDensity(p.density() + densityNTemp * deltaTF);
 
     // Set iteration=0 pressure
     p.setPressure(0.5f * p.pressure()); // TODO: check if using correct pressure
@@ -72,16 +74,16 @@ void IISPHSolver::update(double deltaT) {
       float nTemp = 0;
       for (SPHParticle *n : *(p.neighbors())) {
         glm::vec3 dJI = -1 * p.mass() / (n->density() * n->density()) *
-          kernelFunctions.computeSpikyGradient(n->position() - p.position()));
-        dJI *= (float)deltaT * (float)deltaT;
+          kernelFunctions.computeSpikyGradient(n->position() - p.position());
+        dJI *= deltaTF2;
 
-        nTemp += n->mass * glm::dot(p.dNeighbors() - n->dSelf() - n->dNeighbors() + dJI * p.pressure(),
+        nTemp += n->mass() * glm::dot(p.dNeighbors() - n->dSelf() - n->dNeighbors() + dJI * p.pressure(),
           kernelFunctions.computeSpikyGradient(p.position() - n->position()));
       }
       nTemp = dRestDensity - p.density() - nTemp;
       nTemp *= omega / p.aSelf();
       nTemp += (1.f - omega) * p.pressure();
-      p.setPressure(pressure);
+      p.setPressure(nTemp);
 
       // Sum for average density
       avgDensity += p.density();
@@ -94,8 +96,8 @@ void IISPHSolver::update(double deltaT) {
   // Procedure: Iteration
   iter_all_sphparticles_start
     // Update
-    glm::vec3 newVel = p.velocity() + p.pressureForce() / p.mass() * (float)deltaT;
-    glm::vec3 newPos = p.position() + newVel * (float)deltaT;
+    glm::vec3 newVel = p.velocity() + p.pressureForce() / p.mass() * deltaTF;
+    glm::vec3 newPos = p.position() + newVel * deltaTF;
     p.update(newVel, newPos);
 
     enforceBounds(p);

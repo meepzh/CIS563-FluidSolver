@@ -206,6 +206,7 @@ void SPHSolver::update(double deltaT) {
 
   // NOTE: TIMESTEP IS OVERWRITTEN HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   deltaT = _fixedTimestep;
+  const float deltaTF = (float)deltaT;
 
   logTimestep();
   prepNeighborSearch();
@@ -216,7 +217,9 @@ void SPHSolver::update(double deltaT) {
     calculateDensity(p);
 
     // Pressure
-    double pressureTemp = kStiffness * (p.density() - dRestDensity);
+    double densityRatio = p.density() / dRestDensity;
+    double pressureTemp = kStiffness * dRestDensity / 7.f * (
+      densityRatio * densityRatio * densityRatio * densityRatio * densityRatio * densityRatio * densityRatio - 1.f);
     if (pressureTemp < 0) pressureTemp = 0;
     p.setPressure(pressureTemp);
   iter_all_sphparticles_end
@@ -239,8 +242,8 @@ void SPHSolver::update(double deltaT) {
   // Compute velocity and position, check bounds
   iter_all_sphparticles_start
     // Update
-    glm::vec3 newVel = p.velocity() + p.force() / p.mass() * (float)deltaT;
-    glm::vec3 newPos = p.position() + newVel * (float)deltaT;
+    glm::vec3 newVel = p.velocity() + p.force() / p.mass() * deltaTF;
+    glm::vec3 newPos = p.position() + newVel * deltaTF;
     p.update(newVel, newPos);
 
     enforceBounds(p);
