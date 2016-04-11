@@ -47,6 +47,11 @@ void Scene::loadJSON(const std::string &file) {
   particleDim.y = root["particleDim"].get("scaleY", 0.5f).asFloat();
   particleDim.z = root["particleDim"].get("scaleZ", 0.5f).asFloat();
 
+  glm::vec3 particleConPos;
+  particleConPos.x = root["particleDim"].get("posX", 0.0f).asFloat();
+  particleConPos.y = root["particleDim"].get("posY", 0.0f).asFloat();
+  particleConPos.z = root["particleDim"].get("posZ", 0.0f).asFloat();
+
   glm::vec3 cameraEye;
   cameraEye.x = root["camera"].get("eyeX", 0.5f).asFloat();
   cameraEye.y = root["camera"].get("eyeY", 0.5f).asFloat();
@@ -77,7 +82,7 @@ void Scene::loadJSON(const std::string &file) {
 
   // Change geometry scale
   solver.fluidContainer->transform.setScale(containerDim);
-  solver.fluidSource->transform.setScale(particleDim);
+  solver.fluidSource->transform.setTransform(particleConPos, glm::vec3(0), particleDim);
 
   seedScene();
 

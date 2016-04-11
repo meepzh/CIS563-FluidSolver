@@ -192,10 +192,11 @@ void Viewer::run() {
 
     // Render boxes
     wireShader->setViewProjectionMat(scene.camera.getViewProjection());
-    for (Geometry *g : scene.objects) {
+    // for (Geometry *g : scene.objects) {
+      Geometry *g = scene.solver.fluidContainer;
       wireShader->setModelMat(g->transform.T());
       wireShader->draw(g);
-    }
+    // }
 
     // Parse mouse button input
     leftState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
