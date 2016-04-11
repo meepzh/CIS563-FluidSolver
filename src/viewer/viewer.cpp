@@ -4,10 +4,18 @@
 
 #include "viewer.hpp"
 
+#include <algorithm>
 #include <cstring>
 #include <ctime>
+#include <stb_image/stb_image_write.h>
+#include <string>
 
 #include "input.hpp"
+
+#if MFluidSolver_USE_TBB
+#include <tbb/blocked_range2d.h>
+#include <tbb/parallel_for.h>
+#endif
 
 #if MFluidSolver_OPENGL_DEBUG
 void APIENTRY openglDebugCallbackFunction(GLenum source, GLenum type, GLuint id,
@@ -72,7 +80,14 @@ Viewer::Viewer()
   paused(true), shouldStop(false) {
 }
 
+Viewer::~Viewer() {
+  delete wireShader;
+}
+
 void Viewer::init(int width, int height) {
+  _width = width;
+  _height = height;
+
   // http://www.opengl-tutorial.org/beginners-tutorials/tutorial-1-opening-a-window/
   glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -135,6 +150,10 @@ void Viewer::init(int width, int height) {
     #endif
   }
   #endif
+
+  // Init screenshot array
+  screenshotArray = std::vector<GLubyte>(3 * width * height);
+  screenshotArrayFlipped = std::vector<GLubyte>(3 * width * height);
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   if (paused) std::cout << "INFO: We are currently paused!" << std::endl;
@@ -217,6 +236,58 @@ void Viewer::run() {
            glfwWindowShouldClose(window) == 0);
 }
 
+inline unsigned int Viewer::screenshotIndex(unsigned int x, unsigned int y) {
+  return y * _width + x;
+}
+
+void Viewer::screenshot(bool manual) {
+  // Capture
+  glReadPixels(0, 0, _width, _height, GL_RGB, GL_UNSIGNED_BYTE, screenshotArray.data());
+
+  // Flip
+  std::string outString = "screenshot_" + MUtils::zeroPad(scene.solver.updateNumber(), 6) + ".tga";
+  #if MFluidSolver_USE_TBB
+  tbb::parallel_for(tbb::blocked_range2d<unsigned int>(0, _width, 0, _height),
+    [&](const tbb::blocked_range2d<unsigned int> &r) {
+      for(unsigned int x = r.rows().begin(); x != r.rows().end(); ++x) {
+        for(unsigned int y = r.cols().begin(); y != r.cols().end(); ++y) {
+  #else
+      for (unsigned int x = 0; x < _width; ++x) {
+        for (unsigned int y = 0; y < _height / 2; ++y) {
+  #endif
+          for (unsigned int i = 0; i < 3; ++i) {
+            screenshotArrayFlipped[3 * screenshotIndex(x, y) + i] = screenshotArray[3 * screenshotIndex(x, _height - 1 - y) + i];
+            screenshotArrayFlipped[3 * screenshotIndex(x, _height - 1 - y) + i] = screenshotArray[3 * screenshotIndex(x, y) + i];
+          }
+  #if MFluidSolver_USE_TBB
+        }
+      }
+    }
+  );
+  #else
+        }
+      }
+  #endif
+
+  // Write
+  int result = stbi_write_tga(outString.c_str(), _width, _height, 3, screenshotArrayFlipped.data());
+  if (manual) {
+    if (result != 0) { // Success
+      #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+      std::cout << "INFO: Wrote rendered image to: " << outString << std::endl;
+      #endif
+    } else { // Failure
+      #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
+      std::cout << "ERR: Failed to write rendered image to: " << outString << std::endl;
+      #endif
+    }
+  }
+}
+
+void Viewer::stop() {
+  shouldStop = true;
+}
+
 void Viewer::togglePause() {
   paused = !paused;
 
@@ -224,12 +295,4 @@ void Viewer::togglePause() {
   if (paused) std::cout << "INFO: Paused!" << std::endl;
   if (!paused) std::cout << "INFO: Unpaused!" << std::endl;
   #endif
-}
-
-void Viewer::stop() {
-  shouldStop = true;
-}
-
-Viewer::~Viewer() {
-  delete wireShader;
 }

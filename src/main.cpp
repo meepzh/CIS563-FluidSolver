@@ -17,6 +17,10 @@
 #include <openvdb/openvdb.h>
 #endif
 
+#if MFluidSolver_USE_TBB
+#include <tbb/task_scheduler_init.h>
+#endif
+
 #include "viewer/input.hpp"
 #include "viewer/particleShaderProgram.hpp"
 
@@ -41,6 +45,10 @@ int main() {
   #if MFluidSolver_USE_OPENVDB
   // Initialize OpenVDB
   openvdb::initialize();
+  #endif
+
+  #if MFluidSolver_USE_TBB
+  tbb::task_scheduler_init init(7);
   #endif
 
   std::string configJSON = MFluidSolver_DEFAULT_CONFIG_FILE;

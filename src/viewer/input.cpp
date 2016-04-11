@@ -15,6 +15,8 @@ void Input::checkKeys(GLFWwindow* window, int key, int scancode, int action, int
   if (viewer == nullptr) return;
   if (key == GLFW_KEY_P && action == GLFW_RELEASE) {
     viewer->togglePause();
+  } else if (key == GLFW_KEY_S && action == GLFW_RELEASE) {
+    viewer->screenshot(true);
   } else if (key == GLFW_KEY_R && action == GLFW_RELEASE) {
     viewer->scene.seedScene();
   } else if (key == GLFW_KEY_RIGHT && action == GLFW_RELEASE) {

@@ -45,6 +45,7 @@ public:
 
   // Misc
   virtual void printPerformanceStats();
+  unsigned int updateNumber();
 
   // Containers
   Geometry *fluidSource;

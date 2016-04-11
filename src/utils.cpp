@@ -4,6 +4,8 @@
 
 #include "utils.hpp"
 
+#include <iomanip>
+
 namespace MUtils {
   std::string toHMS(double seconds) {
     std::ostringstream strstm;
@@ -29,33 +31,8 @@ namespace MUtils {
   }
 
   std::string zeroPad(int number, unsigned int digits) {
-    std::ostringstream strstm;
-
-    if (digits <= 1) {
-      if (number == 0) return "0";
-      strstm << number;
-    } else if (digits == 2) {
-      if (number == 0) return "00";
-      if (number < 10) {
-        strstm << "0" << number;
-      } else {
-        strstm << number;
-      }
-    } else {
-      strstm << number;
-      std::string ret = strstm.str();
-      int divisor = 10;
-      unsigned int count = 1;
-      while (count < digits) {
-        if (number / divisor != 0) {
-          ret = "0" + ret;
-        }
-        divisor *= 10;
-        ++count;
-      }
-      return ret;
-    }
-
-    return strstm.str();
+    std::ostringstream ss;
+    ss << std::setw(digits) << std::setfill('0') << number;
+    return ss.str();
   }
 }

@@ -111,6 +111,7 @@ endif()
 
 # Add source files you want to compile (.cpp)
 set(CORE_SRC
+        nuparu/src/stb_image/stb_image_write.c
         src/fluidSolver/sphSolver/iiSphSolver.cpp
         src/fluidSolver/sphSolver/kernelFunctions.cpp
         src/fluidSolver/sphSolver/neighborSearch.cpp

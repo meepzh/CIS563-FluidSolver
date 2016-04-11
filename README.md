@@ -33,6 +33,7 @@ Press P to toggle pausing. Press Press N to randomly pick a particle to show
 its neighbors. Press E to export a VDB file of the graph to `export.vdb` (if
 OpenVDB is enabled in `MFluidSolverConfig`). Press R to reseed the scene
 using the fluid source. Press right to step frame by frame (0.001 seconds).
+Press S to write out a screenshot to `screenshot_%05d.tga`.
 
 All SPH parameters, as well as several general program parameters, can be found
 in `config/config.json`. The scene file, which contains dimensions and particle

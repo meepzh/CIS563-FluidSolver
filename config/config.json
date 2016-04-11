@@ -15,7 +15,7 @@
 		"neighborSearchType": "indexSortedUniformInsertionSort"
 	},
 	"visualization": {
-		"type": "velocity",
+		"type": "velocityDir",
 		"maxPressure": 40000,
 		"maxVelocity": 4,
 		"velocityColor": [0, 160, 204]

@@ -72,3 +72,7 @@ void FluidSolver::printPerformanceStats() {
     std::cout << "PERF: Average is " << (computeTime / numUpdates) << " seconds per frame" << std::endl;
   }
 }
+
+unsigned int FluidSolver::updateNumber() {
+  return numUpdates;
+}
