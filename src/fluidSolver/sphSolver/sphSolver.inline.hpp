@@ -50,7 +50,7 @@ inline void SPHSolver::calculatePressureForce(SPHParticle &p) {
     pressureForce += n->mass() *
       (p.pressure() / pDensity2 + n->pressure() / (n->density() * n->density())) *
       kernelFunctions.computeSpikyGradient(p.position() - n->position());
-    assert(!std::isnan(pressureForce.x) && !std::isinf(pressureForce.x));
+    //assert(!std::isnan(pressureForce.x) && !std::isinf(pressureForce.x));
   }
   pressureForce *= -1 * p.mass();
   p.setPressureForce(pressureForce);
@@ -66,16 +66,16 @@ inline void SPHSolver::enforceBounds(SPHParticle &p) {
     glm::vec3 scaleVec = fluidContainer->transform.scale();
     glm::vec3 minBounds = -0.5f * scaleVec;
     glm::vec3 maxBounds = 0.5f * scaleVec;
-    float r = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 0.05f; // Jitter
+    float r = 0.f;
 
-    if (violations.x < 0) position.x = minBounds.x + r;
-    else if (violations.x > 0) position.x = maxBounds.x - r;
+    if (violations.x < 0) position.x = minBounds.x;
+    else if (violations.x > 0) position.x = maxBounds.x;
 
-    if (violations.y < 0) position.y = minBounds.y + r;
-    else if (violations.y > 0) position.y = maxBounds.y - r;
+    if (violations.y < 0) position.y = minBounds.y;
+    else if (violations.y > 0) position.y = maxBounds.y;
 
-    if (violations.z < 0) position.z = minBounds.z + r;
-    else if (violations.z > 0) position.z = maxBounds.z - r;
+    if (violations.z < 0) position.z = minBounds.z;
+    else if (violations.z > 0) position.z = maxBounds.z;
 
     p.setPosition(position);
   }

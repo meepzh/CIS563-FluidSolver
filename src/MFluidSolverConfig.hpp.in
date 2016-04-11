@@ -18,7 +18,7 @@
 #define MFluidSolver_USE_TBB 1
 
 // Misc
-#define MFluidSolver_ZCURVE_CACHING 0
+#define MFluidSolver_ZCURVE_CACHING 1
 
 // Defaults
 #define MFluidSolver_DEFAULT_CONFIG_FILE "config.json"

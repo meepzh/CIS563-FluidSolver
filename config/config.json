@@ -7,10 +7,10 @@
 	"particleTexture": "texture/particle.dds",
 	"sph": {
 		"kStiffness": 1000,
-		"muViscosity": 0.1,
+		"muViscosity": 0.028,
 		"mMass": 0.125,
 		"dRestDensity": 1000,
-		"dtTimestep": 0.001,
+		"dtTimestep": 0.0006,
 		"kernelRadius": 0.100001,
 		"neighborSearchType": "indexSortedUniformInsertionSort"
 	},
@@ -20,5 +20,5 @@
 		"maxVelocity": 4,
 		"velocityColor": [0, 160, 204]
 	},
-	"numUpdates": -1
+	"numUpdates": 3500
 }
