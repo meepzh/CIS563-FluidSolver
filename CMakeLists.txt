@@ -61,15 +61,19 @@ find_library(OPENVDB "openvdb")
 find_library(OPENEXR_HALF NAMES Half PATHS ${CMAKE_LIBRARY_PATH})
 find_library(TBB tbb)
 
+find_package(Boost COMPONENTS filesystem system REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
+
 add_definitions(
         -DTW_STATIC
         -DTW_NO_LIB_PRAGMA
         -DTW_NO_DIRECT3D
         -DGLEW_STATIC
         -D_CRT_SECURE_NO_WARNINGS
+        -DBOOST_TEST_DYN_LINK
 )
 
-set(CORE_LIBS ${GLFW_LIBRARY} ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${JSONCPP} ${OPENGL_LIBRARY} ${OPENVDB} ${OPENEXR_HALF} ${TBB})
+set(CORE_LIBS ${GLFW_LIBRARY} ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${JSONCPP} ${OPENGL_LIBRARY} ${OPENVDB} ${OPENEXR_HALF} ${TBB} ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
 
 # OSX-specific hacks/fixes
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")

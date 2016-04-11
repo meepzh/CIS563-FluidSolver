@@ -9,6 +9,11 @@ display the neighbor particles of the first particle, which can be changed
 randomly. The solver can also export the backend grid for the fluid particles to
 the VDB format.
 
+### Dependencies ###
+
+- OpenVDB 2.3.0
+- Boost (Filesytem, System, Unit Test Framework)
+
 ### Build Instructions (*nix) ###
 By default, the program is set to default debugging mode as set in
 `src/MFluidSolverConfig.hpp.in`. There are many other options there including

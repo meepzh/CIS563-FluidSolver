@@ -30,6 +30,7 @@
 #define MFluidSolver_DEFAULT_PARTICLE_FRAG_FILE "glsl/particle.frag.glsl"
 #define MFluidSolver_DEFAULT_PARTICLE_TEX_FILE "texture/particle.dds"
 
+#define MFluidSolver_DEFAULT_AUTORENDER false
 #define MFluidSolver_DEFAULT_BG_COLOR_R 0.3f
 #define MFluidSolver_DEFAULT_BG_COLOR_G 0.3f
 #define MFluidSolver_DEFAULT_BG_COLOR_B 0.3f
@@ -56,6 +57,7 @@
 #define MFluidSolver_DEFAULT_SPH_STIFFNESS 1000
 #define MFluidSolver_DEFAULT_SPH_TIMESTEP 0.001
 #define MFluidSolver_DEFAULT_SPH_VISCOSITY 1
+#define MFluidSolver_DEFAULT_RENDERSKIP 0
 #define MFluidSolver_DEFAULT_UPDATE_STEP 0.001
 #define MFluidSolver_DEFAULT_VISUALIZATION FluidVisualizationType::Velocity
 #define MFluidSolver_DEFAULT_VISUALIZATION_STRING "velocity"

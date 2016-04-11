@@ -5,6 +5,7 @@
 #include "viewer.hpp"
 
 #include <algorithm>
+#include <boost/filesystem.hpp>
 #include <cstring>
 #include <ctime>
 #include <stb_image/stb_image_write.h>
@@ -77,7 +78,8 @@ void APIENTRY openglDebugCallbackFunction(GLenum source, GLenum type, GLuint id,
 Viewer::Viewer()
 : wireShader(nullptr), particleShader(nullptr),
   oldLeftState(GLFW_RELEASE), oldRightState(GLFW_RELEASE),
-  paused(true), shouldStop(false) {
+  paused(true), shouldStop(false),
+  autoRender(MFluidSolver_DEFAULT_AUTORENDER), renderSkip(MFluidSolver_DEFAULT_RENDERSKIP) {
 }
 
 Viewer::~Viewer() {
@@ -221,6 +223,14 @@ void Viewer::run() {
 
     // Swap buffers
     glfwSwapBuffers(window);
+
+    // Render
+    if (autoRender) {
+      if (renderSkip > 1 && scene.solver.updateNumber() % renderSkip == 0) {
+        screenshot(false);
+      }
+    }
+
     glfwPollEvents();
 
     #if MFluidSolver_OPENGL_DEBUG == 0
@@ -245,7 +255,12 @@ void Viewer::screenshot(bool manual) {
   glReadPixels(0, 0, _width, _height, GL_RGB, GL_UNSIGNED_BYTE, screenshotArray.data());
 
   // Flip
-  std::string outString = "screenshot_" + MUtils::zeroPad(scene.solver.updateNumber(), 6) + ".tga";
+  std::string outString = MUtils::zeroPad(scene.solver.updateNumber(), 6) + ".tga";
+  if (manual) {
+    outString = "screenshot_" + outString;
+  } else {
+    outString = "render/render_" + outString;
+  }
   #if MFluidSolver_USE_TBB
   tbb::parallel_for(tbb::blocked_range2d<unsigned int>(0, _width, 0, _height),
     [&](const tbb::blocked_range2d<unsigned int> &r) {
@@ -278,10 +293,32 @@ void Viewer::screenshot(bool manual) {
       #endif
     } else { // Failure
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
-      std::cout << "ERR: Failed to write rendered image to: " << outString << std::endl;
+      std::cout << "ERROR: Failed to write rendered image to: " << outString << std::endl;
       #endif
     }
   }
+}
+
+void Viewer::configureScreenshot(bool render, unsigned int skip) {
+  autoRender = render;
+  renderSkip = skip;
+
+  boost::filesystem::path renderDir("render");
+  if (!boost::filesystem::create_directory(renderDir)) {
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
+    std::cout << "ERROR: Failed to create render folder. Disabling autorender" << std::endl;
+    #endif
+  }
+
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+  if (autoRender) {
+    if (renderSkip > 1) {
+      std::cout << "INFO: Rendering 1 frame for every " << renderSkip << " to file!" << std::endl;
+    } else {
+      std::cout << "INFO: Rendering every frame to file!" << std::endl;
+    }
+  }
+  #endif
 }
 
 void Viewer::stop() {

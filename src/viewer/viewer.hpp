@@ -32,6 +32,8 @@ public:
   void stop();
   void togglePause();
 
+  void configureScreenshot(bool render, unsigned int skip);
+
   GLFWwindow *window;
   Scene scene;
   ShaderProgram *wireShader;
@@ -45,6 +47,8 @@ private:
   glm::dvec2 oldPos, newPos;
   bool paused, shouldStop;
 
+  bool autoRender;
+  unsigned int renderSkip;
   std::vector<GLubyte> screenshotArray;
   std::vector<GLubyte> screenshotArrayFlipped;
   inline unsigned int screenshotIndex(unsigned int x, unsigned int y);

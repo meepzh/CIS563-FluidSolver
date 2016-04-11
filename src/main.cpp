@@ -76,6 +76,8 @@ int main() {
   std::string particleVShader = root.get("particleVShader", MFluidSolver_DEFAULT_PARTICLE_VERT_FILE).asString();
   std::string particleFShader = root.get("particleFShader", MFluidSolver_DEFAULT_PARTICLE_FRAG_FILE).asString();
   std::string particleTexture = root.get("particleTexture", MFluidSolver_DEFAULT_PARTICLE_TEX_FILE).asString();
+  bool autoRender = root.get("autoRender", MFluidSolver_DEFAULT_AUTORENDER).asBool();
+  unsigned int renderSkip = root.get("renderSkip", MFluidSolver_DEFAULT_RENDERSKIP).asInt();
 
   std::srand(std::time(NULL));
 
@@ -119,6 +121,7 @@ int main() {
   viewer.wireShader = new ShaderProgram(wireVShader, wireFShader);
   viewer.particleShader = new ParticleShaderProgram(&(viewer.scene.solver), particleVShader, particleFShader, particleTexture);
   viewer.scene.solver.loadConfig(configJSON);
+  viewer.configureScreenshot(autoRender, renderSkip);
 
   int returnCode = 0;
   #if MFluidSolver_MAIN_CATCH_EXCEPTIONS
