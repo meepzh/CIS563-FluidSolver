@@ -5,6 +5,18 @@
 #include <cassert>
 #include <cmath>
 
+#if MFluidSolver_USE_TBB
+  #define iter_all_sphparticles_start tbb::parallel_for(tbb::blocked_range<size_t>(0, _particles.size()), \
+    [&](const tbb::blocked_range<size_t> &r) { \
+      for (unsigned int i = r.begin(); i != r.end(); ++i) { \
+        SPHParticle &p = _particles.at(i);
+  #define iter_all_sphparticles_end }});
+#else
+  #define iter_all_sphparticles_start for (unsigned int i = 0; i < _particles.size(); ++i) { \
+    SPHParticle &p = _particles.at(i);
+  #define iter_all_sphparticles_end }
+#endif
+
 inline void SPHSolver::calculateDensity(SPHParticle &p) {
   float densitySum = p.mass() * kernelFunctions.computePoly6(glm::vec3(0));
   if (p.neighbors()->size() > 0) {

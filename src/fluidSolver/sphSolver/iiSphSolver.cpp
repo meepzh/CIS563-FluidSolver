@@ -93,42 +93,61 @@ void IISPHSolver::update(double deltaT) {
       p.setDNeighbors(dFromNeighborPressure);
     iter_all_sphparticles_end
 
-    iter_all_sphparticles_start
-      if (p.aSelf() == 0.f) {
-        p.setPressure(0); // TODO: Check what pressure to set
-        continue;
-      }
+    #if MFluidSolver_USE_TBB
+    avgDensity = tbb::parallel_reduce(tbb::blocked_range<size_t>(0, _particles.size()), 0.f,
+      [&](const tbb::blocked_range<size_t> &r, float partialDensitySum) {
+        for (unsigned int i = r.begin(); i != r.end(); ++i) {
+    #else
+        for (unsigned int i = 0; i < _particles.size(); ++i) {
+    #endif
+          SPHParticle &p = _particles.at(i);
+          if (p.aSelf() == 0.f) {
+            p.setPressure(0); // TODO: Check what pressure to set
+            continue;
+          }
 
-      // Calculate next pressure
-      const float omega = 0.5f;
-      float aSelfNew = 0;
-      float aNeighbors = 0;
-      for (SPHParticle *n : *(p.neighbors())) {
-        glm::vec3 spikyIJ = kernelFunctions.computeSpikyGradient(p.position() - n->position());
+          // Calculate next pressure
+          const float omega = 0.5f;
+          float aSelfNew = 0;
+          float aNeighbors = 0;
+          for (SPHParticle *n : *(p.neighbors())) {
+            glm::vec3 spikyIJ = kernelFunctions.computeSpikyGradient(p.position() - n->position());
 
-        glm::vec3 dJI = -1 * p.mass() / (p.density() * p.density()) *
-          kernelFunctions.computeSpikyGradient(n->position() - p.position());
+            glm::vec3 dJI = -1 * p.mass() / (p.density() * p.density()) *
+              kernelFunctions.computeSpikyGradient(n->position() - p.position());
 
-        aSelfNew += n->mass() * glm::dot(p.dSelf() - dJI, spikyIJ);
-        aNeighbors += n->mass() * glm::dot(p.dNeighbors() - n->dSelf() - n->dNeighbors() + dJI * p.pressure(), spikyIJ);
-        checkValidNumber(aSelfNew);
-        checkValidNumber(aNeighbors);
-      }
-      // Sum for average density
-      // Note that density depends on old pressure
-      float densityNew = p.densityIntermediate() + p.pressure() * aSelfNew + aNeighbors;
-      p.setDensity(densityNew); // TODO: Check if we should do this
+            aSelfNew += n->mass() * glm::dot(p.dSelf() - dJI, spikyIJ);
+            aNeighbors += n->mass() * glm::dot(p.dNeighbors() - n->dSelf() - n->dNeighbors() + dJI * p.pressure(), spikyIJ);
+            checkValidNumber(aSelfNew);
+            checkValidNumber(aNeighbors);
+          }
+          // Sum for average density
+          // Note that density depends on old pressure
+          float densityNew = p.densityIntermediate() + p.pressure() * aSelfNew + aNeighbors;
+          p.setDensity(densityNew); // TODO: Check if we should do this
 
-      // Update average density. TODO: Can't use parallel_for
-      avgDensity += densityNew;
+          // Update average density
+          #if MFluidSolver_USE_TBB
+          partialDensitySum += densityNew;
+          #else
+          avgDensity += densityNew;
+          #endif
 
-      // Calculate new pressure
-      float pressureNew = dRestDensity - p.densityIntermediate() - aNeighbors;
-      pressureNew *= omega / p.aSelf();
-      pressureNew += (1.f - omega) * p.pressure();
-      checkValidNumber(pressureNew);
-      p.setPressure(pressureNew);
-    iter_all_sphparticles_end
+          // Calculate new pressure
+          float pressureNew = dRestDensity - p.densityIntermediate() - aNeighbors;
+          pressureNew *= omega / p.aSelf();
+          pressureNew += (1.f - omega) * p.pressure();
+          checkValidNumber(pressureNew);
+          p.setPressure(pressureNew);
+    #if MFluidSolver_USE_TBB
+        }
+        return partialDensitySum;
+      },
+      std::plus<float>()
+    );
+    #else
+        }
+    #endif
 
     checkValidNumber(avgDensity);
     avgDensity /= (float)_particles.size();
