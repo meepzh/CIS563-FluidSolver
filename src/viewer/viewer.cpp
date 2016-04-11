@@ -304,10 +304,12 @@ void Viewer::configureScreenshot(bool render, unsigned int skip) {
   renderSkip = skip;
 
   boost::filesystem::path renderDir("render");
-  if (!boost::filesystem::create_directory(renderDir)) {
+  boost::filesystem::create_directory(renderDir);
+  if (!boost::filesystem::is_directory(renderDir)) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
     std::cout << "ERROR: Failed to create render folder. Disabling autorender" << std::endl;
     #endif
+    autoRender = false;
   }
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO

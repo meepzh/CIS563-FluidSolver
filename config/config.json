@@ -15,12 +15,12 @@
 		"neighborSearchType": "indexSortedUniformInsertionSort"
 	},
 	"visualization": {
-		"type": "velocityDir",
+		"type": "velocity",
 		"maxPressure": 40000,
 		"maxVelocity": 4,
 		"velocityColor": [0, 160, 204]
 	},
-	"numUpdates": 3500,
+	"numUpdates": 3600,
 	"autoRender": true,
 	"renderSkip": 10
 }
