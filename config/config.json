@@ -10,7 +10,7 @@
 		"muViscosity": 0.005,
 		"mMass": 0.125,
 		"dRestDensity": 1000,
-		"dtTimestep": 0.005,
+		"dtTimestep": 0.004,
 		"kernelRadius": 0.100001,
 		"neighborSearchType": "indexSortedUniformInsertionSort"
 	},

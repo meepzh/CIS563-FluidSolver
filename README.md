@@ -11,8 +11,8 @@ the VDB format.
 
 ### Dependencies ###
 
-- OpenVDB 2.3.0
 - Boost (Filesytem, System, Unit Test Framework)
+- OpenVDB 2.3.0
 
 ### Build Instructions (*nix) ###
 By default, the program is set to default debugging mode as set in
