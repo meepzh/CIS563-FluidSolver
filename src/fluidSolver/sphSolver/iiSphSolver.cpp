@@ -63,7 +63,7 @@ void IISPHSolver::update(double deltaT) {
     if (aSelf == 0.f) {
       if (p.neighbors()->size() != 0) {
         std::cout << "FATAL: Particle has neighbors yet aSelf is zero" << std::endl;
-        assert(false);
+        throw i;
       }
     }
     p.setASelf(aSelf);
@@ -77,7 +77,7 @@ void IISPHSolver::update(double deltaT) {
   unsigned int iteration = 0;
   float avgDensity = 0;
   const float eta = 0.01f * kernelRadius;
-  while ((avgDensity - dRestDensity) > eta || iteration < 2) {
+  while (((avgDensity - dRestDensity) > eta || iteration < 2) && iteration < 50) {
     avgDensity = 0;
 
     iter_all_sphparticles_start
@@ -128,9 +128,17 @@ void IISPHSolver::update(double deltaT) {
 
           // Update average density
           #if MFluidSolver_USE_TBB
-          partialDensitySum += densityNew;
+            if (densityNew > dRestDensity) {
+              partialDensitySum += densityNew;
+            } else {
+              partialDensitySum += dRestDensity;
+            }
           #else
-          avgDensity += densityNew;
+            if (densityNew > dRestDensity) {
+              avgDensity += densityNew;
+            } else {
+              avgDensity += dRestDensity;
+            }
           #endif
 
           // Calculate new pressure
