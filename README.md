@@ -113,4 +113,5 @@ standard std::sort, as particles don't change cells frequently.
 None
 
 ### Credits ###
+- [Nuparu Dependency and Foundation Libraries](https://github.com/betajippity/Nuparu)
 - DDS File Loader adapted from [opengl-tutorial.org](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-5-a-textured-cube/) [(WTF Public License)](http://www.wtfpl.net/).
