@@ -10,13 +10,13 @@
 		"muViscosity": 0.028,
 		"mMass": 0.125,
 		"dRestDensity": 1000,
-		"dtTimestep": 0.005,
+		"dtTimestep": 0.001,
 		"kernelRadius": 0.100001,
 		"neighborSearchType": "indexSortedUniformInsertionSort"
 	},
 	"visualization": {
-		"type": "pressure",
-		"maxDensityDifference": 10,
+		"type": "density",
+		"maxDensityDifference": 150,
 		"maxPressure": 40000,
 		"maxVelocity": 4,
 		"particleId": 445,

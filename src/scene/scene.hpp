@@ -25,7 +25,7 @@ public:
   void loadJSON(const std::string &file);
   void seedScene();
 
-  IISPHSolver solver;
+  SPHSolver solver;
   std::vector<Geometry *> objects;
   Camera camera;
 };

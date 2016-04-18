@@ -12,7 +12,7 @@
 #include "geom/geom.hpp"
 #include "particle.hpp"
 
-enum FluidVisualizationType {Index, Neighbors, None, Pressure, Velocity, VelocityDir};
+enum FluidVisualizationType {Density, Index, Neighbors, None, Particle, Pressure, Velocity, VelocityDir};
 
 class FluidSolver {
 public:
@@ -45,6 +45,7 @@ public:
 
   // Misc
   virtual void printPerformanceStats();
+  virtual void sceneLoaded() = 0;
   unsigned int updateNumber();
 
   // Containers
@@ -63,9 +64,11 @@ protected:
 
   // Visualization
   FluidVisualizationType visualizationType;
+  float visualizationMaxDensityDifference;
   float visualizationMaxPressure;
   float visualizationMaxVelocity;
   glm::vec3 visualizationVelocityColor;
+  unsigned int targetParticle;
 
   // Performance measuring
   double computeTime;

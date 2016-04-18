@@ -94,8 +94,7 @@ void Scene::loadJSON(const std::string &file) {
   std::cout << "INFO: Particle count: " << solver.numParticles() << " / " << solver.maxParticles() << std::endl;
   #endif
 
-  solver.visualizeParticle0Neighbors();
-  solver.prepNeighborSearchAfterSceneLoad();
+  solver.sceneLoaded();
 }
 
 void Scene::seedScene() {

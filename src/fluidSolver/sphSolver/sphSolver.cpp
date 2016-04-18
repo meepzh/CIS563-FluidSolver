@@ -74,6 +74,9 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
   // Print useful parameter info
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   switch (visualizationType) {
+    case FluidVisualizationType::Density:
+      std::cout << "INFO: Now visualizing density difference from rest density" << std::endl;
+      break;
     case FluidVisualizationType::Index:
       std::cout << "INFO: Now visualizing index within particle array" << std::endl;
       break;
@@ -82,6 +85,9 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
       break;
     case FluidVisualizationType::None:
       std::cout << "INFO: Visualization disabled" << std::endl;
+      break;
+    case FluidVisualizationType::Particle:
+      std::cout << "INFO: Now highlighting particle ID " << targetParticle << std::endl;
       break;
     case FluidVisualizationType::Pressure:
       std::cout << "INFO: Now visualizing pressure" << std::endl;
@@ -171,12 +177,16 @@ void SPHSolver::loadConfig(const std::string &file) {
   // Read visualization config
   std::string visualizationTypeString = root["visualization"].get("type", MFluidSolver_DEFAULT_VISUALIZATION_STRING).asString();
   MUtils::toLowerInplace(visualizationTypeString);
-  if (visualizationTypeString == "index") {
+  if (visualizationTypeString == "density") {
+    visualizationType = FluidVisualizationType::Density;
+  } else if (visualizationTypeString == "index") {
     visualizationType = FluidVisualizationType::Index;
   } else if (visualizationTypeString == "neighbors") {
     visualizationType = FluidVisualizationType::Neighbors;
   } else if (visualizationTypeString == "none") {
     visualizationType = FluidVisualizationType::None;
+  } else if (visualizationTypeString == "particle") {
+    visualizationType = FluidVisualizationType::Particle;
   } else if (visualizationTypeString == "pressure") {
     visualizationType = FluidVisualizationType::Pressure;
   } else if (visualizationTypeString == "velocity") {
@@ -184,8 +194,10 @@ void SPHSolver::loadConfig(const std::string &file) {
   } else if (visualizationTypeString == "velocitydir") {
     visualizationType = FluidVisualizationType::VelocityDir;
   }
+  visualizationMaxDensityDifference = root["visualization"].get("maxDensityDifference", MFluidSolver_DEFAULT_VISUALIZATION_MAXDENSITYDIFFERENCE).asFloat();
   visualizationMaxPressure = root["visualization"].get("maxPressure", MFluidSolver_DEFAULT_VISUALIZATION_MAXPRESSURE).asFloat();
   visualizationMaxVelocity = root["visualization"].get("maxVelocity", MFluidSolver_DEFAULT_VISUALIZATION_MAXVELOCITY).asFloat();
+  targetParticle = root["visualization"].get("particleId", 0).asInt();
   const Json::Value velocityColorArray = root["visualization"]["velocityColor"];
   if (!velocityColorArray.isNull()) {
     for (unsigned int i = 0; i < velocityColorArray.size() && i < 3; ++i) {
@@ -314,17 +326,6 @@ void SPHSolver::visualizeParticleNeighbors(SPHParticle *target) {
   }
 }
 
-void SPHSolver::visualizeParticle0Neighbors() {
-  if (_particles.size() > 0) {
-    visualizeParticleNeighbors(&(_particles.at(0)));
-  }
-  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
-  else {
-    std::cout << "WARN: No particles available for neighbor visualization" << std::endl;
-  }
-  #endif
-}
-
 void SPHSolver::visualizeRandomParticlesNeighbors() {
   if (_particles.size() > 0) {
     visualizeParticleNeighbors(&(_particles.at(rand() % _particles.size())));
@@ -337,9 +338,36 @@ void SPHSolver::visualizeRandomParticlesNeighbors() {
 }
 
 // Misc
+void SPHSolver::initVisualization() {
+  if (visualizationType == FluidVisualizationType::Neighbors) {
+    if (_particles.size() > 0) {
+      visualizeParticleNeighbors(&(_particles.at(0)));
+    }
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
+    else {
+      std::cout << "WARN: No particles available for neighbor visualization" << std::endl;
+    }
+    #endif
+  } else if (visualizationType == FluidVisualizationType::Particle) {
+    if (_particles.size() > targetParticle) {
+      _particles.at(targetParticle).color = glm::vec3(1, 1, 0);
+    }
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
+    else {
+      std::cout << "WARN: Target particle " << targetParticle << " not available for visualization" << std::endl;
+    }
+    #endif
+  }
+}
+
 void SPHSolver::printPerformanceStats() {
   FluidSolver::printPerformanceStats();
   nSearch->printPerformanceStats();
+}
+
+void SPHSolver::sceneLoaded() {
+  initVisualization();
+  prepNeighborSearchAfterSceneLoad();
 }
 
 #if MFluidSolver_USE_OPENVDB

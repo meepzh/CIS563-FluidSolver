@@ -57,6 +57,7 @@ neighborSearchType
 visualization
 - type
     - density (set maxDensityDifference)
+    - index
     - neighbors
     - none
     - particle (set particleId)

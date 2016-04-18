@@ -42,12 +42,13 @@ public:
 
   // Neighbor Visualization
   virtual void visualizeParticleNeighbors(SPHParticle *target);
-  virtual void visualizeParticle0Neighbors();
   virtual void visualizeRandomParticlesNeighbors();
 
   // Misc
+  virtual void initVisualization();
   virtual void prepNeighborSearchAfterSceneLoad();
   virtual void printPerformanceStats();
+  virtual void sceneLoaded();
 
   #if MFluidSolver_USE_OPENVDB
   virtual void exportVDB();

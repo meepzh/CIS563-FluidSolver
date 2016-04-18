@@ -107,18 +107,44 @@ inline void SPHSolver::runNeighborSearch() {
 }
 
 inline void SPHSolver::visualizeParticle(SPHParticle &p) {
-  if (visualizationType == FluidVisualizationType::Index) {
-    float indexFloat = (float)p.index / (float)largestIndex;
-    p.color = (1.f - indexFloat) * glm::vec3(1.f) + indexFloat * glm::vec3(1, 0, 0);
-  } else if (visualizationType == FluidVisualizationType::Pressure) {
-    float pressureNormalized = p.pressure() / visualizationMaxPressure;
-    if (pressureNormalized > 1.f) pressureNormalized = 1.f;
-    p.color = pressureNormalized * glm::vec3(1.f);
-  } else if (visualizationType == FluidVisualizationType::Velocity) {
-    float velocityScalar = glm::length(p.velocity()) / visualizationMaxVelocity;
-    if (velocityScalar > 1.f) velocityScalar = 1.f;
-    p.color = (1.f - velocityScalar) * visualizationVelocityColor + velocityScalar * glm::vec3(1.f);
-  } else if (visualizationType == FluidVisualizationType::VelocityDir) {
-    p.color = glm::normalize(glm::abs(p.velocity()));
+  switch (visualizationType) {
+    case FluidVisualizationType::Density:
+      {
+        float densityNormalized = (p.density() - dRestDensity) / visualizationMaxDensityDifference;
+        if (densityNormalized > 1.f) densityNormalized = 1.f;
+        if (densityNormalized < -1.f) densityNormalized = -1.f;
+        if (densityNormalized >= 0) {
+          p.color = (1.f - densityNormalized) * glm::vec3(1.f) + densityNormalized * glm::vec3(0, 1, 0);
+        } else {
+          densityNormalized *= -1;
+          p.color = (1.f - densityNormalized) * glm::vec3(1.f) + densityNormalized * glm::vec3(1, 0, 0);
+        }
+        break;
+      }
+    case FluidVisualizationType::Index:
+      {
+        float indexNormalized = (float)p.index / (float)largestIndex;
+        p.color = (1.f - indexNormalized) * glm::vec3(1.f) + indexNormalized * glm::vec3(1, 0, 0);
+        break;
+      }
+    case FluidVisualizationType::Pressure:
+      {
+        float pressureNormalized = p.pressure() / visualizationMaxPressure;
+        if (pressureNormalized > 1.f) pressureNormalized = 1.f;
+        p.color = pressureNormalized * glm::vec3(1.f);
+        break;
+      }
+    case FluidVisualizationType::Velocity:
+      {
+        float velocityNormalized = glm::length(p.velocity()) / visualizationMaxVelocity;
+        if (velocityNormalized > 1.f) velocityNormalized = 1.f;
+        p.color = (1.f - velocityNormalized) * visualizationVelocityColor + velocityNormalized * glm::vec3(1.f);
+        break;
+      }
+    case FluidVisualizationType::VelocityDir:
+      p.color = glm::normalize(glm::abs(p.velocity()));
+      break;
+    default:
+      break;
   }
 }
