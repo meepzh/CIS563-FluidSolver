@@ -68,9 +68,9 @@ void IISPHSolver::update(double deltaT) {
         throw i;
       }
     }*/
-    if (MUtils::fequal<float>(aSelf, 0.f, 0.001f)) {
+    /*if (MUtils::fequal<float>(aSelf, 0.f, 0.001f)) {
       aSelf = 1.f;
-    }
+    }*/
     p.setASelf(aSelf);
 
     // Set iteration=0 pressure p^0_i
@@ -106,8 +106,8 @@ void IISPHSolver::update(double deltaT) {
         for (unsigned int i = 0; i < _particles.size(); ++i) {
     #endif
           SPHParticle &p = _particles.at(i);
-          if (p.aSelf() == 0.f) {
-            p.setPressure(0); // TODO: Check what pressure to set
+          if (MUtils::fequal<float>(p.aSelf(), 0.f, 0.001f)) {
+            p.setPressure(dRestDensity); // TODO: Check what pressure to set
             continue;
           }
 
@@ -122,7 +122,11 @@ void IISPHSolver::update(double deltaT) {
               kernelFunctions.computeSpikyGradient(n->position() - p.position());
 
             aSelfNew += n->mass() * glm::dot(p.dSelf() - dJI, spikyIJ);
-            aNeighbors += n->mass() * glm::dot(p.dNeighbors() - n->dSelf() - n->dNeighbors() + dJI * p.pressure(), spikyIJ);
+            aNeighbors += n->mass() * glm::dot(
+              p.dNeighbors() -
+              n->dSelf() * n->pressure() -
+              n->dNeighbors() +
+              dJI * p.pressure(), spikyIJ);
             checkValidNumber(aSelfNew);
             checkValidNumber(aNeighbors);
           }
