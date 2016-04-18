@@ -76,6 +76,7 @@ void IISPHSolver::update(double deltaT) {
   unsigned int iteration = 0;
   float averageDensity = 0;
   const float tolerance = 0.01f * kernelRadius;
+  std::vector<float> nextPressures(_particles.size());
   while (((averageDensity - dRestDensity) > tolerance || iteration < 2) && iteration < 50) {
     averageDensity = 0;
 
@@ -100,6 +101,7 @@ void IISPHSolver::update(double deltaT) {
           SPHParticle &p = _particles.at(i);
           if (MUtils::fequal<float>(p.advectionDiagonal(), 0.f, 0.001f)) {
             //p.setPressure(0); // TODO: Check what pressure to set
+            nextPressures.at(i) = p.pressure();
             continue;
           }
 
@@ -153,7 +155,7 @@ void IISPHSolver::update(double deltaT) {
           newPressure *= omega / p.advectionDiagonal();
           newPressure += (1.f - omega) * p.pressure();
           checkValidNumber(newPressure);
-          p.setPressure(newPressure);
+          nextPressures.at(i) = newPressure;
     #if MFluidSolver_USE_TBB
         }
         return partialDensitySum;
@@ -163,6 +165,11 @@ void IISPHSolver::update(double deltaT) {
     #else
         }
     #endif
+
+    // Update particles with next iteration pressure
+    iter_all_sphparticles_start
+      p.setPressure(nextPressures.at(i));
+    iter_all_sphparticles_end
 
     checkValidNumber(averageDensity);
     averageDensity /= (float)_particles.size();

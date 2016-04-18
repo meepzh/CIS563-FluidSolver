@@ -15,11 +15,11 @@
 		"neighborSearchType": "indexSortedUniformInsertionSort"
 	},
 	"visualization": {
-		"type": "density",
+		"type": "particle",
 		"maxDensityDifference": 150,
 		"maxPressure": 40000,
 		"maxVelocity": 4,
-		"particleId": 445,
+		"particleId": 444,
 		"velocityColor": [0, 160, 204]
 	},
 	"numUpdates": -1,
