@@ -5,11 +5,11 @@
 #if MFluidSolver_USE_TBB
   #define iter_all_sphparticles_start tbb::parallel_for((size_t)0, _particles.size(), \
     [&](size_t i) { \
-      SPHParticle &p = _particles.at(i);
+      SPHParticle &p = _particles[i];
   #define iter_all_sphparticles_end });
 #else
   #define iter_all_sphparticles_start for (size_t i = 0; i < _particles.size(); ++i) { \
-    SPHParticle &p = _particles.at(i);
+    SPHParticle &p = _particles[i];
   #define iter_all_sphparticles_end }
 #endif
 

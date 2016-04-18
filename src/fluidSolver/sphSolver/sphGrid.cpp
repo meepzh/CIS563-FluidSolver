@@ -23,6 +23,10 @@ SPHGrid::SPHGrid(const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float c
 }
 
 glm::ivec3 SPHGrid::getGridCoordinates(const glm::vec3 &pt) {
+  #if MFluidSolver_USE_ASSERTS
+  assert(pt.x >= minBounds.x && pt.y >= minBounds.y && pt.z >= minBounds.z);
+  assert(pt.x <= maxBounds.x && pt.y <= maxBounds.y && pt.z <= maxBounds.z);
+  #endif
   return glm::ivec3((int)((pt.x - minBounds.x) / cellSize), (int)((pt.y - minBounds.y) / cellSize), (int)((pt.z - minBounds.z) / cellSize));
 }
 
@@ -40,5 +44,11 @@ unsigned long SPHGrid::getIndex(const glm::ivec3 &c) {
 }
 
 unsigned long SPHGrid::getIndex(unsigned int x, unsigned int y, unsigned int z) {
+  #if MFluidSolver_USE_ASSERTS
+  unsigned long idx = y * cellBounds.z * cellBounds.x + z * cellBounds.x + x;
+  assert(idx >= 0 && idx < numCells);
+  return idx;
+  #else
   return y * cellBounds.z * cellBounds.x + z * cellBounds.x + x;
+  #endif
 }

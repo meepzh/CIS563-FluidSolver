@@ -89,10 +89,10 @@ void IISPHSolver::update(double deltaT) {
     #else
         for (unsigned int i = 0; i < _particles.size(); ++i) {
     #endif
-          SPHParticle &p = _particles.at(i);
+          SPHParticle &p = _particles[i];
           if (MUtils::fequal<float>(p.advectionDiagonal(), 0.f, 0.001f)) {
             //p.setPressure(0); // TODO: Check what pressure to set
-            nextPressures.at(i) = p.pressure();
+            nextPressures[i] = p.pressure();
             continue;
           }
 
@@ -142,7 +142,7 @@ void IISPHSolver::update(double deltaT) {
           float newPressure = dRestDensity - p.densityIntermediate() - densityDifferenceByNeighborsPressure;
           newPressure *= omega / p.advectionDiagonal();
           newPressure += (1.f - omega) * p.pressure();
-          nextPressures.at(i) = newPressure;
+          nextPressures[i] = newPressure;
     #if MFluidSolver_USE_TBB
         } // end particle for
         return partialDensitySum;
@@ -155,7 +155,7 @@ void IISPHSolver::update(double deltaT) {
 
     // Update particles with next iteration pressure
     iter_all_sphparticles_start
-      p.setPressure(nextPressures.at(i));
+      p.setPressure(nextPressures[i]);
     iter_all_sphparticles_end
 
     averageDensity /= (float)_particles.size();

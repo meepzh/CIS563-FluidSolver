@@ -53,10 +53,10 @@ void SPHUniformGrid::getNeighbors(SPHParticle *p) {
           #endif
 
           index = getIndex(coords);
-          vec = &(data.at(index));
+          vec = &(data[index]);
 
           for (unsigned int l = 0; l < vec->size(); ++l) {
-            neighbors->push_back(vec->at(l));
+            neighbors->push_back((*vec)[l]);
           } // end for l
 
           #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
@@ -72,7 +72,7 @@ void SPHUniformGrid::addParticle(SPHParticle *p) {
   glm::ivec3 pC = getGridCoordinates(p->position());
   unsigned int pI = getIndex(pC);
   p->index = pI;
-  data.at(pI).push_back(p);
+  data[pI].push_back(p);
 }
 
 void SPHUniformGrid::updateParticle(SPHParticle *p) {
@@ -82,12 +82,12 @@ void SPHUniformGrid::updateParticle(SPHParticle *p) {
     unsigned int oldIndex = getIndex(oldCoords);
     unsigned int newIndex = getIndex(newCoords);
 
-    std::vector<SPHParticle *> *oldCell = &(data.at(oldIndex));
+    std::vector<SPHParticle *> *oldCell = &(data[oldIndex]);
     auto oldIt = std::find(std::begin(*oldCell), std::end(*oldCell), p);
     if (oldIt != std::end(*oldCell)) {
       oldCell->erase(oldIt);
       p->index = newIndex;
-      data.at(newIndex).push_back(p);
+      data[newIndex].push_back(p);
     } else {
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
       std::cerr << "ERROR: Could not find particle at (" <<
@@ -102,7 +102,7 @@ void SPHUniformGrid::updateParticle(SPHParticle *p) {
 
 void SPHUniformGrid::clear() {
   for (unsigned int i = 0; i < numCells; ++i) {
-    data.at(i).clear();
+    data[i].clear();
   }
 }
 
@@ -113,7 +113,7 @@ void SPHUniformGrid::printDiagnostics() {
   for (unsigned int i = 0; i < cellBounds.x; ++i) {
     for (unsigned int j = 0; j < cellBounds.y; ++j) {
       for (unsigned int k = 0; k < cellBounds.z; ++k) {
-        std::printf("(%d, %d, %d) - %d\n", i, j, k, data.at(getIndex(i, j, k)).size());
+        std::printf("(%d, %d, %d) - %d\n", i, j, k, data[getIndex(i, j, k)].size());
       }
     }
   }
@@ -129,7 +129,7 @@ void SPHUniformGrid::exportVDB(std::string &file, std::string &gridName) {
   for (unsigned int i = 0; i < cellBounds.x; ++i) {
     for (unsigned int j = 0; j < cellBounds.y; ++j) {
       for (unsigned int k = 0; k < cellBounds.z; ++k) {
-        unsigned int numParticles = data.at(getIndex(i, j, k)).size();
+        unsigned int numParticles = data[getIndex(i, j, k)].size();
         if (numParticles > 0) {
           coord.reset(i, j, k);
           accessor.setValue(coord, numParticles);

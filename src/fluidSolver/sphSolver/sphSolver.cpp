@@ -264,10 +264,11 @@ void SPHSolver::update(double deltaT) {
 // Particles
 void SPHSolver::addParticleAt(const glm::vec3 &position) {
   if (_particles.size() < _maxParticles) {
-    SPHParticle p(mMass, position);
-    _particles.push_back(p);
-    p.index = _particles.size();
-    nSearch->addParticle(&p);
+    SPHParticle pStack(mMass, position);
+    _particles.push_back(pStack);
+    SPHParticle *pList = &(_particles.back());
+    pList->index = _particles.size() - 1;
+    nSearch->addParticle(pList);
   }
 }
 
@@ -328,7 +329,7 @@ void SPHSolver::visualizeParticleNeighbors(SPHParticle *target) {
 
 void SPHSolver::visualizeRandomParticlesNeighbors() {
   if (_particles.size() > 0) {
-    visualizeParticleNeighbors(&(_particles.at(rand() % _particles.size())));
+    visualizeParticleNeighbors(&(_particles[rand() % _particles.size()]));
   }
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
   else {
@@ -341,7 +342,7 @@ void SPHSolver::visualizeRandomParticlesNeighbors() {
 void SPHSolver::initVisualization() {
   if (visualizationType == FluidVisualizationType::Neighbors) {
     if (_particles.size() > 0) {
-      visualizeParticleNeighbors(&(_particles.at(0)));
+      visualizeParticleNeighbors(&(_particles[0]));
     }
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
     else {
@@ -350,7 +351,7 @@ void SPHSolver::initVisualization() {
     #endif
   } else if (visualizationType == FluidVisualizationType::Particle) {
     if (_particles.size() > targetParticle) {
-      _particles.at(targetParticle).color = glm::vec3(1, 1, 0);
+      _particles[targetParticle].color = glm::vec3(1, 1, 0);
     }
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
     else {

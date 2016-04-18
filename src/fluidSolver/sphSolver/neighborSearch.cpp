@@ -58,15 +58,15 @@ void GridNeighborSearch::findNeighbors(SPHParticle *p) {
 
   // Filter neighbors by kernel radius. Also check for itself
   unsigned int numCandidates = neighbors->size();
-  unsigned int i = 0;
+  unsigned int idx = 0;
   unsigned int count = 0;
   SPHParticle *n;
   while (count < numCandidates) {
-    n = neighbors->at(i);
+    n = (*neighbors)[idx];
     if (glm::distance2(n->position(), pPos) >= searchRadius2 || n == p) {
-      neighbors->erase(neighbors->begin() + i);
+      neighbors->erase(neighbors->begin() + idx);
     } else {
-      ++i;
+      ++idx;
     }
     count++;
   }

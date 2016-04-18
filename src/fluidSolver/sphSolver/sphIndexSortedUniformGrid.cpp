@@ -6,6 +6,9 @@
 
 #include <algorithm>
 
+#if MFluidSolver_USE_ASSERTS
+#include <cassert>
+#endif
 #if MFluidSolver_USE_TBB
 #include <tbb/parallel_for.h>
 #endif
@@ -47,7 +50,7 @@ void SPHIndexSortedUniformGrid::getNeighbors(SPHParticle *p) {
           #endif
 
           // Add all particles in index sorted list
-          SPHParticle *c = cells.at(index);
+          SPHParticle *c = cells[index];
           if (c != nullptr) {
             do {
               neighbors->push_back(c);
@@ -85,7 +88,7 @@ void SPHIndexSortedUniformGrid::updateParticle(SPHParticle *p) {
 
 void SPHIndexSortedUniformGrid::clear() {
   for (unsigned int i = 0; i < cells.size(); ++i) {
-    cells.at(i) = nullptr;
+    cells[i] = nullptr;
   }
 }
 
@@ -95,6 +98,7 @@ void SPHIndexSortedUniformGrid::printDiagnostics() {
 
 void SPHIndexSortedUniformGrid::resetAndFillCells(bool initialSort) {
   clear();
+  if (master->empty()) return;
   updateParticleIndices();
   sortParticles(initialSort);
   insertSortedParticleListToGrid();
@@ -107,7 +111,10 @@ void SPHIndexSortedUniformGrid::updateParticleIndices() {
 }
 
 void SPHIndexSortedUniformGrid::insertSortedParticleListToGrid() {
-  cells.at(master->at(0).index) = &(master->at(0));
+  #if MFluidSolver_USE_ASSERTS
+  assert((*master)[0].index >= 0 && (*master)[0].index < cells.size());
+  #endif
+  cells[(*master)[0].index] = &((*master)[0]);
 
   // Set pointer in each cell to first particle with associated cell index
   #if MFluidSolver_USE_TBB
@@ -116,8 +123,12 @@ void SPHIndexSortedUniformGrid::insertSortedParticleListToGrid() {
   #else
     for (size_t i = 1; i < master->size(); ++i) {
   #endif
-      if (master->at(i).index != master->at(i - 1).index) {
-        cells.at(master->at(i).index) = &(master->at(i));
+      #if MFluidSolver_USE_ASSERTS
+      assert((*master)[i - 1].index >= 0 && (*master)[i - 1].index < cells.size());
+      assert((*master)[i].index >= 0 && (*master)[i].index < cells.size());
+      #endif
+      if ((*master)[i].index != (*master)[i - 1].index) {
+        cells[(*master)[i].index] = &((*master)[i]);
       }
   #if MFluidSolver_USE_TBB
     }
@@ -134,7 +145,8 @@ void SPHIndexSortedUniformGrid::sortParticles(bool initialSort) {
     // Insertion sort is faster for minimal changes in cell indices
     MUtils::insertionSort(master->begin(), master->end(), SPHParticle::indexCompare);
   }
-  endParticle = &(master->at(master->size() - 1));
+  //endParticle = &((*master)[master->size() - 1]);
+  endParticle = &(master->back()); // TODO: Check if this works
 }
 
 #if MFluidSolver_USE_OPENVDB

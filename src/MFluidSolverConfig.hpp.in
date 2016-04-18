@@ -9,7 +9,7 @@
 // Logging/Debug
 #define MFluidSolver_LOG_LEVEL 2
 #define MFluidSolver_OPENGL_DEBUG 1
-#define MFluidSolver_USE_ASSERTS 1
+#define MFluidSolver_USE_ASSERTS 0
 
 #define MFluidSolver_RECORD_PERFORMANCE 1
 
