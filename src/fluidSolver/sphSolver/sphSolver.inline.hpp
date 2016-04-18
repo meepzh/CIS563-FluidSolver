@@ -6,13 +6,12 @@
 #include <cmath>
 
 #if MFluidSolver_USE_TBB
-  #define iter_all_sphparticles_start tbb::parallel_for(tbb::blocked_range<size_t>(0, _particles.size()), \
-    [&](const tbb::blocked_range<size_t> &r) { \
-      for (unsigned int i = r.begin(); i != r.end(); ++i) { \
-        SPHParticle &p = _particles.at(i);
-  #define iter_all_sphparticles_end }});
+  #define iter_all_sphparticles_start tbb::parallel_for((size_t)0, _particles.size(), \
+    [&](size_t i) { \
+      SPHParticle &p = _particles.at(i);
+  #define iter_all_sphparticles_end });
 #else
-  #define iter_all_sphparticles_start for (unsigned int i = 0; i < _particles.size(); ++i) { \
+  #define iter_all_sphparticles_start for (size_t i = 0; i < _particles.size(); ++i) { \
     SPHParticle &p = _particles.at(i);
   #define iter_all_sphparticles_end }
 #endif

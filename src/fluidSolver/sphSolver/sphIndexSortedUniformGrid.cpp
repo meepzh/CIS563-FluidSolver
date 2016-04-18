@@ -108,17 +108,15 @@ void SPHIndexSortedUniformGrid::insertSortedParticleListToGrid() {
   cells.at(master->at(0).index) = &(master->at(0));
 
   #if MFluidSolver_USE_TBB
-  tbb::parallel_for(tbb::blocked_range<size_t>(1, master->size()),
-    [&](const tbb::blocked_range<size_t> &r) {
-      for (unsigned int i = r.begin(); i != r.end(); ++i) {
+  tbb::parallel_for((size_t)1, master->size(),
+    [&](size_t i) {
   #else
-      for (unsigned int i = 1; i < master->size(); ++i) {
+    for (size_t i = 1; i < master->size(); ++i) {
   #endif
-        if (master->at(i).index != master->at(i - 1).index) {
-          cells.at(master->at(i).index) = &(master->at(i));
-        }
-  #if MFluidSolver_USE_TBB
+      if (master->at(i).index != master->at(i - 1).index) {
+        cells.at(master->at(i).index) = &(master->at(i));
       }
+  #if MFluidSolver_USE_TBB
     }
   );
   #else
