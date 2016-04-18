@@ -56,13 +56,17 @@ neighborSearchType
 
 visualization
 - type
+    - density (set maxDensityDifference)
     - neighbors
     - none
-    - pressure
-    - velocity
+    - particle (set particleId)
+    - pressure (set maxPressure)
+    - velocity (set maxVelocity)
     - velocityDir
+- maxDensityDifference
 - maxPressure
 - maxVelocity
+- particleId
 - velocityColor (8-bit rgb array)
 
 The `numUpdates` parameter can be used to set the number of frames to simulate

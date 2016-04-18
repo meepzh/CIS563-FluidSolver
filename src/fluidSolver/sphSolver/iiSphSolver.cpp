@@ -82,13 +82,12 @@ void IISPHSolver::update(double deltaT) {
     iter_all_sphparticles_start
       // Calculate displacement due to neighbors
       glm::vec3 pressureDisplacementFromNeighbors(0);
-      float density2 = p.density() * p.density();
       for (SPHParticle *n : *(p.neighbors())) {
         pressureDisplacementFromNeighbors -= n->mass() * n->pressure() / (n->density() * n->density()) *
           kernelFunctions.computeSpikyGradient(p.position() - n->position());
         checkValidNumber(pressureDisplacementFromNeighbors.x);
       }
-      p.setSumPressureDisplacementFromNeighbors(pressureDisplacementFromNeighbors);
+      p.setSumPressureDisplacementFromNeighbors(pressureDisplacementFromNeighbors * deltaTF2);
     iter_all_sphparticles_end
 
     #if MFluidSolver_USE_TBB
@@ -100,7 +99,7 @@ void IISPHSolver::update(double deltaT) {
     #endif
           SPHParticle &p = _particles.at(i);
           if (MUtils::fequal<float>(p.advectionDiagonal(), 0.f, 0.001f)) {
-            p.setPressure(0); // TODO: Check what pressure to set
+            //p.setPressure(0); // TODO: Check what pressure to set
             continue;
           }
 
@@ -132,7 +131,7 @@ void IISPHSolver::update(double deltaT) {
           // Sum for average density
           // Note that density depends on old pressure
           float tempDensityEstimate = p.densityIntermediate() + p.pressure() * densityDifferenceBySelf + densityDifferenceByNeighborsPressure;
-          p.setDensity(tempDensityEstimate); // TODO: Check if we should do this
+          //p.setDensity(tempDensityEstimate); // TODO: Check if we should do this
 
           // Update average density
           #if MFluidSolver_USE_TBB
