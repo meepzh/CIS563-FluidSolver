@@ -9,8 +9,6 @@
 
 #include "utils.hpp"
 
-#define checkValidNumber(X) assert(!std::isnan(X) && !std::isinf(X))
-
 void IISPHSolver::update(double deltaT) {
   if (checkIfEnded()) return;
 
@@ -30,7 +28,6 @@ void IISPHSolver::update(double deltaT) {
 
     // Calculate intermediate velocity v^{adv}_i
     p.setVelocityIntermediate(p.velocity() + p.nonPressureForce() / p.mass() * deltaTF);
-    checkValidNumber(p.velocityIntermediate().x);
 
     // Calculate advection displacement estimate d_{ii}
     glm::vec3 advectionDisplacementEstimate(0);
@@ -40,7 +37,6 @@ void IISPHSolver::update(double deltaT) {
         kernelFunctions.computeSpikyGradient(p.position() - n->position());
     }
     p.setAdvectionDisplacementEstimate(advectionDisplacementEstimate * deltaTF2);
-    checkValidNumber(p.advectionDisplacementEstimate().x);
   iter_all_sphparticles_end
 
   iter_all_sphparticles_start
@@ -61,14 +57,11 @@ void IISPHSolver::update(double deltaT) {
       advectionDiagonal += n->mass() *
         glm::dot(p.advectionDisplacementEstimate() - displacementToNeighbor, spikyGradientFromNeighbor);
     }
-    checkValidNumber(advectionDensity);
     p.setDensityIntermediate(p.density() + advectionDensity * deltaTF);
-    checkValidNumber(advectionDiagonal);
     p.setAdvectionDiagonal(advectionDiagonal);
 
     // Set iteration=0 pressure p^0_i
     p.setPressure(0.5f * p.pressure());
-    checkValidNumber(p.pressure());
   iter_all_sphparticles_end
 
   // Procedure: Pressure Solve
@@ -85,7 +78,6 @@ void IISPHSolver::update(double deltaT) {
       for (SPHParticle *n : *(p.neighbors())) {
         pressureDisplacementFromNeighbors -= n->mass() * n->pressure() / (n->density() * n->density()) *
           kernelFunctions.computeSpikyGradient(p.position() - n->position());
-        checkValidNumber(pressureDisplacementFromNeighbors.x);
       }
       p.setSumPressureDisplacementFromNeighbors(pressureDisplacementFromNeighbors * deltaTF2);
     iter_all_sphparticles_end
@@ -125,9 +117,6 @@ void IISPHSolver::update(double deltaT) {
               n->advectionDisplacementEstimate() * n->pressure() -
               n->sumPressureDisplacementFromNeighbors() +
               displacementToNeighbor * p.pressure(), spikyGradientFromNeighbor);
-
-            checkValidNumber(densityDifferenceBySelf);
-            checkValidNumber(densityDifferenceByNeighborsPressure);
           }
           // Sum for average density
           // Note that density depends on old pressure
@@ -153,7 +142,6 @@ void IISPHSolver::update(double deltaT) {
           float newPressure = dRestDensity - p.densityIntermediate() - densityDifferenceByNeighborsPressure;
           newPressure *= omega / p.advectionDiagonal();
           newPressure += (1.f - omega) * p.pressure();
-          checkValidNumber(newPressure);
           nextPressures.at(i) = newPressure;
     #if MFluidSolver_USE_TBB
         } // end particle for
@@ -170,7 +158,6 @@ void IISPHSolver::update(double deltaT) {
       p.setPressure(nextPressures.at(i));
     iter_all_sphparticles_end
 
-    checkValidNumber(averageDensity);
     averageDensity /= (float)_particles.size();
     ++iteration;
   } // end while

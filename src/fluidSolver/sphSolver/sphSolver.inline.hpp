@@ -2,9 +2,6 @@
 //  sphSolver.inline.hpp
 //  MFluidSolver
 
-#include <cassert>
-#include <cmath>
-
 #if MFluidSolver_USE_TBB
   #define iter_all_sphparticles_start tbb::parallel_for((size_t)0, _particles.size(), \
     [&](size_t i) { \
@@ -49,7 +46,6 @@ inline void SPHSolver::calculatePressureForce(SPHParticle &p) {
     pressureForce += n->mass() *
       (p.pressure() / pDensity2 + n->pressure() / (n->density() * n->density())) *
       kernelFunctions.computeSpikyGradient(p.position() - n->position());
-    //assert(!std::isnan(pressureForce.x) && !std::isinf(pressureForce.x));
   }
   pressureForce *= -1 * p.mass();
   p.setPressureForce(pressureForce);

@@ -109,7 +109,8 @@ standard std::sort, as particles don't change cells frequently.
 
 ### Missing Required Features ###
 
-- IISPH
+- Better seeding (jitter/poisson distribution)
+- Update derivatives
 - Test bicubic spline kernel
 - Performance Analysis
 - Optional: Cache neighbor distances
