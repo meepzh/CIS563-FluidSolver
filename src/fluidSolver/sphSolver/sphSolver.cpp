@@ -74,6 +74,9 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
   // Print useful parameter info
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   switch (visualizationType) {
+    case FluidVisualizationType::Index:
+      std::cout << "INFO: Now visualizing index within particle array" << std::endl;
+      break;
     case FluidVisualizationType::Neighbors:
       std::cout << "INFO: Now visualizing neighbors" << std::endl;
       break;
@@ -168,7 +171,9 @@ void SPHSolver::loadConfig(const std::string &file) {
   // Read visualization config
   std::string visualizationTypeString = root["visualization"].get("type", MFluidSolver_DEFAULT_VISUALIZATION_STRING).asString();
   MUtils::toLowerInplace(visualizationTypeString);
-  if (visualizationTypeString == "neighbors") {
+  if (visualizationTypeString == "index") {
+    visualizationType = FluidVisualizationType::Index;
+  } else if (visualizationTypeString == "neighbors") {
     visualizationType = FluidVisualizationType::Neighbors;
   } else if (visualizationTypeString == "none") {
     visualizationType = FluidVisualizationType::None;
@@ -238,6 +243,8 @@ void SPHSolver::update(double deltaT) {
     p.update(newVel, newPos);
 
     enforceBounds(p);
+
+    largestIndex = _particles.back().index;
     visualizeParticle(p);
   iter_all_sphparticles_end
 }

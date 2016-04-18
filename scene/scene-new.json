@@ -2,12 +2,15 @@
 	"containerDim": {
 		"scaleX": 2.0,
 		"scaleY": 2.0,
-		"scaleZ": 2.0
+		"scaleZ": 0.5
 	},
 	"particleDim": {
 		"scaleX": 1.0,
-		"scaleY": 1.0,
-		"scaleZ": 1.0
+		"scaleY": 1.5,
+		"scaleZ": 0.5,
+		"posX": -0.5,
+		"posY": 0.25,
+		"posZ": 0.0
 	},
 	"camera": {
 		"eyeX": 0.0,

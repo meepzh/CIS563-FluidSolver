@@ -10,17 +10,17 @@
 		"muViscosity": 0.028,
 		"mMass": 0.125,
 		"dRestDensity": 1000,
-		"dtTimestep": 0.0006,
+		"dtTimestep": 0.001,
 		"kernelRadius": 0.100001,
 		"neighborSearchType": "indexSortedUniformInsertionSort"
 	},
 	"visualization": {
-		"type": "velocity",
+		"type": "index",
 		"maxPressure": 40000,
 		"maxVelocity": 4,
 		"velocityColor": [0, 160, 204]
 	},
-	"numUpdates": 6600,
-	"autoRender": true,
+	"numUpdates": -1,
+	"autoRender": false,
 	"renderSkip": 10
 }

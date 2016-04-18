@@ -12,7 +12,7 @@
 #include "geom/geom.hpp"
 #include "particle.hpp"
 
-enum FluidVisualizationType {Neighbors, None, Pressure, Velocity, VelocityDir};
+enum FluidVisualizationType {Index, Neighbors, None, Pressure, Velocity, VelocityDir};
 
 class FluidSolver {
 public:

@@ -82,6 +82,8 @@ protected:
   float mMass;
   float dRestDensity;
   float dtTimestep;
+
+  unsigned int largestIndex;
 };
 
 #include "sphSolver.inline.hpp"
