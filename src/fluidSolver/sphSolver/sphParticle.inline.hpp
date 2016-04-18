@@ -64,20 +64,20 @@ inline void SPHParticle::clearNeighbors() {
 }
 
 // IISPH Getters
-inline float SPHParticle::aSelf() const {
-  return _aSelf;
+inline float SPHParticle::advectionDiagonal() const {
+  return _advectionDiagonal;
 }
 
-inline glm::vec3 SPHParticle::dSelf() const {
-  return _dSelf;
-}
-
-inline glm::vec3 SPHParticle::dNeighbors() const {
-  return _dNeighbors;
+inline glm::vec3 SPHParticle::advectionDisplacementEstimate() const {
+  return _advectionDisplacementEstimate;
 }
 
 inline float SPHParticle::densityIntermediate() const {
   return _densityIntermediate;
+}
+
+inline glm::vec3 SPHParticle::sumPressureDisplacementFromNeighbors() const {
+  return _sumPressureDisplacementFromNeighbors;
 }
 
 inline glm::vec3 SPHParticle::velocityIntermediate() const {
@@ -85,20 +85,20 @@ inline glm::vec3 SPHParticle::velocityIntermediate() const {
 }
 
 // IISPH Setters
-inline void SPHParticle::setASelf(float a) {
-  _aSelf = a;
+inline void SPHParticle::setAdvectionDiagonal(float a) {
+  _advectionDiagonal = a;
 }
 
-inline void SPHParticle::setDSelf(const glm::vec3 &d) {
-  _dSelf = d;
-}
-
-inline void SPHParticle::setDNeighbors(const glm::vec3 &d) {
-  _dNeighbors = d;
+inline void SPHParticle::setAdvectionDisplacementEstimate(const glm::vec3 &d) {
+  _advectionDisplacementEstimate = d;
 }
 
 inline void SPHParticle::setDensityIntermediate(float d) {
   _densityIntermediate = d;
+}
+
+inline void SPHParticle::setSumPressureDisplacementFromNeighbors(const glm::vec3 &d) {
+  _sumPressureDisplacementFromNeighbors = d;
 }
 
 inline void SPHParticle::setVelocityIntermediate(const glm::vec3 &v) {

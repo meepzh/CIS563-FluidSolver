@@ -35,16 +35,16 @@ public:
   inline void clearNeighbors();
 
   // IISPH Properties
-  inline float aSelf() const;
-  inline glm::vec3 dSelf() const;
-  inline glm::vec3 dNeighbors() const;
+  inline float advectionDiagonal() const;
+  inline glm::vec3 advectionDisplacementEstimate() const;
   inline float densityIntermediate() const;
+  inline glm::vec3 sumPressureDisplacementFromNeighbors() const;
   inline glm::vec3 velocityIntermediate() const;
 
-  inline void setASelf(float a);
-  inline void setDSelf(const glm::vec3 &d);
-  inline void setDNeighbors(const glm::vec3 &d);
+  inline void setAdvectionDiagonal(float a);
+  inline void setAdvectionDisplacementEstimate(const glm::vec3 &d);
   inline void setDensityIntermediate(float d);
+  inline void setSumPressureDisplacementFromNeighbors(const glm::vec3 &d);
   inline void setVelocityIntermediate(const glm::vec3 &v);
 
   // Index
@@ -60,10 +60,10 @@ protected:
   std::vector<SPHParticle *> _neighbors;
 
   // IISPH
-  float _aSelf;
-  glm::vec3 _dSelf;
-  glm::vec3 _dNeighbors;
+  float _advectionDiagonal;
+  glm::vec3 _advectionDisplacementEstimate;
   float _densityIntermediate;
+  glm::vec3 _sumPressureDisplacementFromNeighbors;
   glm::vec3 _velocityIntermediate;
 };
 
