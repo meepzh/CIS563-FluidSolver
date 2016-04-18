@@ -5,12 +5,15 @@
 #define GLM_FORCE_RADIANS
 #include <glm/gtx/norm.hpp>
 
+// Super long constants
 //#define POLY6_CONST 1.566681471060844711474949545698188251276712137757618167359
 //#define SPIKY_CONST 4.774648292756860073066512901175430861033789372213693462430
 //#define EIGHT_DIV_PI 2.546479089470325372302140213960229792551354331847303179962
 //#define VISCOUS_CONST 2.387324146378430036533256450587715430516894686106846731215
 //#define FORTYFIVE_DIV_PI 14.32394487827058021919953870352629258310136811664108038729
 //#define FORTYEIGHT_DIV_PI 15.27887453682195223381284128376137875530812599108381907977
+
+// Shorter constants
 #define POLY6_CONST 1.56668147106084471
 #define SPIKY_CONST 4.77464829275686007
 #define EIGHT_DIV_PI 2.54647908947032537
@@ -18,6 +21,7 @@
 #define FORTYFIVE_DIV_PI 14.323944878270580
 #define FORTYEIGHT_DIV_PI 15.278874536821952
 
+// Bicubic spline functions according to Ihmsen thesis
 inline double KernelFunctions::computeBicubicSpline(const glm::vec3 &r) {
   double q = glm::length(r) / _h;
   if (q <= 0.5) {
@@ -56,6 +60,7 @@ inline double KernelFunctions::computeBicubicSplineLaplacian(const glm::vec3 &r)
   }
 }
 
+// Standard functions according to Muller 2003
 inline double KernelFunctions::computePoly6(const glm::vec3 &r) {
   double _r2 = glm::length2(r);
   if (_r2 > _h2) return 0;

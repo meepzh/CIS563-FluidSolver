@@ -6,21 +6,22 @@
 
 #include <ctime>
 #include <fstream>
+#include <json/json.h>
 
+// OpenGL Includes
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
-#include <json/json.h>
-
+// Optional Includes
 #if MFluidSolver_USE_OPENVDB
 #include <openvdb/openvdb.h>
 #endif
-
 #if MFluidSolver_USE_TBB
 #include <tbb/task_scheduler_init.h>
 #endif
 
+// Project Includes
 #include "viewer/input.hpp"
 #include "viewer/particleShaderProgram.hpp"
 
@@ -42,27 +43,25 @@ int main() {
     return -1;
   }
 
+  // Initialize non-OpenGL
+  std::srand(std::time(NULL));
   #if MFluidSolver_USE_OPENVDB
-  // Initialize OpenVDB
   openvdb::initialize();
   #endif
-
   #if MFluidSolver_USE_TBB
-  tbb::task_scheduler_init init(7);
+  tbb::task_scheduler_init init(tbb::task_scheduler_init::automatic);
   #endif
 
+  // Set JSON file location
   std::string configJSON = MFluidSolver_DEFAULT_CONFIG_FILE;
-
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  // Load config JSON
   std::cout << "INFO: Loading config file: " << configJSON << std::endl;
   #endif
 
-  // Read JSON file
+  // Open JSON file
   Json::Reader reader;
   Json::Value root;
   std::ifstream sceneStream(configJSON, std::ifstream::binary);
-
   bool success = reader.parse(sceneStream, root, false);
   if (!success) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
@@ -70,6 +69,7 @@ int main() {
     #endif
   }
 
+  // Parse JSON
   std::string sceneJSON = root.get("sceneJSON", MFluidSolver_DEFAULT_SCENE_FILE).asString();
   std::string wireVShader = root.get("wireVShader", MFluidSolver_DEFAULT_WIRE_VERT_FILE).asString();
   std::string wireFShader = root.get("wireFShader", MFluidSolver_DEFAULT_WIRE_FRAG_FILE).asString();
@@ -79,21 +79,19 @@ int main() {
   bool autoRender = root.get("autoRender", MFluidSolver_DEFAULT_AUTORENDER).asBool();
   unsigned int renderSkip = root.get("renderSkip", MFluidSolver_DEFAULT_RENDERSKIP).asInt();
 
-  std::srand(std::time(NULL));
-
+  // Initialize project objects
   Viewer viewer;
   Input::viewer = &viewer;
-
   try {
     viewer.init();
   } catch (std::exception &e) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_FATAL
     std::cerr << "FATAL: " << e.what() << std::endl;
     #endif
-
     return -1;
   }
 
+  // Print OpenGL info
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   std::cout << "INFO: OpenGL Version " << glGetString(GL_VERSION) << std::endl;
   #endif
@@ -117,12 +115,13 @@ int main() {
   glGenVertexArrays(1, &vaoID);
   glBindVertexArray(vaoID);
 
-  // After vao init
+  // After vertex array object init
   viewer.wireShader = new ShaderProgram(wireVShader, wireFShader);
   viewer.particleShader = new ParticleShaderProgram(&(viewer.scene.solver), particleVShader, particleFShader, particleTexture);
   viewer.scene.solver.loadConfig(configJSON);
   viewer.configureScreenshot(autoRender, renderSkip);
 
+  // Run! Catch and print exceptions as necessary
   int returnCode = 0;
   #if MFluidSolver_MAIN_CATCH_EXCEPTIONS
   try {
@@ -134,7 +133,6 @@ int main() {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_FATAL
     std::cerr << "FATAL: " << e.what() << std::endl;
     #endif
-
     returnCode = -1;
   }
   #endif

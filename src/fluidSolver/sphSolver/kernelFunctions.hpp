@@ -13,11 +13,14 @@ public:
 
   void setKernelRadius(const double &h);
 
+  // Bicubic spline functions according to Ihmsen thesis
   inline double computeBicubicSpline(const glm::vec3 &r);
   inline double computeBicubicSplineFirstDerivativeDivHHalf(const double q);
   inline double computeBicubicSplineFirstDerivativeDivHWhole(const double invQ);
   inline glm::vec3 computeBicubicSplineGradient(const glm::vec3 &r);
   inline double computeBicubicSplineLaplacian(const glm::vec3 &r);
+
+  // Standard functions according to Muller 2003
   inline double computePoly6(const glm::vec3 &r);
   inline double computeSpiky(const glm::vec3 &r);
   inline glm::vec3 computeSpikyGradient(const glm::vec3 &r);

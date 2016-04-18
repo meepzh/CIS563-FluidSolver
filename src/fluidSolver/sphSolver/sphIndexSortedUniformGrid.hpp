@@ -21,14 +21,15 @@ public:
   virtual void clear();
   virtual void printDiagnostics();
 
+  #if MFluidSolver_USE_OPENVDB
+  virtual void exportVDB(std::string &file, std::string &gridName);
+  #endif
+
+  // Index sort methods
   virtual void resetAndFillCells(bool initialSort = false);
   virtual void updateParticleIndices();
   virtual void insertSortedParticleListToGrid();
   void sortParticles(bool initialSort = false);
-
-  #if MFluidSolver_USE_OPENVDB
-  virtual void exportVDB(std::string &file, std::string &gridName);
-  #endif
 
 protected:
   std::vector<SPHParticle> *master;

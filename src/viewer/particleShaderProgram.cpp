@@ -51,6 +51,7 @@ ParticleShaderProgram::ParticleShaderProgram(SPHSolver *solver,
   particleColorArray = new glm::vec3[solver->maxParticles()];
   particlePositionArray = new glm::vec3[solver->maxParticles()];
 
+  // Print debug info, particularly info about unbounded variables
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
   std::cout << "DEBUG:SHADER: Program " << programID << " is type particles" << std::endl;
   #endif

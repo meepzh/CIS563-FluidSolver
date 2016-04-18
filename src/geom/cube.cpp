@@ -40,6 +40,7 @@ Cube::Cube(const glm::vec3 &color) : _color(color) {
   vert_pos[6] = glm::vec3(0.5f, -0.5f, -0.5f);
   vert_pos[7] = glm::vec3(-0.5f, -0.5f, -0.5f);
 
+  // Find pairs of vertices that form the sides of the cube
   unsigned int counter = 0;
   unsigned int idxCount = 0;
   for (unsigned int i = 0; i < VERT_COUNT; ++i) {
@@ -53,6 +54,12 @@ Cube::Cube(const glm::vec3 &color) : _color(color) {
     }
     if (idxCount == IDX_COUNT) break;
   }
+
+  std::cout << "PRINTING INDICES: "
+  for (unsigned int i = 0; i < IDX_COUNT; ++i) {
+    std::cout << idx[i] << " ";
+  }
+  std::cout << std::endl;
 
   // Color
   glm::vec3 vert_col[VERT_COUNT];
@@ -90,6 +97,7 @@ bool Cube::intersects(const glm::vec3 &point) const {
 }
 
 void Cube::spawnParticlesInVolume(FluidSolver *solver) const {
+  // Store old particle count for number of particles we added and max particle check
   unsigned int oldParticleCount = solver->numParticles();
   if (oldParticleCount == solver->maxParticles()) {
     std::cout << "INFO: Reached max number of particles (" << solver->maxParticles() << ")!" << std::endl;
@@ -102,16 +110,19 @@ void Cube::spawnParticlesInVolume(FluidSolver *solver) const {
 
   float particleSeparation = solver->particleSeparation();
   unsigned int count = 0;
-  minBound += particleSeparation / 2.f;
-  maxBound -= particleSeparation / 2.f;
+  /*minBound += particleSeparation / 2.f;
+  maxBound -= particleSeparation / 2.f;*/
 
+  // Calculate padding due to particle separation
   glm::vec3 padding = maxBound - minBound;
   glm::ivec3 numParticlesOnAxis = (glm::ivec3) (padding / particleSeparation);
   padding -= (glm::vec3)numParticlesOnAxis * particleSeparation;
+  minBound += padding;
 
-  for (float i = minBound.x + padding.x; i <= maxBound.x; i += particleSeparation) {
-    for (float j = minBound.y + padding.y; j <= maxBound.y; j += particleSeparation) {
-      for (float k = minBound.z + padding.z; k <= maxBound.z; k += particleSeparation) {
+  // Create particles
+  for (float i = minBound.x; i <= maxBound.x; i += particleSeparation) {
+    for (float j = minBound.y; j <= maxBound.y; j += particleSeparation) {
+      for (float k = minBound.z; k <= maxBound.z; k += particleSeparation) {
         solver->addParticleAt(glm::vec3(i, j, k));
         ++count;
         if (count > particlesLeft) break;
@@ -134,6 +145,7 @@ void Cube::spawnParticlesInVolume(FluidSolver *solver) const {
 bool Cube::intersects(const glm::vec3 &point, glm::ivec3 &violations) const {
   glm::vec3 localPos = glm::vec3(transform.invT() * glm::vec4(point, 1.f));
 
+  // Check each axis locally
   violations.x = 0;
   if (localPos.x <= -0.5f) violations.x = -1;
   else if (localPos.x > 0.5f) violations.x = 1;

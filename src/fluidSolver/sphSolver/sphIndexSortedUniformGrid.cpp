@@ -30,12 +30,13 @@ void SPHIndexSortedUniformGrid::getNeighbors(SPHParticle *p) {
   std::cout << "TRACE: Getting neighbors for cell (" << pC.x << ", " << pC.y << ", " << pC.z << ")" << std::endl;
   #endif
 
+  // Search neighboring grid cells
   glm::ivec3 coords;
   for (int i = -1; i < 2; ++i) {
     for (int j = -1; j < 2; ++j) {
       for (int k = -1; k < 2; ++k) {
         coords = glm::ivec3(pC.x + i, pC.y + j, pC.z + k);
-        // If not at original cell, add all neighbors (process later in kernel)
+        // Note: we check kernel radius and self in neighbor search
         if (coords.x >= 0 && coords.y >= 0 && coords.z >= 0 &&
             coords.x < cellBounds.x && coords.y < cellBounds.y && coords.z < cellBounds.z) {
           unsigned long index = getIndex(coords);
@@ -45,6 +46,7 @@ void SPHIndexSortedUniformGrid::getNeighbors(SPHParticle *p) {
           std::cout << "TRACE: Accessing cell (" << coords.x << ", " << coords.y << ", " << coords.z << ")" << std::endl;
           #endif
 
+          // Add all particles in index sorted list
           SPHParticle *c = cells.at(index);
           if (c != nullptr) {
             do {
@@ -107,6 +109,7 @@ void SPHIndexSortedUniformGrid::updateParticleIndices() {
 void SPHIndexSortedUniformGrid::insertSortedParticleListToGrid() {
   cells.at(master->at(0).index) = &(master->at(0));
 
+  // Set pointer in each cell to first particle with associated cell index
   #if MFluidSolver_USE_TBB
   tbb::parallel_for((size_t)1, master->size(),
     [&](size_t i) {
@@ -128,6 +131,7 @@ void SPHIndexSortedUniformGrid::sortParticles(bool initialSort) {
   if (initialSort) {
     std::sort(master->begin(), master->end(), SPHParticle::indexCompare);
   } else {
+    // Insertion sort is faster for minimal changes in cell indices
     MUtils::insertionSort(master->begin(), master->end(), SPHParticle::indexCompare);
   }
   endParticle = &(master->at(master->size() - 1));
@@ -135,6 +139,6 @@ void SPHIndexSortedUniformGrid::sortParticles(bool initialSort) {
 
 #if MFluidSolver_USE_OPENVDB
 void SPHIndexSortedUniformGrid::exportVDB(std::string &file, std::string &gridName) {
-
+  // TODO: export VDB
 }
 #endif

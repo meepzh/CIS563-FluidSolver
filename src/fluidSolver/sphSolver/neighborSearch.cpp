@@ -24,6 +24,7 @@ void NaiveNeighborSearch::findNeighbors(SPHParticle *p) {
   std::vector<SPHParticle *> *neighbors = p->neighbors();
   neighbors->clear();
 
+  // Filter neighbors by kernel radius
   for (SPHParticle *n : particleList) {
     if (n != p) {
       if (glm::distance2(n->position(), pPos) < searchRadius2) {
@@ -55,6 +56,7 @@ void GridNeighborSearch::findNeighbors(SPHParticle *p) {
   const glm::vec3 pPos = p->position();
   std::vector<SPHParticle *> *neighbors = p->neighbors();
 
+  // Filter neighbors by kernel radius. Also check for itself
   unsigned int numCandidates = neighbors->size();
   unsigned int i = 0;
   unsigned int count = 0;
@@ -103,6 +105,7 @@ IndexSortedUniformGridNeighborSearch::IndexSortedUniformGridNeighborSearch(
   float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize,
   std::vector<SPHParticle> *master, bool useZCurve)
  : GridNeighborSearch(r) {
+  // Store a pointer to the grid so we don't need to cast
   if (useZCurve) {
     isuGrid = new SPHZIndexSortedUniformGrid(gridMin, gridMax, cellSize, master);
   } else {

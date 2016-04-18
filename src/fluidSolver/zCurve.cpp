@@ -16,6 +16,7 @@ ZCurve::ZCurve() {
 }
 
 unsigned long ZCurve::initWithMax(const glm::ivec3 &cellBounds) {
+  // Check sane bounds
   if (cellBounds.x < 0 || cellBounds.y < 0 || cellBounds.z < 0) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_FATAL
     std::cerr << "FATAL: ZCurve bounds (" << cellBounds.x << ", " << cellBounds.y << ", " << cellBounds.z << ") is negative" << std::endl;
@@ -30,6 +31,7 @@ unsigned long ZCurve::initWithMax(const glm::ivec3 &cellBounds) {
     throw ZCurveTooLargeException();
   }
 
+  // Cache Z-index if asked
   #if MFluidSolver_ZCURVE_CACHING
   maxIndex = calculateIndex(cellBounds);
   #else

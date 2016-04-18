@@ -5,6 +5,7 @@
 #include "geom.hpp"
 
 void Geometry::getBoundsByTransformedMinMax(const glm::vec3 &min, const glm::vec3 &max, glm::vec3 &outMin, glm::vec3 &outMax) const {
+  // Transforms min and max vertices, then gets min and max after they're transformed
   std::vector<glm::vec3> points;
   points.push_back(glm::vec3(min.x, min.y, min.z));
   points.push_back(glm::vec3(min.x, min.y, max.z));

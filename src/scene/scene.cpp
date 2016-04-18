@@ -37,11 +37,13 @@ void Scene::loadJSON(const std::string &file) {
     throw InvalidSceneException();
   }
 
+  // Load container info
   glm::vec3 containerDim;
   containerDim.x = root["containerDim"].get("scaleX", 1.f).asFloat();
   containerDim.y = root["containerDim"].get("scaleY", 1.f).asFloat();
   containerDim.z = root["containerDim"].get("scaleZ", 1.f).asFloat();
 
+  // Load source info
   glm::vec3 particleDim;
   particleDim.x = root["particleDim"].get("scaleX", 0.5f).asFloat();
   particleDim.y = root["particleDim"].get("scaleY", 0.5f).asFloat();
@@ -52,6 +54,7 @@ void Scene::loadJSON(const std::string &file) {
   particleConPos.y = root["particleDim"].get("posY", 0.0f).asFloat();
   particleConPos.z = root["particleDim"].get("posZ", 0.0f).asFloat();
 
+  // Load camera info
   glm::vec3 cameraEye;
   cameraEye.x = root["camera"].get("eyeX", 0.5f).asFloat();
   cameraEye.y = root["camera"].get("eyeY", 0.5f).asFloat();
@@ -62,6 +65,7 @@ void Scene::loadJSON(const std::string &file) {
   cameraRef.y = root["camera"].get("refY", 0.5f).asFloat();
   cameraRef.z = root["camera"].get("refZ", 0.5f).asFloat();
 
+  // Set attributes
   camera.setEyeRef(cameraEye, cameraRef);
 
   float particleSeparation = root.get("particleSeparation", 0.1f).asFloat();
