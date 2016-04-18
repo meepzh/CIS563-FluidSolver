@@ -13,22 +13,6 @@ Cube::Cube(const glm::vec3 &color) : _color(color) {
   const unsigned int IDX_COUNT = 24;
   const unsigned int VERT_COUNT = 8;
 
-  // Indices
-  GLuint idx[IDX_COUNT];
-  /*idx[0] = 0; idx[1] = 1; // Draw 2 squares
-  idx[2] = 1; idx[3] = 3;
-  idx[4] = 3; idx[5] = 2;
-  idx[6] = 2; idx[7] = 0;
-  idx[8] = 4; idx[9] = 5;
-  idx[10] = 5; idx[11] = 7;
-  idx[12] = 7; idx[13] = 6;
-  idx[14] = 6; idx[15] = 4;
-  for (unsigned int i = 0; i < 4; ++i) {
-    // Connect sides
-    idx[i * 2 + 16] = i;
-    idx[i * 2 + 17] = i + 4;
-  }*/
-
   // Vertices
   glm::vec3 vert_pos[VERT_COUNT];
   vert_pos[0] = glm::vec3(0.5f, 0.5f, 0.5f);
@@ -40,26 +24,20 @@ Cube::Cube(const glm::vec3 &color) : _color(color) {
   vert_pos[6] = glm::vec3(0.5f, -0.5f, -0.5f);
   vert_pos[7] = glm::vec3(-0.5f, -0.5f, -0.5f);
 
-  // Find pairs of vertices that form the sides of the cube
-  unsigned int counter = 0;
-  unsigned int idxCount = 0;
-  for (unsigned int i = 0; i < VERT_COUNT; ++i) {
-    for (unsigned int j = i + 1; j < VERT_COUNT; ++j) {
-      if (idxCount == IDX_COUNT) break;
-      if (glm::distance2(vert_pos[i], vert_pos[j]) < 1.0001f && glm::distance2(vert_pos[i], vert_pos[j]) > 0.999f) {
-        idx[idxCount++] = i;
-        idx[idxCount++] = j;
-        counter++;
-      }
-    }
-    if (idxCount == IDX_COUNT) break;
-  }
-
-  std::cout << "PRINTING INDICES: "
-  for (unsigned int i = 0; i < IDX_COUNT; ++i) {
-    std::cout << idx[i] << " ";
-  }
-  std::cout << std::endl;
+  // Indices
+  GLuint idx[IDX_COUNT];
+  idx[0] = 0; idx[1] = 1;
+  idx[2] = 0; idx[3] = 2;
+  idx[4] = 0; idx[5] = 4;
+  idx[6] = 1; idx[7] = 3;
+  idx[8] = 1; idx[9] = 5;
+  idx[10] = 2; idx[11] = 3;
+  idx[12] = 2; idx[13] = 6;
+  idx[14] = 3; idx[15] = 7;
+  idx[16] = 4; idx[17] = 5;
+  idx[18] = 4; idx[19] = 6;
+  idx[20] = 5; idx[21] = 7;
+  idx[22] = 6; idx[23] = 7;
 
   // Color
   glm::vec3 vert_col[VERT_COUNT];

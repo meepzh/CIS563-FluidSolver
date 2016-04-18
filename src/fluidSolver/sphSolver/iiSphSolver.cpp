@@ -7,6 +7,8 @@
 #include <cassert>
 #include <cmath>
 
+#include "utils.hpp"
+
 #define checkValidNumber(X) assert(!std::isnan(X) && !std::isinf(X))
 
 void IISPHSolver::update(double deltaT) {
@@ -60,11 +62,14 @@ void IISPHSolver::update(double deltaT) {
     checkValidNumber(neighborDensityEstimate);
     p.setDensityIntermediate(p.density() + neighborDensityEstimate * deltaTF);
     checkValidNumber(aSelf);
-    if (aSelf == 0.f) {
+    /*if (aSelf == 0.f) {
       if (p.neighbors()->size() != 0) {
         std::cout << "FATAL: Particle has neighbors yet aSelf is zero" << std::endl;
         throw i;
       }
+    }*/
+    if (MUtils::fequal<float>(aSelf, 0.f, 0.001f)) {
+      aSelf = 1.f;
     }
     p.setASelf(aSelf);
 
