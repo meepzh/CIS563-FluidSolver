@@ -5,6 +5,7 @@
 #include "cube.hpp"
 
 #include <iostream>
+#include <random>
 
 #define GLM_FORCE_RADIANS
 #include <glm/gtx/norm.hpp>
@@ -74,7 +75,7 @@ bool Cube::intersects(const glm::vec3 &point) const {
   return false;
 }
 
-void Cube::spawnParticlesInVolume(FluidSolver *solver) const {
+void Cube::spawnParticlesInVolume(FluidSolver *solver, ParticleSpawnMethod spawnMethod) const {
   // Store old particle count for number of particles we added and max particle check
   unsigned int oldParticleCount = solver->numParticles();
   if (oldParticleCount == solver->maxParticles()) {
@@ -88,8 +89,6 @@ void Cube::spawnParticlesInVolume(FluidSolver *solver) const {
 
   float particleSeparation = solver->particleSeparation();
   unsigned int count = 0;
-  /*minBound += particleSeparation / 2.f;
-  maxBound -= particleSeparation / 2.f;*/
 
   // Calculate padding due to particle separation
   glm::vec3 padding = maxBound - minBound;
@@ -98,18 +97,39 @@ void Cube::spawnParticlesInVolume(FluidSolver *solver) const {
   minBound += padding;
 
   // Create particles
-  for (float i = minBound.x; i <= maxBound.x; i += particleSeparation) {
-    for (float j = minBound.y; j <= maxBound.y; j += particleSeparation) {
-      for (float k = minBound.z; k <= maxBound.z; k += particleSeparation) {
-        solver->addParticleAt(glm::vec3(i, j, k));
-        ++count;
+  if (spawnMethod == ParticleSpawnMethod::Uniform) {
+    for (float i = minBound.x; i <= maxBound.x; i += particleSeparation) {
+      for (float j = minBound.y; j <= maxBound.y; j += particleSeparation) {
+        for (float k = minBound.z; k <= maxBound.z; k += particleSeparation) {
+          solver->addParticleAt(glm::vec3(i, j, k));
+          ++count;
+          if (count > particlesLeft) break;
+        }
         if (count > particlesLeft) break;
       }
       if (count > particlesLeft) break;
     }
-    if (count > particlesLeft) break;
+  } else if (spawnMethod == ParticleSpawnMethod::Jittered) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> unifDist(0, particleSeparation);
+    const float halfSeparation = particleSeparation * 0.5f;
+
+    for (float i = minBound.x; i <= maxBound.x; i += particleSeparation) {
+      for (float j = minBound.y; j <= maxBound.y; j += particleSeparation) {
+        for (float k = minBound.z; k <= maxBound.z; k += particleSeparation) {
+          const float xOffset = unifDist(gen) - halfSeparation;
+          const float yOffset = unifDist(gen) - halfSeparation;
+          const float zOffset = unifDist(gen) - halfSeparation;
+          solver->addParticleAt(glm::vec3(i + xOffset, j + yOffset, k + zOffset));
+          ++count;
+          if (count > particlesLeft) break;
+        }
+        if (count > particlesLeft) break;
+      }
+      if (count > particlesLeft) break;
+    }
   }
-  //solver->addParticle(new Particle(glm::vec3(0)));
 
   if (solver->numParticles() == solver->maxParticles()) {
     std::cout << "INFO: Reached max number of particles (" << solver->maxParticles() << ")!" << std::endl;

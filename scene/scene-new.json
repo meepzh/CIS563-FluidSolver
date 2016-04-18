@@ -21,5 +21,6 @@
 		"refZ": 0.0
 	},
 	"particleSeparation": 0.05,
-	"maxParticles": 10000
+	"maxParticles": 10000,
+	"spawnMethod": "jittered"
 }

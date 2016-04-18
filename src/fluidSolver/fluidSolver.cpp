@@ -70,6 +70,7 @@ void FluidSolver::printPerformanceStats() {
     computeTime = (endTime - startTime).seconds();
     std::cout << "PERF: Overall simulation ran for " << MUtils::toHMS(computeTime) << " (" << computeTime << " seconds)" " over " << numUpdates << " frames" << std::endl;
     std::cout << "PERF: Average is " << (computeTime / numUpdates) << " seconds per frame" << std::endl;
+    std::cout << "PERF: Simulated " << (numUpdates * _fixedTimestep) << " seconds of fluid simulation" << std::endl;
   }
 }
 

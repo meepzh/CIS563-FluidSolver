@@ -28,6 +28,9 @@ public:
   IISPHSolver solver;
   std::vector<Geometry *> objects;
   Camera camera;
+
+private:
+  ParticleSpawnMethod spawnMethod;
 };
 
 #endif /* MFLUIDSOLVER_SCENE_HPP_ */

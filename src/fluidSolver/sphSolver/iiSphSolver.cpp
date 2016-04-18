@@ -91,7 +91,7 @@ void IISPHSolver::update(double deltaT) {
     #endif
           SPHParticle &p = _particles[i];
           if (MUtils::fequal<float>(p.advectionDiagonal(), 0.f, 0.001f)) {
-            //p.setPressure(0); // TODO: Check what pressure to set
+            //p.setPressure(0); // TODO: Check what we should do here
             nextPressures[i] = p.pressure();
             continue;
           }
@@ -150,7 +150,7 @@ void IISPHSolver::update(double deltaT) {
       std::plus<float>()
     ); // end parallel_reduce
     #else
-        } // end particle for
+    } // end particle for
     #endif
 
     // Update particles with next iteration pressure
@@ -161,6 +161,10 @@ void IISPHSolver::update(double deltaT) {
     averageDensity /= (float)_particles.size();
     ++iteration;
   } // end while
+
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
+  std::cout << "TRACE: Iterated pressure solve " << iteration << " times" << std::endl;
+  #endif
 
   // Procedure: Iteration
   iter_all_sphparticles_start

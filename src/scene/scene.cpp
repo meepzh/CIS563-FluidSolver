@@ -7,7 +7,9 @@
 #include <fstream>
 #include <iostream>
 #include <json/json.h>
+
 #include "geom/cube.hpp"
+#include "utils.hpp"
 
 Scene::Scene() {
 }
@@ -54,6 +56,17 @@ void Scene::loadJSON(const std::string &file) {
   particleConPos.y = root["particleDim"].get("posY", 0.0f).asFloat();
   particleConPos.z = root["particleDim"].get("posZ", 0.0f).asFloat();
 
+  // Get spawn method info
+  std::string spawningMethodString = root.get("spawnMethod", "uniform").asString();
+  MUtils::toLowerInplace(spawningMethodString);
+  if (spawningMethodString == "jittered") {
+    spawnMethod = ParticleSpawnMethod::Jittered;
+  } else if (spawningMethodString == "poissondisk") {
+    spawnMethod = ParticleSpawnMethod::PoissonDisk;
+  } else if (spawningMethodString == "uniform") {
+    spawnMethod = ParticleSpawnMethod::Uniform;
+  }
+
   // Load camera info
   glm::vec3 cameraEye;
   cameraEye.x = root["camera"].get("eyeX", 0.5f).asFloat();
@@ -98,5 +111,5 @@ void Scene::loadJSON(const std::string &file) {
 }
 
 void Scene::seedScene() {
-  solver.fluidSource->spawnParticlesInVolume(&solver);
+  solver.fluidSource->spawnParticlesInVolume(&solver, spawnMethod);
 }

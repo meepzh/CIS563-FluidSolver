@@ -41,18 +41,26 @@ using the fluid source. Press right to step frame by frame (0.001 seconds).
 Press S to write out a screenshot to `screenshot_%05d.tga`.
 
 All SPH parameters, as well as several general program parameters, can be found
-in `config/config.json`. The scene file, which contains dimensions and particle
-separation, can be edited from `scene/scene.json`. Note the following
-case-insensitive options available for several parameters:
+in `config/config.json`. The scene file, which contains dimensions, particle
+parameters, camera settings, and particle spawn information, can be edited from
+`scene/scene.json`. Parameter names are case sensitive, but options are not. If
+you change parameters outside of the build folder, you will need to rerun
+`cmake ..`. You can avoid this issue by editing the files in the build folder.
+Note the following case-insensitive string options available for several
+parameters:
 
 neighborSearchType
-
 - naive
 - uniform
 - indexSortedUniform
 - indexSortedUniformInsertionSort
 - zIndexSortedUniform
 - zIndexSortedUniformInsertionSort
+
+spawnMethod
+- jittered
+- poissonDisk
+- uniform
 
 visualization
 - type
@@ -95,7 +103,7 @@ direction of the mouse. It will look like you're dragging the scene with you.
 CPU: Intel i7-4800MQ limited to 2.4GHz<br />
 GPU: NVIDIA GeForce GTX 765M
 
-![Exponential Improvement with Uniform Grid over Naive Neighbor Search](images/nsPerfGraph1.png?raw=true "The uniform grid neighbor search dramatically reduces search time to O(n).")
+![Graph of the performance for different neighbor search types](images/nsPerfGraph1.png?raw=true "Index sorting dramatically improves neighbor search performance.")
 
 - Index Sorted Uniform Grid search dramatically improves on the uniform grid,
 likely because access to the particles is very simple without memory offsets
@@ -109,11 +117,14 @@ standard std::sort, as particles don't change cells frequently.
 
 ### Missing Required Features ###
 
-- Better seeding (jitter/poisson distribution)
-- Update derivatives
-- Test bicubic spline kernel
 - Performance Analysis
+- OpenVDB point export
+- Optional: Update derivatives
+- Optional: Ihmsen boundary conditions
 - Optional: Cache neighbor distances
+- Optional: Better seeding (poisson distribution)
+- Optional: Test bicubic spline kernel
+- Optional: Solid body coupling
 
 ### Extra Features ###
 None
