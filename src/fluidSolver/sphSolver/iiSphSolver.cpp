@@ -49,18 +49,17 @@ void IISPHSolver::update(double deltaT) {
     float advectionDensity = 0;
     for (SPHParticle *n : *(p.neighbors())) {
       // Calculate spikyGradientIJ
-      const glm::vec3 spikyGradientToNeighbor = kernelFunctions.computeSpikyGradient(p.position() - n->position());
+      const glm::vec3 spikyGradientFromNeighbor = kernelFunctions.computeSpikyGradient(p.position() - n->position());
 
       // Calculate dJI
-      glm::vec3 displacementToNeighbor = -1 * p.mass() / (p.density() * p.density()) *
+      glm::vec3 displacementToNeighbor = -deltaTF2 * p.mass() / (p.density() * p.density()) *
         kernelFunctions.computeSpikyGradient(n->position() - p.position());
-      displacementToNeighbor *= deltaTF2;
 
       advectionDensity += n->mass() *
-        glm::dot(p.velocityIntermediate() - n->velocityIntermediate(), spikyGradientToNeighbor);
+        glm::dot(p.velocityIntermediate() - n->velocityIntermediate(), spikyGradientFromNeighbor);
 
       advectionDiagonal += n->mass() *
-        glm::dot(p.advectionDisplacementEstimate() - displacementToNeighbor, spikyGradientToNeighbor);
+        glm::dot(p.advectionDisplacementEstimate() - displacementToNeighbor, spikyGradientFromNeighbor);
     }
     checkValidNumber(advectionDensity);
     p.setDensityIntermediate(p.density() + advectionDensity * deltaTF);
@@ -81,7 +80,7 @@ void IISPHSolver::update(double deltaT) {
     averageDensity = 0;
 
     iter_all_sphparticles_start
-      // Calculate displacement due to neighbors
+      // Calculate pressure displacement due to neighbors
       glm::vec3 pressureDisplacementFromNeighbors(0);
       for (SPHParticle *n : *(p.neighbors())) {
         pressureDisplacementFromNeighbors -= n->mass() * n->pressure() / (n->density() * n->density()) *
@@ -111,21 +110,21 @@ void IISPHSolver::update(double deltaT) {
           float densityDifferenceByNeighborsPressure = 0;
           for (SPHParticle *n : *(p.neighbors())) {
             // Calculate spikyGradientIJ
-            glm::vec3 spikyGradientToNeighbor = kernelFunctions.computeSpikyGradient(p.position() - n->position());
+            glm::vec3 spikyGradientFromNeighbor = kernelFunctions.computeSpikyGradient(p.position() - n->position());
 
             // Calculate dJI
-            glm::vec3 displacementToNeighbor = -1 * p.mass() / (p.density() * p.density()) *
+            glm::vec3 displacementToNeighbor = -deltaTF2 * p.mass() / (p.density() * p.density()) *
               kernelFunctions.computeSpikyGradient(n->position() - p.position());
 
             // Calculate density difference components
             densityDifferenceBySelf += n->mass() *
-              glm::dot(p.advectionDisplacementEstimate() - displacementToNeighbor, spikyGradientToNeighbor);
+              glm::dot(p.advectionDisplacementEstimate() - displacementToNeighbor, spikyGradientFromNeighbor);
 
             densityDifferenceByNeighborsPressure += n->mass() * glm::dot(
               p.sumPressureDisplacementFromNeighbors() -
               n->advectionDisplacementEstimate() * n->pressure() -
               n->sumPressureDisplacementFromNeighbors() +
-              displacementToNeighbor * p.pressure(), spikyGradientToNeighbor);
+              displacementToNeighbor * p.pressure(), spikyGradientFromNeighbor);
 
             checkValidNumber(densityDifferenceBySelf);
             checkValidNumber(densityDifferenceByNeighborsPressure);
@@ -157,13 +156,13 @@ void IISPHSolver::update(double deltaT) {
           checkValidNumber(newPressure);
           nextPressures.at(i) = newPressure;
     #if MFluidSolver_USE_TBB
-        }
+        } // end particle for
         return partialDensitySum;
-      },
+      }, // end lambda
       std::plus<float>()
-    );
+    ); // end parallel_reduce
     #else
-        }
+        } // end particle for
     #endif
 
     // Update particles with next iteration pressure
@@ -174,7 +173,7 @@ void IISPHSolver::update(double deltaT) {
     checkValidNumber(averageDensity);
     averageDensity /= (float)_particles.size();
     ++iteration;
-  }
+  } // end while
 
   // Procedure: Iteration
   iter_all_sphparticles_start
