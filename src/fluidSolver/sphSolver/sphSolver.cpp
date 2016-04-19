@@ -373,9 +373,26 @@ void SPHSolver::sceneLoaded() {
 
 #if MFluidSolver_USE_PARTIO
 void SPHSolver::exportBgeo() {
-  Partio::ParticlesDataMutable *data = Partio::create();
-  Partio::ParticlesDataMutable::iterator it = data->addParticles(_particles.size());
-  // TODO: Implement this
+  // http://www.disneyanimation.com/technology/partio.html
+  // http://wdas.github.io/partio/doxygen/
+  Partio::ParticlesDataMutable *particleData = Partio::create();
+  Partio::ParticlesDataMutable::iterator iterator = particleData->addParticles(_particles.size());
+  Partio::ParticleAttribute posAttr = particleData->addAttribute("position", Partio::ParticleAttributeType::VECTOR, 3);
+  Partio::ParticleAccessor posAcc(posAttr);
+  iterator.addAccessor(posAcc);
+
+  unsigned int idx = 0;
+  for (Partio::ParticlesDataMutable::iterator it = particleData->begin(); it != particleData->end(); ++it) {
+    float *vectorData = posAcc.raw<float>(it);
+    const glm::vec3 position = _particles.at(idx).position();
+    for (unsigned int i = 0; i < 3; ++i) {
+      vectorData[i] = position[i];
+    }
+    ++idx;
+  }
+
+  Partio::write("test.bgeo",*particleData);
+  particleData->release();
 }
 #endif
 

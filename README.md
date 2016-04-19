@@ -118,7 +118,7 @@ standard std::sort, as particles don't change cells frequently.
 ### Missing Required Features ###
 
 - Performance Analysis
-- Partio point export
+- Test Partio point export
 - OpenVDB level set export
 - Optional: Update derivatives
 - Optional: Ihmsen boundary conditions

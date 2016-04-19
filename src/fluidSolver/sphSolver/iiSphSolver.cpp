@@ -4,9 +4,6 @@
 
 #include "iiSphSolver.hpp"
 
-#include <cassert>
-#include <cmath>
-
 #include "utils.hpp"
 
 void IISPHSolver::update(double deltaT) {
