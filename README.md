@@ -7,7 +7,7 @@ forces (currently none). The scene is initially paused. The camera is controlled
 by a standard arcball interface described below. The solver currently set to
 display the neighbor particles of the first particle, which can be changed
 randomly. The solver can also export the backend grid for the fluid particles to
-the VDB format.
+the VDB format. The solver runs both SESPH and IISPH.
 
 ### Dependencies ###
 
@@ -118,7 +118,8 @@ standard std::sort, as particles don't change cells frequently.
 ### Missing Required Features ###
 
 - Performance Analysis
-- OpenVDB point export
+- Partio point export
+- OpenVDB level set export
 - Optional: Update derivatives
 - Optional: Ihmsen boundary conditions
 - Optional: Cache neighbor distances
