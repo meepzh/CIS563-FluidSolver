@@ -13,21 +13,36 @@ void Input::computeArcballScrollCb(GLFWwindow* window, double xoffset, double yo
 
 void Input::checkKeys(GLFWwindow* window, int key, int scancode, int action, int mods) {
   if (viewer == nullptr) return;
-  if (key == GLFW_KEY_P && action == GLFW_RELEASE) {
-    viewer->togglePause();
-  } else if (key == GLFW_KEY_S && action == GLFW_RELEASE) {
-    viewer->screenshot(true);
-  } else if (key == GLFW_KEY_R && action == GLFW_RELEASE) {
-    viewer->scene.seedScene();
-  } else if (key == GLFW_KEY_RIGHT && action == GLFW_RELEASE) {
-    viewer->scene.solver.updateStep();
-  } else if (key == GLFW_KEY_N && action == GLFW_RELEASE) {
-    viewer->scene.solver.visualizeRandomParticlesNeighbors();
-  } else if (key == GLFW_KEY_E && action == GLFW_RELEASE) {
-    #if MFluidSolver_USE_OPENVDB
-    viewer->scene.solver.exportVDB();
-    #endif
-  } else if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
-    viewer->stop();
+  if (action == GLFW_RELEASE) {
+    switch (key) {
+      case GLFW_KEY_ESCAPE:
+        viewer->stop();
+        break;
+      case GLFW_KEY_E:
+        #if MFluidSolver_USE_OPENVDB
+        viewer->scene.solver.exportVDB();
+        #endif
+        break;
+      case GLFW_KEY_N:
+        viewer->scene.solver.visualizeRandomParticlesNeighbors();
+        break;
+      case GLFW_KEY_P:
+        viewer->togglePause();
+        break;
+      case GLFW_KEY_R:
+        viewer->scene.seedScene();
+        break;
+      case GLFW_KEY_S:
+        viewer->screenshot(true);
+        break;
+      case GLFW_KEY_W:
+        #if MFluidSolver_USE_PARTIO
+        viewer->scene.solver.exportBgeo();
+        #endif
+        break;
+      case GLFW_KEY_RIGHT:
+        viewer->scene.solver.updateStep();
+        break;
+    }
   }
 }

@@ -15,6 +15,7 @@
 
 // Libraries
 #define MFluidSolver_USE_OPENVDB 1
+#define MFluidSolver_USE_PARTIO 1
 #define MFluidSolver_USE_TBB 1
 
 // Misc

@@ -14,6 +14,9 @@
 #include "neighborSearch.hpp"
 #include "sphParticle.hpp"
 
+#if MFluidSolver_USE_PARTIO
+#include <partio/Partio.h>
+#endif
 #if MFluidSolver_USE_TBB
 #include <tbb/parallel_for.h>
 #include <tbb/parallel_reduce.h>
@@ -50,6 +53,9 @@ public:
   virtual void printPerformanceStats();
   virtual void sceneLoaded();
 
+  #if MFluidSolver_USE_PARTIO
+  virtual void exportBgeo();
+  #endif
   #if MFluidSolver_USE_OPENVDB
   virtual void exportVDB();
   #endif

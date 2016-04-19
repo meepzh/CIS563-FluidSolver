@@ -371,6 +371,14 @@ void SPHSolver::sceneLoaded() {
   prepNeighborSearchAfterSceneLoad();
 }
 
+#if MFluidSolver_USE_PARTIO
+void SPHSolver::exportBgeo() {
+  Partio::ParticlesDataMutable *data = Partio::create();
+  Partio::ParticlesDataMutable::iterator it = data->addParticles(_particles.size());
+  // TODO: Implement this
+}
+#endif
+
 #if MFluidSolver_USE_OPENVDB
 void SPHSolver::exportVDB() {
   if (nSearchType == NeighborSearchType::UniformGrid) {

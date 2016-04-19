@@ -18,14 +18,14 @@ configure_file(
 include_directories("${PROJECT_BINARY_DIR}")
 
 # Copy GLSL, JSON, and Texture files
-file(GLOB JSON_SRC "${PROJECT_SOURCE_DIR}/scene/*.json")
-file(COPY ${JSON_SRC} DESTINATION "${PROJECT_BINARY_DIR}/scene/")
-file(GLOB GLSL_SRC "${PROJECT_SOURCE_DIR}/glsl/*.glsl")
-file(COPY ${GLSL_SRC} DESTINATION "${PROJECT_BINARY_DIR}/glsl/")
-file(GLOB TEXTURE_SRC "${PROJECT_SOURCE_DIR}/texture/*")
-file(COPY ${TEXTURE_SRC} DESTINATION "${PROJECT_BINARY_DIR}/texture/")
 file(GLOB CONFIG_FILE "${PROJECT_SOURCE_DIR}/config/*")
 file(COPY ${CONFIG_FILE} DESTINATION "${PROJECT_BINARY_DIR}/")
+file(GLOB GLSL_SRC "${PROJECT_SOURCE_DIR}/glsl/*.glsl")
+file(COPY ${GLSL_SRC} DESTINATION "${PROJECT_BINARY_DIR}/glsl/")
+file(GLOB JSON_SRC "${PROJECT_SOURCE_DIR}/scene/*.json")
+file(COPY ${JSON_SRC} DESTINATION "${PROJECT_BINARY_DIR}/scene/")
+file(GLOB TEXTURE_SRC "${PROJECT_SOURCE_DIR}/texture/*")
+file(COPY ${TEXTURE_SRC} DESTINATION "${PROJECT_BINARY_DIR}/texture/")
 
 # Set creates a variable
 set(NUPARU "nuparu")
@@ -47,21 +47,23 @@ elseif(WIN32)
 endif()
 
 # Set include variables
-set(GLFW_INCLUDE_DIR ${NUPARU}/include )
-set(GLEW_INCLUDE_DIR ${NUPARU}/include )
 set(GLFW_LIBRARY_DIR ${CMAKE_LIBRARY_PATH})
 set(GLEW_LIBRARY_DIR ${CMAKE_LIBRARY_PATH})
+set(GLFW_INCLUDE_DIR ${NUPARU}/include)
+set(GLEW_INCLUDE_DIR ${NUPARU}/include)
 
 # Use find_package & find_library to link with
+find_package(Boost COMPONENTS filesystem system REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW)
 find_library(GLFW_LIBRARY "glfw3" HINTS ${GLFW_LIBRARY_DIR})
 find_library(JSONCPP "jsoncpp")
+find_library(LIBZ "z")
 find_library(OPENVDB "openvdb")
 find_library(OPENEXR_HALF NAMES Half PATHS ${CMAKE_LIBRARY_PATH})
-find_library(TBB tbb)
+find_library(PARTIO "partio")
+find_library(TBB "tbb")
 
-find_package(Boost COMPONENTS filesystem system REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 add_definitions(
@@ -73,7 +75,9 @@ add_definitions(
         -DBOOST_TEST_DYN_LINK
 )
 
-set(CORE_LIBS ${GLFW_LIBRARY} ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${JSONCPP} ${OPENGL_LIBRARY} ${OPENVDB} ${OPENEXR_HALF} ${TBB} ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
+set(CORE_LIBS ${GLFW_LIBRARY} ${GLUT_LIBRARY} ${GLEW_LIBRARY} ${OPENGL_LIBRARY}
+    ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY}
+    ${JSONCPP} ${LIBZ} ${OPENVDB} ${OPENEXR_HALF} ${PARTIO} ${TBB})
 
 # OSX-specific hacks/fixes
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
