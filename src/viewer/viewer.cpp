@@ -161,6 +161,17 @@ void Viewer::init(int width, int height) {
   if (paused) std::cout << "INFO: We are currently paused!" << std::endl;
   if (!paused) std::cout << "INFO: We are currently playing!" << std::endl;
   #endif
+
+  // Create necessary output folders
+  #if MFluidSolver_PARTICLE_STATS_FILES
+  boost::filesystem::path particleStatsDir("particlestats");
+  boost::filesystem::create_directory(particleStatsDir);
+  if (!boost::filesystem::is_directory(particleStatsDir)) {
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
+    std::cout << "ERROR: particlestats folder could not be created" << std::endl;
+    #endif
+  }
+  #endif
 }
 
 void Viewer::run() {

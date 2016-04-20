@@ -6,9 +6,7 @@
 #define MFLUIDSOLVER_UTILS_HPP_
 
 #include <algorithm>
-#include <locale>
 #include <string>
-#include <sstream>
 
 namespace MUtils {
   // Float approximate-equality comparison

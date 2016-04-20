@@ -5,6 +5,8 @@
 #include "utils.hpp"
 
 #include <iomanip>
+#include <locale>
+#include <sstream>
 
 namespace MUtils {
   std::string toHMS(double seconds) {

@@ -6,6 +6,12 @@
 
 #include "utils.hpp"
 
+#if MFluidSolver_PARTICLE_STATS_FILES
+#include <fstream>
+#include <sstream>
+#include <string>
+#endif
+
 void IISPHSolver::update(double deltaT) {
   if (checkIfEnded()) return;
 
@@ -31,7 +37,39 @@ void IISPHSolver::update(double deltaT) {
   averageSumPressureDisplacementFromNeighborsMagnitude = 0;
   averageVelocityIntermediateMagnitude = 0;
   averageNumNeighbors = 0;
+
+  #if MFluidSolver_PARTICLE_STATS_FILES
+  // Output file names
+  std::string frameString = MUtils::zeroPad(numUpdates, 6);
+  std::ostringstream pressureForceMagnitudeSS;
+  pressureForceMagnitudeSS << "particlestats/pfm-" << frameString << ".txt";
+  std::ostringstream pressureSS;
+  pressureSS << "particlestats/psr-" << frameString << ".txt";
+  std::ostringstream velocityMagnitudeSS;
+  velocityMagnitudeSS << "particlestats/vel-" << frameString << ".txt";
+
+  // Output files
+  std::ofstream pressureForceMagnitudeOutFile;
+  pressureForceMagnitudeOutFile.open(pressureForceMagnitudeSS.str(), std::ofstream::out | std::ofstream::trunc);
+  std::ofstream pressureOutFile;
+  pressureOutFile.open(pressureSS.str(), std::ofstream::out | std::ofstream::trunc);
+  std::ofstream velocityMagnitudeOutFile;
+  velocityMagnitudeOutFile.open(velocityMagnitudeSS.str(), std::ofstream::out | std::ofstream::trunc);
+
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
+  if (!pressureForceMagnitudeOutFile.is_open()) {
+    std::cerr << "ERROR: Could not open file: " << pressureForceMagnitudeSS.str() << std::endl;
+  }
+  if (!pressureOutFile.is_open()) {
+    std::cerr << "ERROR: Could not open file: " << pressureSS.str() << std::endl;
+  }
+  if (!velocityMagnitudeOutFile.is_open()) {
+    std::cerr << "ERROR: Could not open file: " << velocityMagnitudeSS.str() << std::endl;
+  }
   #endif
+  #endif
+  #endif
+
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
   numFlyaways = 0;
   #endif
@@ -41,8 +79,8 @@ void IISPHSolver::update(double deltaT) {
     calculateDensity(p);
     calculateNonPressureForce(p);
 
-    // Check if flyaway is affecting other particles
     #if MFluidSolver_PARTICLE_STATS
+    // Check if flyaway is affecting other particles
     if (p.flyaway && !p.neighbors()->empty()) {
       for (SPHParticle *q : *(p.neighbors())) {
         std::cout << "STAT: Particle ID " << q->ID << " is now neighbors with flyaway ID " << p.ID << std::endl;
@@ -51,7 +89,7 @@ void IISPHSolver::update(double deltaT) {
     #endif
 
     // Flyaway particle detection (no neighbors, too much free will)
-    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN || MFluidSolver_PARTICLE_STATS
     if (p.neighbors()->empty()) {
       #if MFluidSolver_PARTICLE_STATS
       std::lock_guard<std::mutex> guard(statsCoutMutex);
@@ -95,6 +133,21 @@ void IISPHSolver::update(double deltaT) {
     averageSumPressureDisplacementFromNeighborsMagnitude += glm::length(p.sumPressureDisplacementFromNeighbors());
     averageVelocityIntermediateMagnitude += glm::length(p.velocityIntermediate());
     averageNumNeighbors += p.neighbors()->size();
+
+    #if MFluidSolver_PARTICLE_STATS_FILES
+    {
+      std::lock_guard<std::mutex> guard(statsCoutMutex);
+      if (pressureForceMagnitudeOutFile.is_open()) {
+          pressureForceMagnitudeOutFile << glm::length(p.pressureForce()) << std::endl;
+      }
+      if (pressureOutFile.is_open()) {
+        pressureOutFile << p.pressure() << std::endl;
+      }
+      if (velocityMagnitudeOutFile.is_open()) {
+        velocityMagnitudeOutFile << glm::length(p.velocity()) << std::endl;
+      }
+    }
+    #endif
     #endif
 
     // Calculate intermediate velocity v^{adv}_i
