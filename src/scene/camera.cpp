@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  camera.cpp
 //  MFluidSolver
@@ -12,12 +13,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 Camera::Camera(unsigned int width, unsigned int height,
-               const glm::vec3 &eye, const glm::vec3 &ref, const glm::vec3 &worldUp)
- : nearClip(0.1f), farClip(1000.f),
-   _width(width), _height(height),
-   _eye(eye), _ref(ref), _worldUp(worldUp),
-   _fovy(45.f), arcballZoom(1.f),
-   panSpeed(0.01f), zoomSpeed(0.005f) {
+               const glm::vec3 &eye, const glm::vec3 &ref,
+               const glm::vec3 &worldUp)
+    : nearClip(0.1f), farClip(1000.f),
+      _width(width), _height(height),
+      _eye(eye), _ref(ref), _worldUp(worldUp),
+      _fovy(45.f), arcballZoom(1.f),
+      panSpeed(0.01f), zoomSpeed(0.005f) {
   arcballRotationMat = glm::mat4(1.f);
   recomputeAttributes();
   recomputeLocalAxes();
@@ -25,14 +27,23 @@ Camera::Camera(unsigned int width, unsigned int height,
 }
 
 glm::mat4 Camera::getViewProjection() {
-  glm::mat4 perpMat = glm::perspective(glm::radians(_fovy), _aspect, nearClip, farClip);
-  glm::mat4 lookMat = glm::lookAt(glm::vec3(arcballEye), glm::vec3(arcballRef), glm::vec3(arcballUp));
+  glm::mat4 perpMat =
+    glm::perspective(glm::radians(_fovy), _aspect, nearClip, farClip);
+  glm::mat4 lookMat =
+    glm::lookAt(
+      glm::vec3(arcballEye), glm::vec3(arcballRef), glm::vec3(arcballUp));
   return perpMat * lookMat;
 }
 
 void Camera::setEyeRef(const glm::vec3 &eye, const glm::vec3 &ref) {
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::cout << "INFO: Set camera to eye (" << eye.x << ", " << eye.y << ", " << eye.z << ") and ref (" << ref.x << ", " << ref.y << ", " << ref.z << ")" << std::endl;
+  std::cout << "INFO: Set camera to eye (" <<
+                eye.x << ", " <<
+                eye.y << ", " <<
+                eye.z << ") and ref (" <<
+                ref.x << ", " <<
+                ref.y << ", " <<
+                ref.z << ")" << std::endl;
   #endif
 
   _eye = eye;
@@ -53,12 +64,12 @@ void Camera::recomputeAttributes() {
   _up = glm::normalize(glm::cross(_right, _look));
 
   // Other
-  _aspect = (float)_width / (float)_height;
+  _aspect = static_cast<float>(_width) / static_cast<float>(_height);
 
   // Arcball
   centerX = _width / 2.f;
   centerY = _height / 2.f;
-  arcballRadius = _width * 0.30; // Arbitrary radius
+  arcballRadius = _width * 0.30;  // Arbitrary radius
 }
 
 void Camera::recomputeLocalAxes() {
@@ -100,7 +111,7 @@ glm::vec3 Camera::computeSpherePoint(const glm::dvec2 &p) const {
   if (r > 1) {
     p2 = glm::normalize(p2);
   } else {
-    p2.x *= -1; // Reverse x position
+    p2.x *= -1;  // Reverse x position
     p2.z = sqrt(1 - r);
   }
 
@@ -119,7 +130,6 @@ void Camera::pan(const glm::dvec2 &p1, const glm::dvec2 &p2) {
 
 void Camera::zoom(double delta) {
   // A typical mouse has 15 * 8 delta (eigth-degrees) per scroll wheel tick
-
   arcballZoom += delta * zoomSpeed;
 
   // Prevent zooming past ref

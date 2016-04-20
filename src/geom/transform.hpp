@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  transform.hpp
 //  MFluidSolver
@@ -8,11 +9,15 @@
 #include <glm/glm.hpp>
 
 class Transform {
-public:
+ public:
   Transform() : Transform(glm::vec3(0), glm::vec3(0), glm::vec3(0)) {}
-  Transform(const glm::vec3 &translation, const glm::vec3 &rotation, const glm::vec3 &scale);
+  Transform(const glm::vec3 &translation,
+            const glm::vec3 &rotation,
+            const glm::vec3 &scale);
 
-  void setTransform(const glm::vec3 &translation, const glm::vec3 &rotation, const glm::vec3 &scale);
+  void setTransform(const glm::vec3 &translation,
+                    const glm::vec3 &rotation,
+                    const glm::vec3 &scale);
   void setTranslation(const glm::vec3 &translation);
   void setRotation(const glm::vec3 &rotation);
   void setScale(const glm::vec3 &scale);
@@ -23,7 +28,7 @@ public:
   const glm::vec3 &rotation() const;
   const glm::vec3 &scale() const;
 
-private:
+ private:
   void calculateMatrices();
 
   glm::vec3 _translation;
@@ -34,4 +39,4 @@ private:
   glm::mat4 invWorldTransform;
 };
 
-#endif /* MFLUIDSOLVER_GEOM_TRANSFORM_HPP_ */
+#endif  // MFLUIDSOLVER_GEOM_TRANSFORM_HPP_

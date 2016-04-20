@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  sphUniformGrid.cpp
 //  MFluidSolver
@@ -5,19 +6,23 @@
 #include "sphUniformGrid.hpp"
 
 #include <algorithm>
+#include <string>
+#include <vector>
 
 #if MFluidSolver_USE_ASSERTS
 #include <cassert>
 #endif
-
 #if MFluidSolver_USE_OPENVDB
 #include <openvdb/openvdb.h>
 #endif
 
-SPHUniformGrid::SPHUniformGrid(const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float cellSize)
- : SPHGrid(minBounds, maxBounds, cellSize) {
+SPHUniformGrid::SPHUniformGrid(
+  const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float cellSize)
+    : SPHGrid(minBounds, maxBounds, cellSize) {
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std:: cout << "INFO: Created grid with cell bounds: (" << cellBounds.x << ", " << cellBounds.y << ", " << cellBounds.z << ")" << std::endl;
+  std:: cout << "INFO: Created grid with cell bounds: (" <<
+                 cellBounds.x << ", " <<
+                 cellBounds.y << ", " << cellBounds.z << ")" << std::endl;
   #endif
 
   data.resize(numCells);
@@ -32,10 +37,11 @@ void SPHUniformGrid::getNeighbors(SPHParticle *p) {
   neighbors->clear();
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
-  std::cout << "TRACE: Getting neighbors for cell (" << pC.x << ", " << pC.y << ", " << pC.z << ")" << std::endl;
+  std::cout << "TRACE: Getting neighbors for cell (" <<
+                pC.x << ", " << pC.y << ", " << pC.z << ")" << std::endl;
   #endif
 
-  unsigned long index;
+  uint32_t index;
   std::vector<SPHParticle *> *vec;
 
   // Search neighboring grid cells
@@ -46,10 +52,14 @@ void SPHUniformGrid::getNeighbors(SPHParticle *p) {
         coords = glm::ivec3(pC.x + i, pC.y + j, pC.z + k);
         // Note: we check kernel radius and self in neighbor search
         if (coords.x >= 0 && coords.y >= 0 && coords.z >= 0 &&
-            coords.x < cellBounds.x && coords.y < cellBounds.y && coords.z < cellBounds.z) {
-
+            coords.x < cellBounds.x &&
+            coords.y < cellBounds.y &&
+            coords.z < cellBounds.z) {
           #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
-          std::cout << "TRACE: Accessing cell (" << coords.x << ", " << coords.y << ", " << coords.z << ")" << std::endl;
+          std::cout << "TRACE: Accessing cell (" <<
+                        coords.x << ", " <<
+                        coords.y << ", " <<
+                        coords.z << ")" << std::endl;
           #endif
 
           index = getIndex(coords);
@@ -57,15 +67,16 @@ void SPHUniformGrid::getNeighbors(SPHParticle *p) {
 
           for (unsigned int l = 0; l < vec->size(); ++l) {
             neighbors->push_back((*vec)[l]);
-          } // end for l
+          }  // end for l
 
           #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
-          std::cout << "TRACE: Found " << vec->size() << " neighbor(s)" << std::endl;
+          std::cout << "TRACE: Found " <<
+            vec->size() << " neighbor(s)" << std::endl;
           #endif
         }
-      } // end for k
-    } // end for j
-  } // end for i
+      }  // end for k
+    }  // end for j
+  }  // end for i
 }
 
 void SPHUniformGrid::addParticle(SPHParticle *p) {
@@ -91,10 +102,12 @@ void SPHUniformGrid::updateParticle(SPHParticle *p) {
     } else {
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
       std::cerr << "ERROR: Could not find particle at (" <<
-        p->position().x << ", " << p->position().y << ", " << p->position().z <<
-        ") based on old position (" <<
-        p->oldPosition().x << ", " << p->oldPosition().y << ", " << p->oldPosition().z <<
-        "), index " << oldIndex << std::endl;
+        p->position().x << ", " <<
+        p->position().y << ", " <<
+        p->position().z << ") based on old position (" <<
+        p->oldPosition().x << ", "
+        << p->oldPosition().y << ", "
+        << p->oldPosition().z << "), index " << oldIndex << std::endl;
       #endif
     }
   }
@@ -107,22 +120,28 @@ void SPHUniformGrid::clear() {
 }
 
 void SPHUniformGrid::printDiagnostics() {
-  std::cout << "Grid bounds: (" << cellBounds.x << ", " << cellBounds.y << ", " << cellBounds.z << ")" << std::endl;
+  std::cout << "Grid bounds: (" <<
+    cellBounds.x << ", " <<
+    cellBounds.y << ", " <<
+    cellBounds.z << ")" << std::endl;
   std::cout << "Grid size: " << numCells << std::endl;
 
   for (unsigned int i = 0; i < cellBounds.x; ++i) {
     for (unsigned int j = 0; j < cellBounds.y; ++j) {
       for (unsigned int k = 0; k < cellBounds.z; ++k) {
-        std::printf("(%d, %d, %d) - %d\n", i, j, k, data[getIndex(i, j, k)].size());
+        std::printf(
+          "(%d, %d, %d) - %d\n", i, j, k, data[getIndex(i, j, k)].size());
       }
     }
   }
 }
 
 #if MFluidSolver_USE_OPENVDB
-void SPHUniformGrid::exportVDB(std::string &file, std::string &gridName) {
+void SPHUniformGrid::exportVDB(
+    const std::string &file, const std::string &gridName) {
   // http://www.openvdb.org/documentation/doxygen/codeExamples.html
-  openvdb::FloatGrid::Ptr grid = openvdb::FloatGrid::create(/*background value=*/0);
+  openvdb::FloatGrid::Ptr grid =
+    openvdb::FloatGrid::create(/*background value=*/0);
   openvdb::FloatGrid::Accessor accessor = grid->getAccessor();
   openvdb::Coord coord;
 

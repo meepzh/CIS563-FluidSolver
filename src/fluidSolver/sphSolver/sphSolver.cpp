@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  sphSolver.cpp
 //  MFluidSolver
@@ -7,17 +8,20 @@
 #include <ctime>
 #include <fstream>
 #include <iostream>
-#include <json/json.h>
+#include <string>
+#include <vector>
 
 #if MFluidSolver_PARTICLE_STATS
 #include <limits>
 #endif
 
+#include <json/json.h>
+
 #include "utils.hpp"
 
 // Constructor / Destructor
 SPHSolver::SPHSolver()
- : nSearch(nullptr), inited(false) {
+    : nSearch(nullptr), inited(false) {
   setDefaultConfig();
 }
 
@@ -44,34 +48,56 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
       break;
     case NeighborSearchType::IndexSortedUniformGrid:
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-      std::cout << "INFO: SPH Solver using index sorted uniform grid neighbor search" << std::endl;
+      std::cout <<
+        "INFO: SPH Solver using index sorted uniform grid neighbor search" <<
+        std::endl;
       #endif
-      nSearch = new IndexSortedUniformGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius, &_particles, false);
+      nSearch = new IndexSortedUniformGridNeighborSearch(kernelRadius,
+                                                         gridMin, gridMax,
+                                                         kernelRadius,
+                                                         &_particles, false);
       break;
     case NeighborSearchType::ZIndexSortedUniformGrid:
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-      std::cout << "INFO: SPH Solver using Z-curve index sorted uniform grid neighbor search" << std::endl;
+      std::cout << "INFO: SPH Solver using " <<
+        "Z-curve index sorted uniform grid neighbor search" << std::endl;
       #endif
-      nSearch = new IndexSortedUniformGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius, &_particles, true);
+      nSearch = new IndexSortedUniformGridNeighborSearch(kernelRadius,
+                                                         gridMin, gridMax,
+                                                         kernelRadius,
+                                                         &_particles, true);
       break;
     case NeighborSearchType::ZIndexSortedUniformGridWithInsertion:
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-      std::cout << "INFO: SPH Solver using Z-curve index sorted uniform grid neighbor search with insertion sort" << std::endl;
+      std::cout << "INFO: SPH Solver using " <<
+        "Z-curve index sorted uniform grid neighbor search " <<
+        "with insertion sort" << std::endl;
       #endif
-      nSearch = new IndexSortedUniformGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius, &_particles, true);
+      nSearch = new IndexSortedUniformGridNeighborSearch(kernelRadius,
+                                                         gridMin, gridMax,
+                                                         kernelRadius,
+                                                         &_particles, true);
       break;
     case NeighborSearchType::UniformGrid:
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-      std::cout << "INFO: SPH Solver using uniform grid neighbor search" << std::endl;
+      std::cout << "INFO: SPH Solver using uniform grid neighbor search" <<
+        std::endl;
       #endif
-      nSearch = new UniformGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius);
+      nSearch = new UniformGridNeighborSearch(kernelRadius,
+                                              gridMin, gridMax, kernelRadius);
       break;
     case NeighborSearchType::IndexSortedUniformGridWithInsertion:
     default:
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-      std::cout << "INFO: SPH Solver using index sorted uniform grid neighbor search with insertion sort" << std::endl;
+      std::cout <<
+        "INFO: SPH Solver using " <<
+        "index sorted uniform grid neighbor search with insertion sort" <<
+        std::endl;
       #endif
-      nSearch = new IndexSortedUniformGridNeighborSearch(kernelRadius, gridMin, gridMax, kernelRadius, &_particles, false);
+      nSearch = new IndexSortedUniformGridNeighborSearch(kernelRadius,
+                                                         gridMin, gridMax,
+                                                         kernelRadius,
+                                                         &_particles, false);
       break;
   }
 
@@ -79,10 +105,14 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   switch (visualizationType) {
     case FluidVisualizationType::Density:
-      std::cout << "INFO: Now visualizing density difference from rest density" << std::endl;
+      std::cout <<
+        "INFO: Now visualizing density difference from rest density" <<
+        std::endl;
       break;
     case FluidVisualizationType::Index:
-      std::cout << "INFO: Now visualizing index within particle array" << std::endl;
+      std::cout <<
+        "INFO: Now visualizing index within particle array" <<
+        std::endl;
       break;
     case FluidVisualizationType::Neighbors:
       std::cout << "INFO: Now visualizing neighbors" << std::endl;
@@ -91,7 +121,8 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
       std::cout << "INFO: Visualization disabled" << std::endl;
       break;
     case FluidVisualizationType::Particle:
-      std::cout << "INFO: Now highlighting particle ID " << targetParticle << std::endl;
+      std::cout <<
+        "INFO: Now highlighting particle ID " << targetParticle << std::endl;
       break;
     case FluidVisualizationType::Pressure:
       std::cout << "INFO: Now visualizing pressure" << std::endl;
@@ -100,7 +131,8 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
       std::cout << "INFO: Now visualizing scalar velocity" << std::endl;
       break;
     case FluidVisualizationType::VelocityDir:
-      std::cout << "INFO: Now visualizing normalized velocity direction" << std::endl;
+      std::cout <<
+        "INFO: Now visualizing normalized velocity direction" << std::endl;
       break;
   }
   if (muViscosity <= 0) {
@@ -141,12 +173,18 @@ void SPHSolver::loadConfig(const std::string &file) {
   }
 
   // Read SPH Parameters
-  kStiffness = root["sph"].get("kStiffness", MFluidSolver_DEFAULT_SPH_STIFFNESS).asFloat();
-  muViscosity = root["sph"].get("muViscosity", MFluidSolver_DEFAULT_SPH_VISCOSITY).asFloat();
-  mMass = root["sph"].get("mMass", MFluidSolver_DEFAULT_SPH_MASS).asFloat();
-  dRestDensity = root["sph"].get("dRestDensity", MFluidSolver_DEFAULT_SPH_RESTDENSITY).asFloat();
-  dtTimestep = root["sph"].get("dtTimestep", MFluidSolver_DEFAULT_SPH_TIMESTEP).asFloat();
-  kernelRadius = root["sph"].get("kernelRadius", MFluidSolver_DEFAULT_SPH_KERNELRADIUS).asFloat();
+  kStiffness = root["sph"].get(
+    "kStiffness", MFluidSolver_DEFAULT_SPH_STIFFNESS).asFloat();
+  muViscosity = root["sph"].get(
+    "muViscosity", MFluidSolver_DEFAULT_SPH_VISCOSITY).asFloat();
+  mMass = root["sph"].get(
+    "mMass", MFluidSolver_DEFAULT_SPH_MASS).asFloat();
+  dRestDensity = root["sph"].get(
+    "dRestDensity", MFluidSolver_DEFAULT_SPH_RESTDENSITY).asFloat();
+  dtTimestep = root["sph"].get(
+    "dtTimestep", MFluidSolver_DEFAULT_SPH_TIMESTEP).asFloat();
+  kernelRadius = root["sph"].get(
+    "kernelRadius", MFluidSolver_DEFAULT_SPH_KERNELRADIUS).asFloat();
   setFixedTimestep(dtTimestep);
 
   // Read simulation time limits
@@ -157,13 +195,16 @@ void SPHSolver::loadConfig(const std::string &file) {
     maxUpdates = tempMaxUpdates;
     limitNumUpdates = true;
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-    std::cout << "INFO: Limiting number of updates to " << maxUpdates << std::endl;
+    std::cout <<
+      "INFO: Limiting number of updates to " << maxUpdates << std::endl;
     #endif
   }
 
   // Read neighbor search config
-  std::string neighborSearchTypeString = root["sph"].get("neighborSearchType", MFluidSolver_DEFAULT_SPH_NEIGHBORSEARCHTYPE_STRING).asString();
-  MUtils::toLowerInplace(neighborSearchTypeString);
+  std::string neighborSearchTypeString = root["sph"].get(
+    "neighborSearchType",
+    MFluidSolver_DEFAULT_SPH_NEIGHBORSEARCHTYPE_STRING).asString();
+  MUtils::toLowerInplace(&neighborSearchTypeString);
   if (neighborSearchTypeString == "naive") {
     nSearchType = NeighborSearchType::Naive;
   } else if (neighborSearchTypeString == "uniform") {
@@ -179,8 +220,9 @@ void SPHSolver::loadConfig(const std::string &file) {
   }
 
   // Read visualization config
-  std::string visualizationTypeString = root["visualization"].get("type", MFluidSolver_DEFAULT_VISUALIZATION_STRING).asString();
-  MUtils::toLowerInplace(visualizationTypeString);
+  std::string visualizationTypeString = root["visualization"].get(
+    "type", MFluidSolver_DEFAULT_VISUALIZATION_STRING).asString();
+  MUtils::toLowerInplace(&visualizationTypeString);
   if (visualizationTypeString == "density") {
     visualizationType = FluidVisualizationType::Density;
   } else if (visualizationTypeString == "index") {
@@ -198,15 +240,30 @@ void SPHSolver::loadConfig(const std::string &file) {
   } else if (visualizationTypeString == "velocitydir") {
     visualizationType = FluidVisualizationType::VelocityDir;
   }
-  visualizationMaxDensityDifference = root["visualization"].get("maxDensityDifference", MFluidSolver_DEFAULT_VISUALIZATION_MAXDENSITYDIFFERENCE).asFloat();
-  visualizationMaxPressure = root["visualization"].get("maxPressure", MFluidSolver_DEFAULT_VISUALIZATION_MAXPRESSURE).asFloat();
-  visualizationMaxVelocity = root["visualization"].get("maxVelocity", MFluidSolver_DEFAULT_VISUALIZATION_MAXVELOCITY).asFloat();
-  targetParticle = root["visualization"].get("particleId", 0).asInt();
-  const Json::Value velocityColorArray = root["visualization"]["velocityColor"];
+  visualizationMaxDensityDifference =
+    root["visualization"].get(
+      "maxDensityDifference",
+      MFluidSolver_DEFAULT_VISUALIZATION_MAXDENSITYDIFFERENCE).asFloat();
+  visualizationMaxPressure =
+    root["visualization"].get(
+      "maxPressure",
+      MFluidSolver_DEFAULT_VISUALIZATION_MAXPRESSURE).asFloat();
+  visualizationMaxVelocity =
+    root["visualization"].get(
+      "maxVelocity",
+      MFluidSolver_DEFAULT_VISUALIZATION_MAXVELOCITY).asFloat();
+  targetParticle =
+    root["visualization"].get(
+      "particleId",
+      0).asInt();
+  const Json::Value velocityColorArray =
+    root["visualization"]["velocityColor"];
   if (!velocityColorArray.isNull()) {
     for (unsigned int i = 0; i < velocityColorArray.size() && i < 3; ++i) {
-      visualizationVelocityColor[i] = (float)(velocityColorArray[i].asInt()) / 255.f;
-      if (visualizationVelocityColor[i] > 1.f) visualizationVelocityColor[i] = 1.f;
+      visualizationVelocityColor[i] =
+        static_cast<float>(velocityColorArray[i].asInt()) / 255.f;
+      if (visualizationVelocityColor[i] > 1.f)
+        visualizationVelocityColor[i] = 1.f;
     }
   }
 
@@ -227,7 +284,7 @@ void SPHSolver::update(double deltaT) {
 
   // NOTE: TIMESTEP IS OVERWRITTEN HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   deltaT = _fixedTimestep;
-  const float deltaTF = (float)deltaT;
+  const float deltaTF = static_cast<float>(deltaT);
 
   logTimestep();
   prepNeighborSearch();
@@ -235,20 +292,21 @@ void SPHSolver::update(double deltaT) {
 
   // Compute density and pressure
   iter_all_sphparticles_start
-    calculateDensity(p);
+    calculateDensity(&p);
 
     // Pressure
     double densityRatio = p.density() / dRestDensity;
     double pressureTemp = kStiffness * dRestDensity / 7.f * (
-      densityRatio * densityRatio * densityRatio * densityRatio * densityRatio * densityRatio * densityRatio - 1.f);
+      densityRatio * densityRatio * densityRatio * densityRatio *
+      densityRatio * densityRatio * densityRatio - 1.f);
     if (pressureTemp < 0) pressureTemp = 0;
     p.setPressure(pressureTemp);
   iter_all_sphparticles_end
 
   // Compute forces
   iter_all_sphparticles_start
-    calculateNonPressureForce(p);
-    calculatePressureForce(p);
+    calculateNonPressureForce(&p);
+    calculatePressureForce(&p);
   iter_all_sphparticles_end
 
   // Compute velocity and position, check bounds
@@ -258,10 +316,10 @@ void SPHSolver::update(double deltaT) {
     glm::vec3 newPos = p.position() + newVel * deltaTF;
     p.update(newVel, newPos);
 
-    enforceBounds(p);
+    enforceBounds(&p);
 
     largestIndex = _particles.back().index;
-    visualizeParticle(p);
+    visualizeParticle(&p);
   iter_all_sphparticles_end
 }
 
@@ -304,8 +362,10 @@ void SPHSolver::setParticleSeparation(float ps) {
 // Neighbor Search
 void SPHSolver::prepNeighborSearchAfterSceneLoad() {
   // Initially sort particles with standard sort
-  if (nSearchType == NeighborSearchType::IndexSortedUniformGridWithInsertion || nSearchType == NeighborSearchType::ZIndexSortedUniformGridWithInsertion) {
-    IndexSortedUniformGridNeighborSearch *isugSearch = static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
+  if (nSearchType == NeighborSearchType::IndexSortedUniformGridWithInsertion ||
+      nSearchType == NeighborSearchType::ZIndexSortedUniformGridWithInsertion) {
+    IndexSortedUniformGridNeighborSearch *isugSearch =
+      static_cast<IndexSortedUniformGridNeighborSearch *>(nSearch);
     isugSearch->isuGrid->resetAndFillCells(true);
   }
 }
@@ -337,7 +397,8 @@ void SPHSolver::visualizeRandomParticlesNeighbors() {
   }
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
   else {
-    std::cout << "WARN: No particles available for neighbor visualization" << std::endl;
+    std::cout <<
+      "WARN: No particles available for neighbor visualization" << std::endl;
   }
   #endif
 }
@@ -350,7 +411,8 @@ void SPHSolver::initVisualization() {
     }
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
     else {
-      std::cout << "WARN: No particles available for neighbor visualization" << std::endl;
+      std::cout <<
+        "WARN: No particles available for neighbor visualization" << std::endl;
     }
     #endif
   } else if (visualizationType == FluidVisualizationType::Particle) {
@@ -359,7 +421,8 @@ void SPHSolver::initVisualization() {
     }
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
     else {
-      std::cout << "WARN: Target particle " << targetParticle << " not available for visualization" << std::endl;
+      std::cout << "WARN: Target particle " << targetParticle <<
+        " not available for visualization" << std::endl;
     }
     #endif
   }
@@ -394,21 +457,24 @@ void SPHSolver::sceneLoaded() {
             minDistParticle = dist;
           }
           distSum += dist;
-        } // end for neighbors
+        }  // end for neighbors
 
         minDistSum += minDistParticle;
         if (minDistParticle < minDist) {
           minDist = minDistParticle;
         }
       }
-    } // end for particles
+    }  // end for particles
 
-    distSum /= (float)numPairs;
-    minDistSum /= (float)_particles.size();
+    distSum /= static_cast<float>(numPairs);
+    minDistSum /= static_cast<float>(_particles.size());
 
-    std::cout << "STAT: Average particle distance to neighbor: " << distSum << std::endl;
-    std::cout << "STAT: Average particle distance to nearest neighbor: " << minDistSum << std::endl;
-    std::cout << "STAT: Smallest particle distance to neighbor: " << minDist << std::endl;
+    std::cout << "STAT: Average particle distance to neighbor: " <<
+                  distSum << std::endl;
+    std::cout << "STAT: Average particle distance to nearest neighbor: " <<
+                  minDistSum << std::endl;
+    std::cout << "STAT: Smallest particle distance to neighbor: " <<
+                  minDist << std::endl;
   }
   #endif
 }
@@ -418,13 +484,17 @@ void SPHSolver::exportBgeo() {
   // http://www.disneyanimation.com/technology/partio.html
   // http://wdas.github.io/partio/doxygen/
   Partio::ParticlesDataMutable *particleData = Partio::create();
-  Partio::ParticlesDataMutable::iterator iterator = particleData->addParticles(_particles.size());
-  Partio::ParticleAttribute posAttr = particleData->addAttribute("position", Partio::ParticleAttributeType::VECTOR, 3);
+  Partio::ParticlesDataMutable::iterator iterator =
+    particleData->addParticles(_particles.size());
+  Partio::ParticleAttribute posAttr =
+    particleData->addAttribute(
+      "position", Partio::ParticleAttributeType::VECTOR, 3);
   Partio::ParticleAccessor posAcc(posAttr);
   iterator.addAccessor(posAcc);
 
   unsigned int idx = 0;
-  for (Partio::ParticlesDataMutable::iterator it = particleData->begin(); it != particleData->end(); ++it) {
+  for (Partio::ParticlesDataMutable::iterator it =
+      particleData->begin(); it != particleData->end(); ++it) {
     float *vectorData = posAcc.raw<float>(it);
     const glm::vec3 position = _particles.at(idx).position();
     for (unsigned int i = 0; i < 3; ++i) {
@@ -433,7 +503,7 @@ void SPHSolver::exportBgeo() {
     ++idx;
   }
 
-  Partio::write("test.bgeo",*particleData);
+  Partio::write("test.bgeo", *particleData);
   particleData->release();
 }
 #endif
@@ -444,7 +514,8 @@ void SPHSolver::exportVDB() {
     static_cast<UniformGridNeighborSearch *>(nSearch)->exportVDB();
   } else {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
-    std::cout << "WARN: Cannot export VDB unless using grid neighbor search" << std::endl;
+    std::cout <<
+      "WARN: Cannot export VDB unless using grid neighbor search" << std::endl;
     #endif
   }
 }
@@ -454,7 +525,9 @@ void SPHSolver::exportVDB() {
 bool SPHSolver::checkInited() {
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
   if (inited) {
-    std::cerr << "ERROR: Already inited SPH Solver. Config will not be applied" << std::endl;
+    std::cerr <<
+      "ERROR: Already inited SPH Solver. Config will not be applied" <<
+      std::endl;
   }
   #endif
 

@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  kernelFunctions.cpp
 //  MFluidSolver

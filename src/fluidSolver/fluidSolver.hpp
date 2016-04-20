@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  fluidSolver.hpp
 //  MFluidSolver
@@ -5,17 +6,19 @@
 #ifndef MFLUIDSOLVER_FLUIDSOLVER_HPP_
 #define MFLUIDSOLVER_FLUIDSOLVER_HPP_
 
-#include "MFluidSolverConfig.hpp"
-
 #include <tbb/tick_count.h>
+
+#include "MFluidSolverConfig.hpp"
 
 #include "geom/geom.hpp"
 #include "particle.hpp"
 
-enum FluidVisualizationType {Density, Index, Neighbors, None, Particle, Pressure, Velocity, VelocityDir};
+enum FluidVisualizationType {
+  Density, Index, Neighbors, None, Particle, Pressure, Velocity, VelocityDir
+};
 
 class FluidSolver {
-public:
+ public:
   FluidSolver();
   ~FluidSolver();
 
@@ -52,7 +55,7 @@ public:
   Geometry *fluidSource;
   Geometry *fluidContainer;
 
-protected:
+ protected:
   // Helpers
   inline void logTimestep();
 
@@ -81,4 +84,4 @@ protected:
 
 #include "fluidSolver/fluidSolver.inline.hpp"
 
-#endif /* MFLUIDSOLVER_FLUIDSOLVER_HPP_ */
+#endif  // MFLUIDSOLVER_FLUIDSOLVER_HPP_

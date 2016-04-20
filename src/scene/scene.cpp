@@ -1,18 +1,21 @@
+//  Copyright 2016 Robert Zhou
 //
 //  scene.cpp
 //  MFluidSolver
 
 #include "scene.hpp"
 
+#include <json/json.h>
+
 #include <fstream>
 #include <iostream>
-#include <json/json.h>
+#include <string>
 
 #include "geom/cube.hpp"
 #include "utils.hpp"
 
 Scene::Scene()
- : spawnMethod(ParticleSpawnMethod::Jittered) {
+    : spawnMethod(ParticleSpawnMethod::Jittered) {
 }
 
 Scene::~Scene() {
@@ -42,24 +45,34 @@ void Scene::loadJSON(const std::string &file) {
 
   // Load container info
   glm::vec3 containerDim;
-  containerDim.x = root["containerDim"].get("scaleX", MFluidSolver_DEFAULT_SCENE_CONTAINER_SCALEX).asFloat();
-  containerDim.y = root["containerDim"].get("scaleY", MFluidSolver_DEFAULT_SCENE_CONTAINER_SCALEY).asFloat();
-  containerDim.z = root["containerDim"].get("scaleZ", MFluidSolver_DEFAULT_SCENE_CONTAINER_SCALEZ).asFloat();
+  containerDim.x = root["containerDim"].get(
+    "scaleX", MFluidSolver_DEFAULT_SCENE_CONTAINER_SCALEX).asFloat();
+  containerDim.y = root["containerDim"].get(
+    "scaleY", MFluidSolver_DEFAULT_SCENE_CONTAINER_SCALEY).asFloat();
+  containerDim.z = root["containerDim"].get(
+    "scaleZ", MFluidSolver_DEFAULT_SCENE_CONTAINER_SCALEZ).asFloat();
 
   // Load source info
   glm::vec3 particleDim;
-  particleDim.x = root["particleDim"].get("scaleX", MFluidSolver_DEFAULT_SCENE_SOURCE_SCALEX).asFloat();
-  particleDim.y = root["particleDim"].get("scaleY", MFluidSolver_DEFAULT_SCENE_SOURCE_SCALEY).asFloat();
-  particleDim.z = root["particleDim"].get("scaleZ", MFluidSolver_DEFAULT_SCENE_SOURCE_SCALEZ).asFloat();
+  particleDim.x = root["particleDim"].get(
+    "scaleX", MFluidSolver_DEFAULT_SCENE_SOURCE_SCALEX).asFloat();
+  particleDim.y = root["particleDim"].get(
+    "scaleY", MFluidSolver_DEFAULT_SCENE_SOURCE_SCALEY).asFloat();
+  particleDim.z = root["particleDim"].get(
+    "scaleZ", MFluidSolver_DEFAULT_SCENE_SOURCE_SCALEZ).asFloat();
 
   glm::vec3 particleConPos;
-  particleConPos.x = root["particleDim"].get("posX", MFluidSolver_DEFAULT_SCENE_SOURCE_POSX).asFloat();
-  particleConPos.y = root["particleDim"].get("posY", MFluidSolver_DEFAULT_SCENE_SOURCE_POSY).asFloat();
-  particleConPos.z = root["particleDim"].get("posZ", MFluidSolver_DEFAULT_SCENE_SOURCE_POSZ).asFloat();
+  particleConPos.x = root["particleDim"].get(
+    "posX", MFluidSolver_DEFAULT_SCENE_SOURCE_POSX).asFloat();
+  particleConPos.y = root["particleDim"].get(
+    "posY", MFluidSolver_DEFAULT_SCENE_SOURCE_POSY).asFloat();
+  particleConPos.z = root["particleDim"].get(
+    "posZ", MFluidSolver_DEFAULT_SCENE_SOURCE_POSZ).asFloat();
 
   // Get spawn method info
-  std::string spawningMethodString = root.get("spawnMethod", MFluidSolver_DEFAULT_SPAWNMETHODSTRING).asString();
-  MUtils::toLowerInplace(spawningMethodString);
+  std::string spawningMethodString = root.get(
+    "spawnMethod", MFluidSolver_DEFAULT_SPAWNMETHODSTRING).asString();
+  MUtils::toLowerInplace(&spawningMethodString);
   if (spawningMethodString == "jittered") {
     spawnMethod = ParticleSpawnMethod::Jittered;
   } else if (spawningMethodString == "poissondisk") {
@@ -70,22 +83,30 @@ void Scene::loadJSON(const std::string &file) {
 
   // Load camera info
   glm::vec3 cameraEye;
-  cameraEye.x = root["camera"].get("eyeX", MFluidSolver_DEFAULT_SCENE_CAMERA_EYEX).asFloat();
-  cameraEye.y = root["camera"].get("eyeY", MFluidSolver_DEFAULT_SCENE_CAMERA_EYEY).asFloat();
-  cameraEye.z = root["camera"].get("eyeZ", MFluidSolver_DEFAULT_SCENE_CAMERA_EYEZ).asFloat();
+  cameraEye.x = root["camera"].get(
+    "eyeX", MFluidSolver_DEFAULT_SCENE_CAMERA_EYEX).asFloat();
+  cameraEye.y = root["camera"].get(
+    "eyeY", MFluidSolver_DEFAULT_SCENE_CAMERA_EYEY).asFloat();
+  cameraEye.z = root["camera"].get(
+    "eyeZ", MFluidSolver_DEFAULT_SCENE_CAMERA_EYEZ).asFloat();
 
   glm::vec3 cameraRef;
-  cameraRef.x = root["camera"].get("refX", MFluidSolver_DEFAULT_SCENE_CAMERA_REFX).asFloat();
-  cameraRef.y = root["camera"].get("refY", MFluidSolver_DEFAULT_SCENE_CAMERA_REFY).asFloat();
-  cameraRef.z = root["camera"].get("refZ", MFluidSolver_DEFAULT_SCENE_CAMERA_REFZ).asFloat();
+  cameraRef.x = root["camera"].get(
+    "refX", MFluidSolver_DEFAULT_SCENE_CAMERA_REFX).asFloat();
+  cameraRef.y = root["camera"].get(
+    "refY", MFluidSolver_DEFAULT_SCENE_CAMERA_REFY).asFloat();
+  cameraRef.z = root["camera"].get(
+    "refZ", MFluidSolver_DEFAULT_SCENE_CAMERA_REFZ).asFloat();
 
   // Set attributes
   camera.setEyeRef(cameraEye, cameraRef);
 
-  float particleSeparation = root.get("particleSeparation", MFluidSolver_DEFAULT_PARTICLE_SEPARATION).asFloat();
+  float particleSeparation = root.get(
+    "particleSeparation", MFluidSolver_DEFAULT_PARTICLE_SEPARATION).asFloat();
   solver.setParticleSeparation(particleSeparation);
 
-  int maxParticles = root.get("maxParticles", MFluidSolver_DEFAULT_MAX_PARTICLES).asInt();
+  int maxParticles = root.get(
+    "maxParticles", MFluidSolver_DEFAULT_MAX_PARTICLES).asInt();
   solver.setMaxParticles(maxParticles);
 
   solver.init(containerDim * -0.5f, containerDim * 0.5f);
@@ -100,12 +121,14 @@ void Scene::loadJSON(const std::string &file) {
 
   // Change geometry scale
   solver.fluidContainer->transform.setScale(containerDim);
-  solver.fluidSource->transform.setTransform(particleConPos, glm::vec3(0), particleDim);
+  solver.fluidSource->transform.setTransform(
+    particleConPos, glm::vec3(0), particleDim);
 
   seedScene();
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::cout << "INFO: Particle count: " << solver.numParticles() << " / " << solver.maxParticles() << std::endl;
+  std::cout << "INFO: Particle count: " <<
+    solver.numParticles() << " / " << solver.maxParticles() << std::endl;
   #endif
 
   solver.sceneLoaded();

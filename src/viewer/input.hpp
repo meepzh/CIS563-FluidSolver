@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  input.hpp
 //  MFluidSolver
@@ -10,10 +11,12 @@
 #include "viewer.hpp"
 
 class Input {
-public:
+ public:
   static Viewer *viewer;
-  static void computeArcballScrollCb(GLFWwindow* window, double xoffset, double yoffset);
-  static void checkKeys(GLFWwindow* window, int key, int scancode, int action, int mods);
+  static void computeArcballScrollCb(
+    GLFWwindow *window, double xoffset, double yoffset);
+  static void checkKeys(
+    GLFWwindow *window, int key, int scancode, int action, int mods);
 };
 
-#endif /* MFLUIDSOLVER_VIEWER_INPUT_HPP_ */
+#endif  // MFLUIDSOLVER_VIEWER_INPUT_HPP_

@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  sphIndexSortedUniformGrid.cpp
 //  MFluidSolver
@@ -5,6 +6,8 @@
 #include "sphIndexSortedUniformGrid.hpp"
 
 #include <algorithm>
+#include <string>
+#include <vector>
 
 #if MFluidSolver_USE_ASSERTS
 #include <cassert>
@@ -15,13 +18,14 @@
 
 #include "utils.hpp"
 
-SPHIndexSortedUniformGrid::SPHIndexSortedUniformGrid(const glm::vec3 &minBounds, const glm::vec3 &maxBounds, float cellSize, std::vector<SPHParticle> *master)
- : SPHGrid(minBounds, maxBounds, cellSize), master(master){
+SPHIndexSortedUniformGrid::SPHIndexSortedUniformGrid(
+  const glm::vec3 &minBounds, const glm::vec3 &maxBounds,
+  float cellSize, std::vector<SPHParticle> *master)
+    : SPHGrid(minBounds, maxBounds, cellSize), master(master) {
   cells.resize(numCells);
 }
 
 SPHIndexSortedUniformGrid::~SPHIndexSortedUniformGrid() {
-
 }
 
 void SPHIndexSortedUniformGrid::getNeighbors(SPHParticle *p) {
@@ -30,7 +34,8 @@ void SPHIndexSortedUniformGrid::getNeighbors(SPHParticle *p) {
   neighbors->clear();
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
-  std::cout << "TRACE: Getting neighbors for cell (" << pC.x << ", " << pC.y << ", " << pC.z << ")" << std::endl;
+  std::cout << "TRACE: Getting neighbors for cell (" <<
+                pC.x << ", " << pC.y << ", " << pC.z << ")" << std::endl;
   #endif
 
   // Search neighboring grid cells
@@ -41,12 +46,16 @@ void SPHIndexSortedUniformGrid::getNeighbors(SPHParticle *p) {
         coords = glm::ivec3(pC.x + i, pC.y + j, pC.z + k);
         // Note: we check kernel radius and self in neighbor search
         if (coords.x >= 0 && coords.y >= 0 && coords.z >= 0 &&
-            coords.x < cellBounds.x && coords.y < cellBounds.y && coords.z < cellBounds.z) {
-          unsigned long index = getIndex(coords);
+            coords.x < cellBounds.x &&
+            coords.y < cellBounds.y &&
+            coords.z < cellBounds.z) {
+          uint32_t index = getIndex(coords);
 
           #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
           unsigned int numNeighbors = 0;
-          std::cout << "TRACE: Accessing cell (" << coords.x << ", " << coords.y << ", " << coords.z << ")" << std::endl;
+          std::cout << "TRACE: Accessing cell (" <<
+            coords.x << ", " << coords.y << ", " << coords.z << ")" <<
+            std::endl;
           #endif
 
           // Add all particles in index sorted list
@@ -66,24 +75,23 @@ void SPHIndexSortedUniformGrid::getNeighbors(SPHParticle *p) {
                 break;
               }
               ++c;
-            } while(index == c->index);
+            } while (index == c->index);
           }
 
           #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
-          std::cout << "TRACE: Found " << numNeighbors << " neighbor(s)" << std::endl;
+          std::cout << "TRACE: Found " <<
+            numNeighbors << " neighbor(s)" << std::endl;
           #endif
         }
-      } // end for k
-    } // end for j
-  } // end for i
+      }  // end for k
+    }  // end for j
+  }  // end for i
 }
 
 void SPHIndexSortedUniformGrid::addParticle(SPHParticle *p) {
-
 }
 
 void SPHIndexSortedUniformGrid::updateParticle(SPHParticle *p) {
-
 }
 
 void SPHIndexSortedUniformGrid::clear() {
@@ -93,7 +101,8 @@ void SPHIndexSortedUniformGrid::clear() {
 }
 
 void SPHIndexSortedUniformGrid::printDiagnostics() {
-  std::cout << "No diagnostics available for index sorted uniform grids." << std::endl;
+  std::cout << "No diagnostics available for index sorted uniform grids." <<
+    std::endl;
 }
 
 void SPHIndexSortedUniformGrid::resetAndFillCells(bool initialSort) {
@@ -124,8 +133,10 @@ void SPHIndexSortedUniformGrid::insertSortedParticleListToGrid() {
     for (size_t i = 1; i < master->size(); ++i) {
   #endif
       #if MFluidSolver_USE_ASSERTS
-      assert((*master)[i - 1].index >= 0 && (*master)[i - 1].index < cells.size());
-      assert((*master)[i].index >= 0 && (*master)[i].index < cells.size());
+      assert((*master)[i - 1].index >= 0 &&
+             (*master)[i - 1].index < cells.size());
+      assert((*master)[i].index >= 0 &&
+             (*master)[i].index < cells.size());
       #endif
       if ((*master)[i].index != (*master)[i - 1].index) {
         cells[(*master)[i].index] = &((*master)[i]);
@@ -143,13 +154,15 @@ void SPHIndexSortedUniformGrid::sortParticles(bool initialSort) {
     std::sort(master->begin(), master->end(), SPHParticle::indexCompare);
   } else {
     // Insertion sort is faster for minimal changes in cell indices
-    MUtils::insertionSort(master->begin(), master->end(), SPHParticle::indexCompare);
+    MUtils::insertionSort(master->begin(), master->end(),
+      SPHParticle::indexCompare);
   }
   endParticle = &(master->back());
 }
 
 #if MFluidSolver_USE_OPENVDB
-void SPHIndexSortedUniformGrid::exportVDB(std::string &file, std::string &gridName) {
+void SPHIndexSortedUniformGrid::exportVDB(
+    const std::string &file, const std::string &gridName) {
   // TODO: export VDB
 }
 #endif

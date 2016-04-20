@@ -1,8 +1,12 @@
+//  Copyright 2016 Robert Zhou
 //
 //  neighborSearch.cpp
 //  MFluidSolver
 
 #include "neighborSearch.hpp"
+
+#include <string>
+#include <vector>
 
 #define GLM_FORCE_RADIANS
 #include <glm/gtx/norm.hpp>
@@ -96,20 +100,23 @@ void GridNeighborSearch::exportVDB() {
 }
 #endif
 
-UniformGridNeighborSearch::UniformGridNeighborSearch(float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize)
- : GridNeighborSearch(r) {
+UniformGridNeighborSearch::UniformGridNeighborSearch(
+  float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize)
+    : GridNeighborSearch(r) {
   grid = new SPHUniformGrid(gridMin, gridMax, cellSize);
 }
 
 IndexSortedUniformGridNeighborSearch::IndexSortedUniformGridNeighborSearch(
   float r, const glm::vec3 &gridMin, const glm::vec3 &gridMax, float cellSize,
   std::vector<SPHParticle> *master, bool useZCurve)
- : GridNeighborSearch(r) {
+    : GridNeighborSearch(r) {
   // Store a pointer to the grid so we don't need to cast
   if (useZCurve) {
-    isuGrid = new SPHZIndexSortedUniformGrid(gridMin, gridMax, cellSize, master);
+    isuGrid =
+      new SPHZIndexSortedUniformGrid(gridMin, gridMax, cellSize, master);
   } else {
-    isuGrid = new SPHIndexSortedUniformGrid(gridMin, gridMax, cellSize, master);
+    isuGrid =
+      new SPHIndexSortedUniformGrid(gridMin, gridMax, cellSize, master);
   }
   grid = isuGrid;
 }

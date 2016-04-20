@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  particle.hpp
 //  MFluidSolver
@@ -5,15 +6,15 @@
 #ifndef MFLUIDSOLVER_FLUIDSOLVER_PARTICLE_HPP_
 #define MFLUIDSOLVER_FLUIDSOLVER_PARTICLE_HPP_
 
-#include "MFluidSolverConfig.hpp"
-
 #include <glm/glm.hpp>
 
+#include "MFluidSolverConfig.hpp"
+
 class Particle {
-public:
+ public:
   // Constructors / Destructors
   Particle() : Particle(1, glm::vec3(0)) {}
-  Particle(const glm::vec3 &position) : Particle(1, position) {}
+  explicit Particle(const glm::vec3 &position) : Particle(1, position) {}
   Particle(float mass, const glm::vec3 &position);
 
   // Operators
@@ -21,7 +22,8 @@ public:
 
   // Update
   inline void setPosition(const glm::vec3 &position);
-  inline void reverseVelocity(const glm::ivec3 &directions, float bounceCoefficient = MFluidSolver_DEFAULT_PARTICLE_BOUNCE);
+  inline void reverseVelocity(const glm::ivec3 &directions,
+    float bounceCoefficient = MFluidSolver_DEFAULT_PARTICLE_BOUNCE);
   inline void stopVelocity(const glm::ivec3 &directions);
 
   // Properties
@@ -35,7 +37,7 @@ public:
   static unsigned int lastParticleID;
   #endif
 
-protected:
+ protected:
   float _mass;
   glm::vec3 _position;
   glm::vec3 _velocity;
@@ -43,4 +45,4 @@ protected:
 
 #include "fluidSolver/particle.inline.hpp"
 
-#endif /* MFLUIDSOLVER_FLUIDSOLVER_PARTICLE_HPP_ */
+#endif  // MFLUIDSOLVER_FLUIDSOLVER_PARTICLE_HPP_

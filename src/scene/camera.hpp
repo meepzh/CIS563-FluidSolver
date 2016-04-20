@@ -1,20 +1,23 @@
+//  Copyright 2016 Robert Zhou
 //
 //  camera.hpp
 //  MFluidSolver
 
-#ifndef MFLUIDSOLVER_CAMERA_HPP_
-#define MFLUIDSOLVER_CAMERA_HPP_
-
-#include "MFluidSolverConfig.hpp"
+#ifndef MFLUIDSOLVER_SCENE_CAMERA_HPP_
+#define MFLUIDSOLVER_SCENE_CAMERA_HPP_
 
 #include <glm/glm.hpp>
 
+#include "MFluidSolverConfig.hpp"
+
 class Camera {
-public:
+ public:
   Camera() : Camera(1024, 768) {}
-  Camera(unsigned int width, unsigned int height)
-   : Camera(width, height, glm::vec3(0, 0, 12), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)) {}
-  Camera(unsigned int width, unsigned int height, const glm::vec3 &eye, const glm::vec3 &ref, const glm::vec3 &worldUp);
+  Camera(unsigned int width, unsigned int height) : Camera(
+    width, height,
+    glm::vec3(0, 0, 12), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)) {}
+  Camera(unsigned int width, unsigned int height,
+    const glm::vec3 &eye, const glm::vec3 &ref, const glm::vec3 &worldUp);
 
   // Matrices
   glm::mat4 getViewProjection();
@@ -25,9 +28,12 @@ public:
   void recomputeEyeAndRef();
 
   // Arcball
-  void arcball(const glm::dvec2 &p1, const glm::dvec2 &p2); // Rotation interface for the mouse
-  void pan(const glm::dvec2 &p1, const glm::dvec2 &p2); // Panning interface for the mouse
-  void zoom(double delta); // Zooming interface for the scroll wheel
+  // Rotation interface for the mouse
+  void arcball(const glm::dvec2 &p1, const glm::dvec2 &p2);
+  // Panning interface for the mouse
+  void pan(const glm::dvec2 &p1, const glm::dvec2 &p2);
+  // Zooming interface for the scroll wheel
+  void zoom(double delta);
 
   // Properties
   float nearClip,
@@ -36,7 +42,7 @@ public:
   const glm::vec3 right() const;
   const glm::vec3 up() const;
 
-private:
+ private:
   // Dimensions
   unsigned int _width,
                _height;
@@ -72,4 +78,4 @@ private:
         _aspect;
 };
 
-#endif /* MFLUIDSOLVER_CAMERA_HPP_ */
+#endif  // MFLUIDSOLVER_SCENE_CAMERA_HPP_

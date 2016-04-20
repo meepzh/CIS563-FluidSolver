@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  iiSphSolver.hpp
 //  MFluidSolver
@@ -12,14 +13,14 @@
 #endif
 
 class IISPHSolver : public SPHSolver {
-public:
+ public:
   virtual void update(double deltaT);
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
   unsigned int numFlyaways;
   #endif
 
-protected:
+ protected:
   #if MFluidSolver_PARTICLE_STATS
   std::mutex statsCoutMutex;
   glm::vec3 averagePosition;
@@ -37,4 +38,4 @@ protected:
   #endif
 };
 
-#endif /* MFLUIDSOLVER_SPHSOLVER_IISPHSOLVER_HPP_ */
+#endif  // MFLUIDSOLVER_SPHSOLVER_IISPHSOLVER_HPP_

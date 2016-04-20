@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  sphParticle.hpp
 //  MFluidSolver
@@ -10,9 +11,9 @@
 #include "fluidSolver/particle.hpp"
 
 class SPHParticle : public Particle {
-public:
+ public:
   SPHParticle() : SPHParticle(1, glm::vec3(0)) {}
-  SPHParticle(const glm::vec3 &position) : SPHParticle(1, position) {}
+  explicit SPHParticle(const glm::vec3 &position) : SPHParticle(1, position) {}
   SPHParticle(float mass, const glm::vec3 &position);
 
   virtual inline void update(const glm::vec3 &newVel, const glm::vec3 &newPos);
@@ -48,13 +49,14 @@ public:
   inline void setVelocityIntermediate(const glm::vec3 &v);
 
   // Index
-  unsigned long index;
+  uint32_t index;
   static bool indexCompare(const SPHParticle &a, const SPHParticle &b);
 
   #if MFluidSolver_PARTICLE_STATS
   bool flyaway;
   #endif
-protected:
+
+ protected:
   float _density;
   float _pressure;
   glm::vec3 _nonPressureForce;
@@ -72,4 +74,4 @@ protected:
 
 #include "sphParticle.inline.hpp"
 
-#endif /* MFLUIDSOLVER_FLUIDSOLVER_SPHSOLVER_SPHPARTICLE_HPP_ */
+#endif  // MFLUIDSOLVER_FLUIDSOLVER_SPHSOLVER_SPHPARTICLE_HPP_

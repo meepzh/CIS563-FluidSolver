@@ -1,25 +1,29 @@
+//  Copyright 2016 Robert Zhou
 //
 //  main.cpp
 //  MFluidSolver
 
-#include "MFluidSolverConfig.hpp"
-
-#include <ctime>
-#include <fstream>
-#include <json/json.h>
-
 // OpenGL Includes
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
 
-// Optional Includes
+// Misc C Includes
+#include <json/json.h>
+#include <ctime>
+#include <fstream>
+
+#include "MFluidSolverConfig.hpp"
+
+// Optional C Includes
 #if MFluidSolver_USE_OPENVDB
 #include <openvdb/openvdb.h>
 #endif
 #if MFluidSolver_USE_TBB
 #include <tbb/task_scheduler_init.h>
 #endif
+
+// Misc C++ Includes
+#include <glm/glm.hpp>
 
 // Project Includes
 #include "viewer/input.hpp"
@@ -30,7 +34,9 @@
 int main() {
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   // Print version info
-  std::cout << "INFO: Version " << MFluidSolver_VERSION_MAJOR << "." << MFluidSolver_VERSION_MINOR << std::endl;
+  std::cout << "INFO: Version " <<
+    MFluidSolver_VERSION_MAJOR << "." <<
+    MFluidSolver_VERSION_MINOR << std::endl;
   #endif
 
   // Initialize GLFW
@@ -65,19 +71,28 @@ int main() {
   bool success = reader.parse(sceneStream, root, false);
   if (!success) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
-    std::cerr << "ERROR: Failed to parse config file " << configJSON.c_str() << std::endl;
+    std::cerr << "ERROR: Failed to parse config file " <<
+      configJSON.c_str() << std::endl;
     #endif
   }
 
   // Parse JSON
-  std::string sceneJSON = root.get("sceneJSON", MFluidSolver_DEFAULT_SCENE_FILE).asString();
-  std::string wireVShader = root.get("wireVShader", MFluidSolver_DEFAULT_WIRE_VERT_FILE).asString();
-  std::string wireFShader = root.get("wireFShader", MFluidSolver_DEFAULT_WIRE_FRAG_FILE).asString();
-  std::string particleVShader = root.get("particleVShader", MFluidSolver_DEFAULT_PARTICLE_VERT_FILE).asString();
-  std::string particleFShader = root.get("particleFShader", MFluidSolver_DEFAULT_PARTICLE_FRAG_FILE).asString();
-  std::string particleTexture = root.get("particleTexture", MFluidSolver_DEFAULT_PARTICLE_TEX_FILE).asString();
-  bool autoRender = root.get("autoRender", MFluidSolver_DEFAULT_AUTORENDER).asBool();
-  unsigned int renderSkip = root.get("renderSkip", MFluidSolver_DEFAULT_RENDERSKIP).asInt();
+  std::string sceneJSON = root.get(
+    "sceneJSON", MFluidSolver_DEFAULT_SCENE_FILE).asString();
+  std::string wireVShader = root.get(
+    "wireVShader", MFluidSolver_DEFAULT_WIRE_VERT_FILE).asString();
+  std::string wireFShader = root.get(
+    "wireFShader", MFluidSolver_DEFAULT_WIRE_FRAG_FILE).asString();
+  std::string particleVShader = root.get(
+    "particleVShader", MFluidSolver_DEFAULT_PARTICLE_VERT_FILE).asString();
+  std::string particleFShader = root.get(
+    "particleFShader", MFluidSolver_DEFAULT_PARTICLE_FRAG_FILE).asString();
+  std::string particleTexture = root.get(
+    "particleTexture", MFluidSolver_DEFAULT_PARTICLE_TEX_FILE).asString();
+  bool autoRender = root.get(
+    "autoRender", MFluidSolver_DEFAULT_AUTORENDER).asBool();
+  unsigned int renderSkip = root.get(
+    "renderSkip", MFluidSolver_DEFAULT_RENDERSKIP).asInt();
 
   // Initialize project objects
   Viewer viewer;
@@ -108,7 +123,10 @@ int main() {
   glPointSize(MFluidSolver_DEFAULT_POINT_SIZE);
 
   // Set background color
-  glClearColor(MFluidSolver_DEFAULT_BG_COLOR_R, MFluidSolver_DEFAULT_BG_COLOR_G, MFluidSolver_DEFAULT_BG_COLOR_B, 0.0f);
+  glClearColor(MFluidSolver_DEFAULT_BG_COLOR_R,
+               MFluidSolver_DEFAULT_BG_COLOR_G,
+               MFluidSolver_DEFAULT_BG_COLOR_B,
+               0.0f);
 
   // Bind vertex array object
   GLuint vaoID;
@@ -117,7 +135,9 @@ int main() {
 
   // After vertex array object init
   viewer.wireShader = new ShaderProgram(wireVShader, wireFShader);
-  viewer.particleShader = new ParticleShaderProgram(&(viewer.scene.solver), particleVShader, particleFShader, particleTexture);
+  viewer.particleShader =
+    new ParticleShaderProgram(&(viewer.scene.solver),
+      particleVShader, particleFShader, particleTexture);
   viewer.scene.solver.loadConfig(configJSON);
   viewer.configureScreenshot(autoRender, renderSkip);
 

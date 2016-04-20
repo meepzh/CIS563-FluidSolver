@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  utils.hpp
 //  MFluidSolver
@@ -26,7 +27,8 @@ namespace MUtils {
   }
 
   // Based on pseudocode from https://en.wikipedia.org/wiki/Insertion_sort
-  template<class RandomIt, class Compare> inline void insertionSort(RandomIt first, RandomIt last, Compare comp) {
+  template<class RandomIt, class Compare>
+  inline void insertionSort(RandomIt first, RandomIt last, Compare comp) {
     for (RandomIt i = first + 1; i < last; ++i) {
       for (RandomIt j = i; j > first && comp(*j, *(j - 1)); --j) {
         std::iter_swap(j, j - 1);
@@ -36,8 +38,8 @@ namespace MUtils {
 
   // Non-template functions
   std::string toHMS(double seconds);
-  void toLowerInplace(std::string &input);
+  void toLowerInplace(std::string *input);
   std::string zeroPad(int number, unsigned int digits);
-}
+}  // namespace MUtils
 
-#endif /* MFLUIDSOLVER_UTILS_HPP_ */
+#endif  // MFLUIDSOLVER_UTILS_HPP_

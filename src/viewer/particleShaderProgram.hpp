@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  particleShaderProgram.hpp
 //  MFluidSolver
@@ -5,16 +6,17 @@
 #ifndef MFLUIDSOLVER_VIEWER_PARTICLESHADERPROGRAM_HPP_
 #define MFLUIDSOLVER_VIEWER_PARTICLESHADERPROGRAM_HPP_
 
-#include "MFluidSolverConfig.hpp"
-
 #include <iostream>
+#include <string>
 #include <vector>
+
+#include "MFluidSolverConfig.hpp"
 
 #include "fluidSolver/sphSolver/sphSolver.hpp"
 #include "shaderProgram.hpp"
 
 class ParticleShaderProgram : public ShaderProgram {
-public:
+ public:
   ParticleShaderProgram(SPHSolver *solver,
     const std::string &vertexShader, const std::string &fragmentShader,
     const std::string &billboardDDS);
@@ -26,7 +28,7 @@ public:
   glm::vec3 *particleColorArray;
   glm::vec3 *particlePositionArray;
 
-private:
+ private:
   SPHSolver *solver;
   GLuint billboardTextureID;
 
@@ -43,4 +45,4 @@ private:
   GLuint particlePositionArrBufferID;
 };
 
-#endif /* MFLUIDSOLVER_VIEWER_PARTICLESHADERPROGRAM_HPP_ */
+#endif  // MFLUIDSOLVER_VIEWER_PARTICLESHADERPROGRAM_HPP_

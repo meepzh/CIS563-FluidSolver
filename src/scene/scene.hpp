@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  scene.hpp
 //  MFluidSolver
@@ -5,11 +6,11 @@
 #ifndef MFLUIDSOLVER_SCENE_HPP_
 #define MFLUIDSOLVER_SCENE_HPP_
 
-#include "MFluidSolverConfig.hpp"
-
 #include <exception>
 #include <string>
 #include <vector>
+
+#include "MFluidSolverConfig.hpp"
 
 #include "fluidSolver/sphSolver/iiSphSolver.hpp"
 #include "camera.hpp"
@@ -19,7 +20,7 @@ struct InvalidSceneException : std::exception {
 };
 
 class Scene {
-public:
+ public:
   Scene();
   ~Scene();
   void loadJSON(const std::string &file);
@@ -29,8 +30,8 @@ public:
   std::vector<Geometry *> objects;
   Camera camera;
 
-private:
+ private:
   ParticleSpawnMethod spawnMethod;
 };
 
-#endif /* MFLUIDSOLVER_SCENE_HPP_ */
+#endif  // MFLUIDSOLVER_SCENE_HPP_

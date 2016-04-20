@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  cube.cpp
 //  MFluidSolver
@@ -51,15 +52,18 @@ Cube::Cube(const glm::vec3 &color) : _color(color) {
   // Bind
   glGenBuffers(1, &vertexIndexArrBufferID);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexIndexArrBufferID);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, IDX_COUNT * sizeof(GLuint), idx, GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, IDX_COUNT * sizeof(GLuint), idx,
+    GL_STATIC_DRAW);
 
   glGenBuffers(1, &vertexPositionArrBufferID);
   glBindBuffer(GL_ARRAY_BUFFER, vertexPositionArrBufferID);
-  glBufferData(GL_ARRAY_BUFFER, VERT_COUNT * sizeof(glm::vec3), vert_pos, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, VERT_COUNT * sizeof(glm::vec3), vert_pos,
+    GL_STATIC_DRAW);
 
   glGenBuffers(1, &vertexColorArrBufferID);
   glBindBuffer(GL_ARRAY_BUFFER, vertexColorArrBufferID);
-  glBufferData(GL_ARRAY_BUFFER, VERT_COUNT * sizeof(glm::vec3), vert_col, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, VERT_COUNT * sizeof(glm::vec3), vert_col,
+    GL_STATIC_DRAW);
 }
 
 GLenum Cube::drawMode() {
@@ -75,17 +79,20 @@ bool Cube::intersects(const glm::vec3 &point) const {
   return false;
 }
 
-void Cube::spawnParticlesInVolume(FluidSolver *solver, ParticleSpawnMethod spawnMethod) const {
+void Cube::spawnParticlesInVolume(
+    FluidSolver *solver, ParticleSpawnMethod spawnMethod) const {
   // Store old particle count for number of particles we added and max particle check
   unsigned int oldParticleCount = solver->numParticles();
   if (oldParticleCount == solver->maxParticles()) {
-    std::cout << "INFO: Reached max number of particles (" << solver->maxParticles() << ")!" << std::endl;
+    std::cout << "INFO: Reached max number of particles (" <<
+      solver->maxParticles() << ")!" << std::endl;
     return;
   }
 
   unsigned int particlesLeft = solver->maxParticles() - oldParticleCount;
   glm::vec3 minBound, maxBound;
-  getBoundsByTransformedMinMax(glm::vec3(-0.5f), glm::vec3(0.5f), minBound, maxBound);
+  getBoundsByTransformedMinMax(
+    glm::vec3(-0.5f), glm::vec3(0.5f), &minBound, &maxBound);
 
   float particleSeparation = solver->particleSeparation();
   unsigned int count = 0;
@@ -121,7 +128,8 @@ void Cube::spawnParticlesInVolume(FluidSolver *solver, ParticleSpawnMethod spawn
           const float xOffset = unifDist(gen) - halfSeparation;
           const float yOffset = unifDist(gen) - halfSeparation;
           const float zOffset = unifDist(gen) - halfSeparation;
-          solver->addParticleAt(glm::vec3(i + xOffset, j + yOffset, k + zOffset));
+          solver->addParticleAt(glm::vec3(
+            i + xOffset, j + yOffset, k + zOffset));
           ++count;
           if (count > particlesLeft) break;
         }
@@ -132,29 +140,31 @@ void Cube::spawnParticlesInVolume(FluidSolver *solver, ParticleSpawnMethod spawn
   }
 
   if (solver->numParticles() == solver->maxParticles()) {
-    std::cout << "INFO: Reached max number of particles (" << solver->maxParticles() << ")!" << std::endl;
+    std::cout << "INFO: Reached max number of particles (" <<
+      solver->maxParticles() << ")!" << std::endl;
   }
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-  std::cout << "INFO: Cube (" << name << ") seeded " << (solver->numParticles() - oldParticleCount) << " particles" << std::endl;
+  std::cout << "INFO: Cube (" << name << ") seeded " <<
+    (solver->numParticles() - oldParticleCount) << " particles" << std::endl;
   #endif
 }
 
-bool Cube::intersects(const glm::vec3 &point, glm::ivec3 &violations) const {
+bool Cube::intersects(const glm::vec3 &point, glm::ivec3 *violations) const {
   glm::vec3 localPos = glm::vec3(transform.invT() * glm::vec4(point, 1.f));
 
   // Check each axis locally
-  violations.x = 0;
-  if (localPos.x <= -0.5f) violations.x = -1;
-  else if (localPos.x > 0.5f) violations.x = 1;
+  violations->x = 0;
+  if (localPos.x <= -0.5f) violations->x = -1;
+  else if (localPos.x > 0.5f) violations->x = 1;
 
-  violations.y = 0;
-  if (localPos.y <= -0.5f) violations.y = -1;
-  else if (localPos.y > 0.5f) violations.y = 1;
+  violations->y = 0;
+  if (localPos.y <= -0.5f) violations->y = -1;
+  else if (localPos.y > 0.5f) violations->y = 1;
 
-  violations.z = 0;
-  if (localPos.z <= -0.5f) violations.z = -1;
-  else if (localPos.z > 0.5f) violations.z = 1;
+  violations->z = 0;
+  if (localPos.z <= -0.5f) violations->z = -1;
+  else if (localPos.z > 0.5f) violations->z = 1;
 
-  return violations.x == 0 && violations.y == 0 && violations.z == 0;
+  return violations->x == 0 && violations->y == 0 && violations->z == 0;
 }

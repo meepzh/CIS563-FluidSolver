@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  zCurve.hpp
 //  MFluidSolver
@@ -5,10 +6,10 @@
 #ifndef MFLUIDSOLVER_FLUIDSOLVER_ZCURVE_HPP_
 #define MFLUIDSOLVER_FLUIDSOLVER_ZCURVE_HPP_
 
-#include "MFluidSolverConfig.hpp"
-
 #include <exception>
 #include <glm/glm.hpp>
+
+#include "MFluidSolverConfig.hpp"
 
 #if MFluidSolver_ZCURVE_CACHING
 #include <vector>
@@ -25,32 +26,36 @@ struct simpleIvec3Comparator {
 #endif
 
 struct ZCurveNegativeBoundsException : std::exception {
-  const char *what() const noexcept {return "ZCurve cannot be constructed with negative cell bounds.\n";};
+  const char *what() const noexcept {
+    return "ZCurve cannot be constructed with negative cell bounds.\n";
+  };
 };
 
 struct ZCurveTooLargeException : std::exception {
-  const char *what() const noexcept {return "ZCurve cannot use such high indices";};
+  const char *what() const noexcept {
+    return "ZCurve cannot use such high indices";
+  };
 };
 
 class ZCurve {
-public:
+ public:
   ZCurve();
-  unsigned long initWithMax(const glm::ivec3 &cellBounds);
-  unsigned long getIndex(const glm::ivec3 &p);
-  unsigned long getIndex(unsigned int i, unsigned int j, unsigned int k);
-  unsigned long splitBits(unsigned long i);
+  uint32_t initWithMax(const glm::ivec3 &cellBounds);
+  uint32_t getIndex(const glm::ivec3 &p);
+  uint32_t getIndex(unsigned int i, unsigned int j, unsigned int k);
+  uint32_t splitBits(uint32_t i);
 
   #if MFluidSolver_ZCURVE_CACHING
-  unsigned long calculateIndex(const glm::ivec3 &p);
-  unsigned long calculateIndex(unsigned int i, unsigned int j, unsigned int k);
+  uint32_t calculateIndex(const glm::ivec3 &p);
+  uint32_t calculateIndex(unsigned int i, unsigned int j, unsigned int k);
   #endif
 
-private:
-  unsigned long maxIndex;
+ private:
+  uint32_t maxIndex;
 
   #if MFluidSolver_ZCURVE_CACHING
-  std::vector<std::vector<std::vector<unsigned long>>> cache;
+  std::vector<std::vector<std::vector<uint32_t>>> cache;
   #endif
 };
 
-#endif /* MFLUIDSOLVER_FLUIDSOLVER_ZCURVE_HPP_ */
+#endif  // MFLUIDSOLVER_FLUIDSOLVER_ZCURVE_HPP_

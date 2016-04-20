@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  particle.cpp
 //  MFluidSolver
@@ -10,8 +11,11 @@ unsigned int Particle::lastParticleID = 1;
 
 // Constructors / Destructors
 Particle::Particle(float mass, const glm::vec3 &position)
- : color(MFluidSolver_DEFAULT_PARTICLE_COLOR_R, MFluidSolver_DEFAULT_PARTICLE_COLOR_G, MFluidSolver_DEFAULT_PARTICLE_COLOR_B),
-   _mass(mass), _position(position), _velocity(glm::vec3(0)) {
+    : color(
+        MFluidSolver_DEFAULT_PARTICLE_COLOR_R,
+        MFluidSolver_DEFAULT_PARTICLE_COLOR_G,
+        MFluidSolver_DEFAULT_PARTICLE_COLOR_B),
+      _mass(mass), _position(position), _velocity(glm::vec3(0)) {
   #if MFluidSolver_PARTICLE_STATS
   // Note assumes atomic access to lastParticleID
   ID = lastParticleID;
@@ -21,5 +25,7 @@ Particle::Particle(float mass, const glm::vec3 &position)
 
 // Operators
 bool Particle::operator==(const Particle &b) const {
-  return b.mass() == _mass && b.position() == _position && b.velocity() == _velocity;
+  return b.mass() == _mass &&
+         b.position() == _position &&
+         b.velocity() == _velocity;
 }

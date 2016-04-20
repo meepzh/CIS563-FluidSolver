@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  sphSolver.hpp
 //  MFluidSolver
@@ -5,14 +6,10 @@
 #ifndef MFLUIDSOLVER_SPHSOLVER_HPP_
 #define MFLUIDSOLVER_SPHSOLVER_HPP_
 
-#include "MFluidSolverConfig.hpp"
-
+#include <string>
 #include <vector>
 
-#include "fluidSolver/fluidSolver.hpp"
-#include "kernelFunctions.hpp"
-#include "neighborSearch.hpp"
-#include "sphParticle.hpp"
+#include "MFluidSolverConfig.hpp"
 
 #if MFluidSolver_USE_PARTIO
 #include <partio/Partio.h>
@@ -22,8 +19,13 @@
 #include <tbb/parallel_reduce.h>
 #endif
 
+#include "fluidSolver/fluidSolver.hpp"
+#include "kernelFunctions.hpp"
+#include "neighborSearch.hpp"
+#include "sphParticle.hpp"
+
 class SPHSolver : public FluidSolver {
-public:
+ public:
   // Constructor / Destructor
   SPHSolver();
   ~SPHSolver();
@@ -60,7 +62,7 @@ public:
   virtual void exportVDB();
   #endif
 
-protected:
+ protected:
   // Initialization
   virtual bool checkInited();
   bool inited;
@@ -70,11 +72,11 @@ protected:
   virtual inline void runNeighborSearch();
 
   // Helpers
-  inline void calculateDensity(SPHParticle &p);
-  virtual inline void calculateNonPressureForce(SPHParticle &p);
-  virtual inline void calculatePressureForce(SPHParticle &p);
-  inline void enforceBounds(SPHParticle &p);
-  virtual inline void visualizeParticle(SPHParticle &p);
+  inline void calculateDensity(SPHParticle *p);
+  virtual inline void calculateNonPressureForce(SPHParticle *p);
+  virtual inline void calculatePressureForce(SPHParticle *p);
+  inline void enforceBounds(SPHParticle *p);
+  virtual inline void visualizeParticle(SPHParticle *p);
 
   // SPH Required Objects
   NeighborSearchType nSearchType;
@@ -95,4 +97,4 @@ protected:
 
 #include "sphSolver.inline.hpp"
 
-#endif /* MFLUIDSOLVER_SPHSOLVER_HPP_ */
+#endif  // MFLUIDSOLVER_SPHSOLVER_HPP_

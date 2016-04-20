@@ -1,6 +1,10 @@
+//  Copyright 2016 Robert Zhou
 //
 //  MFluidSolverConfig.hpp
 //  MFluidSolver
+
+#ifndef MFLUIDSOLVER_CONFIG_HPP_
+#define MFLUIDSOLVER_CONFIG_HPP_
 
 // Versioning
 #define MFluidSolver_VERSION_MAJOR @MFluidSolver_VERSION_MAJOR@
@@ -9,8 +13,8 @@
 // Logging/Debug
 #define MFluidSolver_LOG_LEVEL 2
 #define MFluidSolver_OPENGL_DEBUG 1
-#define MFluidSolver_PARTICLE_STATS 1
-#define MFluidSolver_PARTICLE_STATS_FILES 1
+#define MFluidSolver_PARTICLE_STATS 0
+#define MFluidSolver_PARTICLE_STATS_FILES 0
 #define MFluidSolver_USE_ASSERTS 0
 
 #define MFluidSolver_RECORD_PERFORMANCE 1
@@ -98,3 +102,5 @@
 #define MFluidSolver_LOG_INFO 2
 #define MFluidSolver_LOG_DEBUG 1
 #define MFluidSolver_LOG_TRACE 0
+
+#endif  // MFLUIDSOLVER_CONFIG_HPP_

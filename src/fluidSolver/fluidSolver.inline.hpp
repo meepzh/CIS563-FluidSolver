@@ -1,6 +1,10 @@
+//  Copyright 2016 Robert Zhou
 //
 //  fluidSolver.inline.hpp
 //  MFluidSolver
+
+#ifndef MFLUIDSOLVER_FLUIDSOLVER_INLINE_HPP_
+#define MFLUIDSOLVER_FLUIDSOLVER_INLINE_HPP_
 
 // Simulation End
 inline bool FluidSolver::checkIfEnded() {
@@ -31,3 +35,5 @@ inline void FluidSolver::logTimestep() {
   std::cout << "DEBUG: Updating by " << deltaT << " seconds" << std::endl;
   #endif
 }
+
+#endif  // MFLUIDSOLVER_FLUIDSOLVER_INLINE_HPP_

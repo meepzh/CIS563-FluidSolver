@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  kernelFunctions.hpp
 //  MFluidSolver
@@ -8,7 +9,7 @@
 #include <glm/glm.hpp>
 
 class KernelFunctions {
-public:
+ public:
   KernelFunctions();
 
   void setKernelRadius(const double &h);
@@ -27,7 +28,7 @@ public:
   inline double computeViscous(const glm::vec3 &r);
   inline double computeViscousLaplacian(const glm::vec3 &r);
 
-private:
+ private:
   double _h;
   double _h2;
   double _h3;
@@ -39,4 +40,4 @@ private:
 
 #include "kernelFunctions.inline.hpp"
 
-#endif /* MFLUIDSOLVER_SPHSOLVER_KERNELFUNCTIONS_HPP_ */
+#endif  // MFLUIDSOLVER_SPHSOLVER_KERNELFUNCTIONS_HPP_

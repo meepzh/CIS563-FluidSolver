@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  drawable.hpp
 //  MFluidSolver
@@ -8,7 +9,7 @@
 #include <GL/glew.h>
 
 class Drawable {
-public:
+ public:
   Drawable();
   ~Drawable();
   bool bindIndexBuffer();
@@ -17,11 +18,11 @@ public:
   virtual GLenum drawMode();
   GLenum idxCount();
 
-protected:
+ protected:
   GLuint vertexIndexArrBufferID;
   GLuint vertexColorArrBufferID;
   GLuint vertexPositionArrBufferID;
   int _idxCount;
 };
 
-#endif /* MFLUIDSOLVER_GEOM_DRAWABLE_HPP_ */
+#endif  // MFLUIDSOLVER_GEOM_DRAWABLE_HPP_

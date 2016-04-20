@@ -1,8 +1,15 @@
+//  Copyright 2016 Robert Zhou
 //
 //  sphParticle.inline.hpp
 //  MFluidSolver
 
-inline void SPHParticle::update(const glm::vec3 &newVel, const glm::vec3 &newPos) {
+#ifndef MFLUIDSOLVER_FLUIDSOLVER_SPHSOLVER_SPHPARTICLE_INLINE_HPP_
+#define MFLUIDSOLVER_FLUIDSOLVER_SPHSOLVER_SPHPARTICLE_INLINE_HPP_
+
+#include <vector>
+
+inline void SPHParticle::update(
+    const glm::vec3 &newVel, const glm::vec3 &newPos) {
   _oldPosition = _position;
   _velocity = newVel;
   _position = newPos;
@@ -97,10 +104,13 @@ inline void SPHParticle::setDensityIntermediate(float d) {
   _densityIntermediate = d;
 }
 
-inline void SPHParticle::setSumPressureDisplacementFromNeighbors(const glm::vec3 &d) {
+inline void SPHParticle::setSumPressureDisplacementFromNeighbors(
+    const glm::vec3 &d) {
   _sumPressureDisplacementFromNeighbors = d;
 }
 
 inline void SPHParticle::setVelocityIntermediate(const glm::vec3 &v) {
   _velocityIntermediate = v;
 }
+
+#endif  // MFLUIDSOLVER_FLUIDSOLVER_SPHSOLVER_SPHPARTICLE_INLINE_HPP_

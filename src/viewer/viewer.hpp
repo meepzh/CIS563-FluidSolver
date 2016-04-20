@@ -1,3 +1,4 @@
+//  Copyright 2016 Robert Zhou
 //
 //  viewer.hpp
 //  MFluidSolver
@@ -5,28 +6,33 @@
 #ifndef MFLUIDSOLVER_VIEWER_HPP_
 #define MFLUIDSOLVER_VIEWER_HPP_
 
-#include "MFluidSolverConfig.hpp"
-
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <vector>
+
+#include "MFluidSolverConfig.hpp"
 
 #include "scene/scene.hpp"
 #include "particleShaderProgram.hpp"
 #include "utils.hpp"
 
 struct GLFWWindowInitException : std::exception {
-  const char *what() const noexcept {return "Failed to initialize GLFW window.\n";};
+  const char *what() const noexcept {
+    return "Failed to initialize GLFW window.\n";
+  };
 };
 struct GLEWInitException : std::exception {
-  const char *what() const noexcept {return "Failed to initialize GLEW.\n";};
+  const char *what() const noexcept {
+    return "Failed to initialize GLEW.\n";
+  };
 };
 
 class Viewer {
-public:
+ public:
   Viewer();
   ~Viewer();
-  void init(int width = MFluidSolver_DEFAULT_WINDOW_WIDTH, int height = MFluidSolver_DEFAULT_WINDOW_HEIGHT);
+  void init(int width = MFluidSolver_DEFAULT_WINDOW_WIDTH,
+            int height = MFluidSolver_DEFAULT_WINDOW_HEIGHT);
   void run();
   void screenshot(bool manual = false);
   void stop();
@@ -39,7 +45,7 @@ public:
   ShaderProgram *wireShader;
   ParticleShaderProgram *particleShader;
 
-private:
+ private:
   int _width, _height;
 
   int leftState, rightState;
@@ -54,4 +60,4 @@ private:
   inline unsigned int screenshotIndex(unsigned int x, unsigned int y);
 };
 
-#endif /* MFLUIDSOLVER_VIEWER_HPP_ */
+#endif  // MFLUIDSOLVER_VIEWER_HPP_

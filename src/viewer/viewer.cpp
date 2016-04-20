@@ -1,22 +1,25 @@
+//  Copyright 2016 Robert Zhou
 //
 //  viewer.cpp
 //  MFluidSolver
 
 #include "viewer.hpp"
 
+#include <stb_image/stb_image_write.h>
 #include <algorithm>
-#include <boost/filesystem.hpp>
 #include <cstring>
 #include <ctime>
-#include <stb_image/stb_image_write.h>
 #include <string>
+#include <vector>
 
-#include "input.hpp"
+#include <boost/filesystem.hpp>
 
 #if MFluidSolver_USE_TBB
 #include <tbb/blocked_range2d.h>
 #include <tbb/parallel_for.h>
 #endif
+
+#include "input.hpp"
 
 #if MFluidSolver_OPENGL_DEBUG
 void APIENTRY openglDebugCallbackFunction(GLenum source, GLenum type, GLuint id,
@@ -46,7 +49,7 @@ void APIENTRY openglDebugCallbackFunction(GLenum source, GLenum type, GLuint id,
       sType = "OTHER";
       break;
   }
-  switch (severity){
+  switch (severity) {
     case GL_DEBUG_SEVERITY_LOW:
       sSeverity = "LOW";
       #if MFluidSolver_LOG_LEVEL > MFluidSolver_LOG_WARN
@@ -71,15 +74,17 @@ void APIENTRY openglDebugCallbackFunction(GLenum source, GLenum type, GLuint id,
       return;
       #endif
   }
-  *outStream << "GL:" << sType << "(" << sSeverity << "): " << message << std::endl;
+  *outStream << "GL:" << sType <<
+    "(" << sSeverity << "): " << message << std::endl;
 }
 #endif
 
 Viewer::Viewer()
-: wireShader(nullptr), particleShader(nullptr),
-  oldLeftState(GLFW_RELEASE), oldRightState(GLFW_RELEASE),
-  paused(true), shouldStop(false),
-  autoRender(MFluidSolver_DEFAULT_AUTORENDER), renderSkip(MFluidSolver_DEFAULT_RENDERSKIP) {
+    : wireShader(nullptr), particleShader(nullptr),
+      oldLeftState(GLFW_RELEASE), oldRightState(GLFW_RELEASE),
+      paused(true), shouldStop(false),
+      autoRender(MFluidSolver_DEFAULT_AUTORENDER),
+      renderSkip(MFluidSolver_DEFAULT_RENDERSKIP) {
 }
 
 Viewer::~Viewer() {
@@ -91,11 +96,13 @@ void Viewer::init(int width, int height) {
   _height = height;
 
   // http://www.opengl-tutorial.org/beginners-tutorials/tutorial-1-opening-a-window/
-  glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
+  glfwWindowHint(GLFW_SAMPLES, 4);  // 4x antialiasing
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL
+  // To make MacOS happy; should not be needed
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  // We don't want the old OpenGL
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   #if MFluidSolver_OPENGL_DEBUG
   glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
@@ -107,12 +114,12 @@ void Viewer::init(int width, int height) {
     std::cerr << "FATAL: Failed to open GLFW window" << std::endl;
     #endif
 
-    getchar(); // Wait for key before quit
+    getchar();  // Wait for key before quit
     glfwTerminate();
     throw GLFWWindowInitException();
   }
 
-  glfwMakeContextCurrent(window); // Initialize GLEW
+  glfwMakeContextCurrent(window);  // Initialize GLEW
 
   glewExperimental = GL_TRUE;
   if (glewInit() != GLEW_OK) {
@@ -120,7 +127,7 @@ void Viewer::init(int width, int height) {
     std::cerr << "FATAL: Failed to initialize GLEW" << std::endl;
     #endif
 
-    getchar(); // Wait for key before quit
+    getchar();  // Wait for key before quit
     glfwTerminate();
     throw GLEWInitException();
   }
@@ -168,7 +175,8 @@ void Viewer::init(int width, int height) {
   boost::filesystem::create_directory(particleStatsDir);
   if (!boost::filesystem::is_directory(particleStatsDir)) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
-    std::cout << "ERROR: particlestats folder could not be created" << std::endl;
+    std::cout << "ERROR: particlestats folder could not be created" <<
+      std::endl;
     #endif
   }
   #endif
@@ -271,10 +279,12 @@ inline unsigned int Viewer::screenshotIndex(unsigned int x, unsigned int y) {
 
 void Viewer::screenshot(bool manual) {
   // Capture
-  glReadPixels(0, 0, _width, _height, GL_RGB, GL_UNSIGNED_BYTE, screenshotArray.data());
+  glReadPixels(0, 0, _width, _height,
+    GL_RGB, GL_UNSIGNED_BYTE, screenshotArray.data());
 
   // Flip
-  std::string outString = MUtils::zeroPad(scene.solver.updateNumber(), 6) + ".tga";
+  std::string outString =
+    MUtils::zeroPad(scene.solver.updateNumber(), 6) + ".tga";
   if (manual) {
     outString = "screenshot_" + outString;
   } else {
@@ -283,15 +293,17 @@ void Viewer::screenshot(bool manual) {
   #if MFluidSolver_USE_TBB
   tbb::parallel_for(tbb::blocked_range2d<unsigned int>(0, _width, 0, _height),
     [&](const tbb::blocked_range2d<unsigned int> &r) {
-      for(unsigned int x = r.rows().begin(); x != r.rows().end(); ++x) {
-        for(unsigned int y = r.cols().begin(); y != r.cols().end(); ++y) {
+      for (unsigned int x = r.rows().begin(); x != r.rows().end(); ++x) {
+        for (unsigned int y = r.cols().begin(); y != r.cols().end(); ++y) {
   #else
       for (unsigned int x = 0; x < _width; ++x) {
         for (unsigned int y = 0; y < _height / 2; ++y) {
   #endif
           for (unsigned int i = 0; i < 3; ++i) {
-            screenshotArrayFlipped[3 * screenshotIndex(x, y) + i] = screenshotArray[3 * screenshotIndex(x, _height - 1 - y) + i];
-            screenshotArrayFlipped[3 * screenshotIndex(x, _height - 1 - y) + i] = screenshotArray[3 * screenshotIndex(x, y) + i];
+            screenshotArrayFlipped[3 * screenshotIndex(x, y) + i] =
+              screenshotArray[3 * screenshotIndex(x, _height - 1 - y) + i];
+            screenshotArrayFlipped[3 * screenshotIndex(x, _height - 1 - y) + i] =
+              screenshotArray[3 * screenshotIndex(x, y) + i];
           }
   #if MFluidSolver_USE_TBB
         }
@@ -304,15 +316,18 @@ void Viewer::screenshot(bool manual) {
   #endif
 
   // Write
-  int result = stbi_write_tga(outString.c_str(), _width, _height, 3, screenshotArrayFlipped.data());
+  int result = stbi_write_tga(outString.c_str(),
+    _width, _height, 3, screenshotArrayFlipped.data());
   if (manual) {
-    if (result != 0) { // Success
+    if (result != 0) {  // Success
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
-      std::cout << "INFO: Wrote rendered image to: " << outString << std::endl;
+      std::cout << "INFO: Wrote rendered image to: " <<
+        outString << std::endl;
       #endif
-    } else { // Failure
+    } else {  // Failure
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
-      std::cout << "ERROR: Failed to write rendered image to: " << outString << std::endl;
+      std::cout << "ERROR: Failed to write rendered image to: " <<
+        outString << std::endl;
       #endif
     }
   }
@@ -326,7 +341,9 @@ void Viewer::configureScreenshot(bool render, unsigned int skip) {
   boost::filesystem::create_directory(renderDir);
   if (!boost::filesystem::is_directory(renderDir)) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
-    std::cout << "ERROR: Failed to create render folder. Disabling autorender" << std::endl;
+    std::cout <<
+      "ERROR: Failed to create render folder. Disabling autorender" <<
+      std::endl;
     #endif
     autoRender = false;
   }
@@ -334,7 +351,8 @@ void Viewer::configureScreenshot(bool render, unsigned int skip) {
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   if (autoRender) {
     if (renderSkip > 1) {
-      std::cout << "INFO: Rendering 1 frame for every " << renderSkip << " to file!" << std::endl;
+      std::cout << "INFO: Rendering 1 frame for every " <<
+        renderSkip << " to file!" << std::endl;
     } else {
       std::cout << "INFO: Rendering every frame to file!" << std::endl;
     }

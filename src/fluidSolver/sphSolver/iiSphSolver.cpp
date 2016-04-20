@@ -1,10 +1,12 @@
+//  Copyright 2016 Robert Zhou
 //
 //  iiSphSolver.cpp
 //  MFluidSolver
 
 #include "iiSphSolver.hpp"
 
-#include "utils.hpp"
+#include <functional>
+#include <vector>
 
 #if MFluidSolver_PARTICLE_STATS_FILES
 #include <fstream>
@@ -12,13 +14,15 @@
 #include <string>
 #endif
 
+#include "utils.hpp"
+
 void IISPHSolver::update(double deltaT) {
   if (checkIfEnded()) return;
 
   // NOTE: TIMESTEP IS OVERWRITTEN HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   deltaT = _fixedTimestep;
-  const float deltaTF = (float)deltaT;
-  const float deltaTF2 = (float)(deltaT * deltaT);
+  const float deltaTF = static_cast<float>(deltaT);
+  const float deltaTF2 = static_cast<float>(deltaT * deltaT);
 
   logTimestep();
   prepNeighborSearch();
@@ -50,21 +54,30 @@ void IISPHSolver::update(double deltaT) {
 
   // Output files
   std::ofstream pressureForceMagnitudeOutFile;
-  pressureForceMagnitudeOutFile.open(pressureForceMagnitudeSS.str(), std::ofstream::out | std::ofstream::trunc);
+  pressureForceMagnitudeOutFile.open(
+    pressureForceMagnitudeSS.str(),
+    std::ofstream::out | std::ofstream::trunc);
   std::ofstream pressureOutFile;
-  pressureOutFile.open(pressureSS.str(), std::ofstream::out | std::ofstream::trunc);
+  pressureOutFile.open(
+    pressureSS.str(),
+    std::ofstream::out | std::ofstream::trunc);
   std::ofstream velocityMagnitudeOutFile;
-  velocityMagnitudeOutFile.open(velocityMagnitudeSS.str(), std::ofstream::out | std::ofstream::trunc);
+  velocityMagnitudeOutFile.open(
+    velocityMagnitudeSS.str(),
+    std::ofstream::out | std::ofstream::trunc);
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
   if (!pressureForceMagnitudeOutFile.is_open()) {
-    std::cerr << "ERROR: Could not open file: " << pressureForceMagnitudeSS.str() << std::endl;
+    std::cerr << "ERROR: Could not open file: " <<
+                  pressureForceMagnitudeSS.str() << std::endl;
   }
   if (!pressureOutFile.is_open()) {
-    std::cerr << "ERROR: Could not open file: " << pressureSS.str() << std::endl;
+    std::cerr << "ERROR: Could not open file: " <<
+                  pressureSS.str() << std::endl;
   }
   if (!velocityMagnitudeOutFile.is_open()) {
-    std::cerr << "ERROR: Could not open file: " << velocityMagnitudeSS.str() << std::endl;
+    std::cerr << "ERROR: Could not open file: " <<
+                  velocityMagnitudeSS.str() << std::endl;
   }
   #endif
   #endif
@@ -76,14 +89,15 @@ void IISPHSolver::update(double deltaT) {
 
   // Procedure: Predict Advection
   iter_all_sphparticles_start
-    calculateDensity(p);
-    calculateNonPressureForce(p);
+    calculateDensity(&p);
+    calculateNonPressureForce(&p);
 
     #if MFluidSolver_PARTICLE_STATS
     // Check if flyaway is affecting other particles
     if (p.flyaway && !p.neighbors()->empty()) {
       for (SPHParticle *q : *(p.neighbors())) {
-        std::cout << "STAT: Particle ID " << q->ID << " is now neighbors with flyaway ID " << p.ID << std::endl;
+        std::cout << "STAT: Particle ID " << q->ID <<
+          " is now neighbors with flyaway ID " << p.ID << std::endl;
       }
     }
     #endif
@@ -98,22 +112,60 @@ void IISPHSolver::update(double deltaT) {
       const glm::vec3 velocity = p.velocity();
       const glm::vec3 nonPressureForce = p.nonPressureForce();
       const glm::vec3 pressureForce = p.pressureForce();
-      const glm::vec3 advectionDisplacementEstimate = p.advectionDisplacementEstimate();
-      const glm::vec3 sumPressureDisplacementFromNeighbors = p.sumPressureDisplacementFromNeighbors();
+      const glm::vec3 advectionDisplacementEstimate =
+        p.advectionDisplacementEstimate();
+      const glm::vec3 sumPressureDisplacementFromNeighbors =
+        p.sumPressureDisplacementFromNeighbors();
       const glm::vec3 velocityIntermediate = p.velocityIntermediate();
 
-      std::cout << "WARN: Flyaway particle ID " << p.ID << " detected! Printing information:" << std::endl
-                << "WARN: - Position: (" << position.x << ", " << position.y << ", " << position.z << ") with magnitude " << glm::length(position) << std::endl
-                << "WARN: - Velocity: (" << velocity.x << ", " << velocity.y << ", " << velocity.z << ") with magnitude " << glm::length(velocity) << std::endl
+      std::cout << "WARN: Flyaway particle ID " <<
+                          p.ID << " detected! Printing information:" <<
+                          std::endl
+                << "WARN: - Position: (" <<
+                            position.x << ", " <<
+                            position.y << ", " <<
+                            position.z << ") with magnitude " <<
+                            glm::length(position) << std::endl
+                << "WARN: - Velocity: (" <<
+                            velocity.x << ", " <<
+                            velocity.y << ", " <<
+                            velocity.z << ") with magnitude " <<
+                            glm::length(velocity) << std::endl
                 << "WARN: - Density: " << p.density() << std::endl
                 << "WARN: - Pressure: " << p.pressure() << std::endl
-                << "WARN: - Non-pressure Force: (" << nonPressureForce.x << ", " << nonPressureForce.y << ", " << nonPressureForce.z << ") with magnitude " << glm::length(nonPressureForce) << std::endl
-                << "WARN: - Pressure Force: (" << pressureForce.x << ", " << pressureForce.y << ", " << pressureForce.z << ") with magnitude " << glm::length(pressureForce) << std::endl
-                << "WARN: - Advection Diagonal: " << p.advectionDiagonal() << std::endl
-                << "WARN: - Advection Displacement Estimate: (" << advectionDisplacementEstimate.x << ", " << advectionDisplacementEstimate.y << ", " << advectionDisplacementEstimate.z << ") with magnitude " << glm::length(advectionDisplacementEstimate) << std::endl
-                << "WARN: - Density Intermediate: " << p.densityIntermediate() << std::endl
-                << "WARN: - Sum Pressure Displacement From Neighbors: (" << sumPressureDisplacementFromNeighbors.x << ", " << sumPressureDisplacementFromNeighbors.y << ", " << sumPressureDisplacementFromNeighbors.z << ") with magnitude " << glm::length(sumPressureDisplacementFromNeighbors) << std::endl
-                << "WARN: - Velocity Intermediate: (" << velocityIntermediate.x << ", " << velocityIntermediate.y << ", " << velocityIntermediate.z << ") with magnitude " << glm::length(velocityIntermediate) << std::endl;
+                << "WARN: - Non-pressure Force: (" <<
+                            nonPressureForce.x << ", " <<
+                            nonPressureForce.y << ", " <<
+                            nonPressureForce.z << ") with magnitude " <<
+                            glm::length(nonPressureForce) << std::endl
+                << "WARN: - Pressure Force: (" <<
+                            pressureForce.x << ", " <<
+                            pressureForce.y << ", " <<
+                            pressureForce.z << ") with magnitude " <<
+                            glm::length(pressureForce) << std::endl
+                << "WARN: - Advection Diagonal: " <<
+                            p.advectionDiagonal() << std::endl
+                << "WARN: - Advection Displacement Estimate: (" <<
+                            advectionDisplacementEstimate.x << ", " <<
+                            advectionDisplacementEstimate.y << ", " <<
+                            advectionDisplacementEstimate.z <<
+                            ") with magnitude " <<
+                            glm::length(advectionDisplacementEstimate) <<
+                            std::endl
+                << "WARN: - Density Intermediate: " <<
+                            p.densityIntermediate() << std::endl
+                << "WARN: - Sum Pressure Displacement From Neighbors: (" <<
+                            sumPressureDisplacementFromNeighbors.x << ", " <<
+                            sumPressureDisplacementFromNeighbors.y << ", " <<
+                            sumPressureDisplacementFromNeighbors.z <<
+                            ") with magnitude " <<
+                            glm::length(sumPressureDisplacementFromNeighbors) <<
+                            std::endl
+                << "WARN: - Velocity Intermediate: (" <<
+                            velocityIntermediate.x << ", " <<
+                            velocityIntermediate.y << ", " <<
+                            velocityIntermediate.z << ") with magnitude " <<
+                            glm::length(velocityIntermediate) << std::endl;
       #endif
       ++numFlyaways;
     }
@@ -128,17 +180,21 @@ void IISPHSolver::update(double deltaT) {
     averageNonPressureForceMagnitude += glm::length(p.nonPressureForce());
     averagePressureForceMagnitude += glm::length(p.pressureForce());
     averageAdvectionDiagonal += p.advectionDiagonal();
-    averageAdvectionDisplacementMagnitude += glm::length(p.advectionDisplacementEstimate());
+    averageAdvectionDisplacementMagnitude +=
+      glm::length(p.advectionDisplacementEstimate());
     averageDensityIntermediate += p.densityIntermediate();
-    averageSumPressureDisplacementFromNeighborsMagnitude += glm::length(p.sumPressureDisplacementFromNeighbors());
-    averageVelocityIntermediateMagnitude += glm::length(p.velocityIntermediate());
+    averageSumPressureDisplacementFromNeighborsMagnitude +=
+      glm::length(p.sumPressureDisplacementFromNeighbors());
+    averageVelocityIntermediateMagnitude +=
+      glm::length(p.velocityIntermediate());
     averageNumNeighbors += p.neighbors()->size();
 
     #if MFluidSolver_PARTICLE_STATS_FILES
     {
       std::lock_guard<std::mutex> guard(statsCoutMutex);
       if (pressureForceMagnitudeOutFile.is_open()) {
-          pressureForceMagnitudeOutFile << glm::length(p.pressureForce()) << std::endl;
+          pressureForceMagnitudeOutFile <<
+            glm::length(p.pressureForce()) << std::endl;
       }
       if (pressureOutFile.is_open()) {
         pressureOutFile << p.pressure() << std::endl;
@@ -151,7 +207,8 @@ void IISPHSolver::update(double deltaT) {
     #endif
 
     // Calculate intermediate velocity v^{adv}_i
-    p.setVelocityIntermediate(p.velocity() + p.nonPressureForce() / p.mass() * deltaTF);
+    p.setVelocityIntermediate(
+      p.velocity() + p.nonPressureForce() / p.mass() * deltaTF);
 
     // Calculate advection displacement estimate d_{ii}
     glm::vec3 advectionDisplacementEstimate(0);
@@ -160,7 +217,8 @@ void IISPHSolver::update(double deltaT) {
       advectionDisplacementEstimate -= n->mass() / pDensity2 *
         kernelFunctions.computeSpikyGradient(p.position() - n->position());
     }
-    p.setAdvectionDisplacementEstimate(advectionDisplacementEstimate * deltaTF2);
+    p.setAdvectionDisplacementEstimate(
+      advectionDisplacementEstimate * deltaTF2);
   iter_all_sphparticles_end
 
   iter_all_sphparticles_start
@@ -169,17 +227,23 @@ void IISPHSolver::update(double deltaT) {
     float advectionDensity = 0;
     for (SPHParticle *n : *(p.neighbors())) {
       // Calculate spikyGradientIJ
-      const glm::vec3 spikyGradientFromNeighbor = kernelFunctions.computeSpikyGradient(p.position() - n->position());
+      const glm::vec3 spikyGradientFromNeighbor =
+        kernelFunctions.computeSpikyGradient(p.position() - n->position());
 
       // Calculate dJI
-      glm::vec3 displacementToNeighbor = -deltaTF2 * p.mass() / (p.density() * p.density()) *
+      glm::vec3 displacementToNeighbor =
+        -deltaTF2 * p.mass() / (p.density() * p.density()) *
         kernelFunctions.computeSpikyGradient(n->position() - p.position());
 
       advectionDensity += n->mass() *
-        glm::dot(p.velocityIntermediate() - n->velocityIntermediate(), spikyGradientFromNeighbor);
+        glm::dot(
+          p.velocityIntermediate() - n->velocityIntermediate(),
+          spikyGradientFromNeighbor);
 
       advectionDiagonal += n->mass() *
-        glm::dot(p.advectionDisplacementEstimate() - displacementToNeighbor, spikyGradientFromNeighbor);
+        glm::dot(
+          p.advectionDisplacementEstimate() - displacementToNeighbor,
+          spikyGradientFromNeighbor);
     }
     p.setDensityIntermediate(p.density() + advectionDensity * deltaTF);
     p.setAdvectionDiagonal(advectionDiagonal);
@@ -203,25 +267,42 @@ void IISPHSolver::update(double deltaT) {
   averageSumPressureDisplacementFromNeighborsMagnitude /= _numParticles;
   averageVelocityIntermediateMagnitude /= _numParticles;
   averageNumNeighbors /= _numParticles;
-  std::cout << "STAT: Printing particle statistics for frame " << numUpdates << std::endl
-            << "STAT: Average position: (" << averagePosition.x << ", " << averagePosition.y << ", " << averagePosition.z << ")" << std::endl
-            << "STAT: Average velocity magnitude: " << averageVelocityMagnitude << std::endl
-            << "STAT: Average density: " << averageDensity << std::endl
-            << "STAT: Average pressure: " << averagePressure << std::endl
-            << "STAT: Average non-pressure force magnitude: " << averageNonPressureForceMagnitude << std::endl
-            << "STAT: Average pressure force magnitude: " << averagePressureForceMagnitude << std::endl
-            << "STAT: Average advection diagonal: " << averageAdvectionDiagonal << std::endl
-            << "STAT: Average advection displacement magnitude: " << averageAdvectionDisplacementMagnitude << std::endl
-            << "STAT: Average density intermediate: " << averageDensityIntermediate << std::endl
-            << "STAT: Average sum pressure displacement from neighbors magnitude: " << averageSumPressureDisplacementFromNeighborsMagnitude << std::endl
-            << "STAT: Average velocity intermediate magnitude: " << averageVelocityIntermediateMagnitude << std::endl
-            << "STAT: Average number of neighbors: " << averageNumNeighbors << std::endl;
+  std::cout << "STAT: Printing particle statistics for frame " <<
+                      numUpdates << std::endl
+            << "STAT: Average position: (" <<
+                      averagePosition.x << ", " <<
+                      averagePosition.y << ", " <<
+                      averagePosition.z << ")" << std::endl
+            << "STAT: Average velocity magnitude: " <<
+                      averageVelocityMagnitude << std::endl
+            << "STAT: Average density: " <<
+                      averageDensity << std::endl
+            << "STAT: Average pressure: " <<
+                      averagePressure << std::endl
+            << "STAT: Average non-pressure force magnitude: " <<
+                      averageNonPressureForceMagnitude << std::endl
+            << "STAT: Average pressure force magnitude: " <<
+                      averagePressureForceMagnitude << std::endl
+            << "STAT: Average advection diagonal: " <<
+                      averageAdvectionDiagonal << std::endl
+            << "STAT: Average advection displacement magnitude: " <<
+                      averageAdvectionDisplacementMagnitude << std::endl
+            << "STAT: Average density intermediate: " <<
+                      averageDensityIntermediate << std::endl
+            << "STAT: Average sum pressure displacement from neighbors magnitude: " <<
+                      averageSumPressureDisplacementFromNeighborsMagnitude << std::endl
+            << "STAT: Average velocity intermediate magnitude: " <<
+                      averageVelocityIntermediateMagnitude << std::endl
+            << "STAT: Average number of neighbors: " <<
+                      averageNumNeighbors << std::endl;
   #endif
   // Print number of flyaways (use WARN channel if enabled)
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
   // WARN, >0, any STAT
   if (numFlyaways > 0) {
-    std::cout << "WARN: We have " << numFlyaways << " flyaway particle(s) that could potentially crash the simulation" << std::endl;
+    std::cout << "WARN: We have " << numFlyaways <<
+      " flyaway particle(s) that could potentially crash the simulation" <<
+      std::endl;
   }
   #if MFluidSolver_PARTICLE_STATS
   else {
@@ -231,7 +312,8 @@ void IISPHSolver::update(double deltaT) {
   #endif
   #elif MFluidSolver_PARTICLE_STATS
   // !WARN, any #, STAT
-  std::cout << "STAT: We have " << numFlyaways << " flyaway particle(s)!" << std::endl;
+  std::cout << "STAT: We have " << numFlyaways <<
+    " flyaway particle(s)!" << std::endl;
   #endif
 
   // Procedure: Pressure Solve
@@ -240,7 +322,8 @@ void IISPHSolver::update(double deltaT) {
   float averageDensity = 0;
   const float tolerance = 0.01f * kernelRadius;
   std::vector<float> nextPressures(_particles.size());
-  while (((averageDensity - dRestDensity) > tolerance || iteration < 2) && iteration < 1e6) {
+  while (((averageDensity - dRestDensity) > tolerance || iteration < 2)
+      && iteration < 1e6) {
     averageDensity = 0;
     validParticles = _particles.size();
 
@@ -248,14 +331,18 @@ void IISPHSolver::update(double deltaT) {
       // Calculate pressure displacement due to neighbors
       glm::vec3 pressureDisplacementFromNeighbors(0);
       for (SPHParticle *n : *(p.neighbors())) {
-        pressureDisplacementFromNeighbors -= n->mass() * n->pressure() / (n->density() * n->density()) *
+        pressureDisplacementFromNeighbors -=
+          n->mass() * n->pressure() / (n->density() * n->density()) *
           kernelFunctions.computeSpikyGradient(p.position() - n->position());
       }
-      p.setSumPressureDisplacementFromNeighbors(pressureDisplacementFromNeighbors * deltaTF2);
+      p.setSumPressureDisplacementFromNeighbors(
+        pressureDisplacementFromNeighbors * deltaTF2);
     iter_all_sphparticles_end
 
     #if MFluidSolver_USE_TBB
-    averageDensity = tbb::parallel_reduce(tbb::blocked_range<size_t>(0, _particles.size()), 0.f,
+    averageDensity =
+      tbb::parallel_reduce(
+        tbb::blocked_range<size_t>(0, _particles.size()), 0.f,
       [&](const tbb::blocked_range<size_t> &r, float partialDensitySum) {
         for (unsigned int i = r.begin(); i != r.end(); ++i) {
     #else
@@ -270,20 +357,25 @@ void IISPHSolver::update(double deltaT) {
           }
 
           // Calculate next pressure
-          const float omega = 0.5f;
+          constexpr float omega = 0.5f;
           float densityDifferenceBySelf = 0;
           float densityDifferenceByNeighborsPressure = 0;
           for (SPHParticle *n : *(p.neighbors())) {
             // Calculate spikyGradientIJ
-            glm::vec3 spikyGradientFromNeighbor = kernelFunctions.computeSpikyGradient(p.position() - n->position());
+            glm::vec3 spikyGradientFromNeighbor =
+              kernelFunctions.computeSpikyGradient(
+                p.position() - n->position());
 
             // Calculate dJI
-            glm::vec3 displacementToNeighbor = -deltaTF2 * p.mass() / (p.density() * p.density()) *
-              kernelFunctions.computeSpikyGradient(n->position() - p.position());
+            glm::vec3 displacementToNeighbor =
+              -deltaTF2 * p.mass() / (p.density() * p.density()) *
+              kernelFunctions.computeSpikyGradient(
+                n->position() - p.position());
 
             // Calculate density difference components
             densityDifferenceBySelf += n->mass() *
-              glm::dot(p.advectionDisplacementEstimate() - displacementToNeighbor, spikyGradientFromNeighbor);
+              glm::dot(p.advectionDisplacementEstimate() -
+                displacementToNeighbor, spikyGradientFromNeighbor);
 
             densityDifferenceByNeighborsPressure += n->mass() * glm::dot(
               p.sumPressureDisplacementFromNeighbors() -
@@ -293,8 +385,11 @@ void IISPHSolver::update(double deltaT) {
           }
           // Sum for average density
           // Note that density depends on old pressure
-          const float tempDensityEstimate = p.densityIntermediate() + p.pressure() * densityDifferenceBySelf + densityDifferenceByNeighborsPressure;
-          //p.setDensity(tempDensityEstimate); // TODO: Check if we should do this
+          const float tempDensityEstimate = p.densityIntermediate() +
+            p.pressure() * densityDifferenceBySelf +
+            densityDifferenceByNeighborsPressure;
+            // TODO: Check if we should do this
+            // p.setDensity(tempDensityEstimate);
 
           // Update average density
           #if MFluidSolver_USE_TBB
@@ -312,18 +407,19 @@ void IISPHSolver::update(double deltaT) {
           #endif
 
           // Calculate new pressure
-          float newPressure = dRestDensity - p.densityIntermediate() - densityDifferenceByNeighborsPressure;
+          float newPressure = dRestDensity - p.densityIntermediate() -
+                              densityDifferenceByNeighborsPressure;
           newPressure *= omega / p.advectionDiagonal();
           newPressure += (1.f - omega) * p.pressure();
           nextPressures[i] = newPressure;
     #if MFluidSolver_USE_TBB
-        } // end particle for
+        }  // end particle for
         return partialDensitySum;
-      }, // end lambda
+      },  // end lambda
       std::plus<float>()
-    ); // end parallel_reduce
+    );  // end parallel_reduce
     #else
-    } // end particle for
+    }  // end particle for
     #endif
 
     // Update particles with next iteration pressure
@@ -331,27 +427,30 @@ void IISPHSolver::update(double deltaT) {
       p.setPressure(nextPressures[i]);
     iter_all_sphparticles_end
 
-    averageDensity /= (float)validParticles;
+    averageDensity /= static_cast<float>(validParticles);
     ++iteration;
-  } // end while
+  }  // end while
 
   // #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
-  std::cout << "TRACE: Iterated pressure solve " << iteration << " times" << std::endl;
-  std::cout << "TRACE: Density error: " << (averageDensity - dRestDensity) << std::endl;
+  std::cout << "TRACE: Iterated pressure solve " <<
+                iteration << " times" << std::endl;
+  std::cout << "TRACE: Density error: " <<
+                (averageDensity - dRestDensity) << std::endl;
   // #endif
 
   // Procedure: Iteration
   iter_all_sphparticles_start
-    calculatePressureForce(p);
+    calculatePressureForce(&p);
   iter_all_sphparticles_end
 
   iter_all_sphparticles_start
     // Update
-    glm::vec3 newVel = p.velocityIntermediate() + p.pressureForce() / p.mass() * deltaTF;
+    glm::vec3 newVel = p.velocityIntermediate() +
+      p.pressureForce() / p.mass() * deltaTF;
     glm::vec3 newPos = p.position() + newVel * deltaTF;
     p.update(newVel, newPos);
 
-    enforceBounds(p);
-    visualizeParticle(p);
+    enforceBounds(&p);
+    visualizeParticle(&p);
   iter_all_sphparticles_end
 }
