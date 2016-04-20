@@ -102,7 +102,9 @@ direction of the mouse. It will look like you're dragging the scene with you.
 ### IISPH Simulation Performance ###
 CPU: Intel i7-4800MQ limited to 2.7GHz<br />
 GPU: NVIDIA GeForce GTX 765M<br />
-Compiler: GCC 5.3.0
+Compiler: GCC 5.3.0<br />
+Measured in seconds per frame. Note that this includes time spent updating the
+viewer and logging input events.
 
 ![Graph of the simulation performance for different neighbor search types](images/nsPerfGraph2.png?raw=true "Index sorting improves performance without forced insertion sort.")
 
@@ -116,7 +118,7 @@ It would be interesting to explore this further.
 when there are larger index changes in the uniform grid), as it is in the Cube
 in Cube scene.
 - Index sorted grids sort every frame with std::sort, which is a hybrid of
-introsort and insertion sort in [GCC](https://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-4.4/a01027.html#).
+introsort and insertion sort in [GCC](https://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-4.4/a01027.html).
 This likely explains the deficiencies of using insertion sort only.
 - Insertion sort may also be less effective in IISPH where timesteps can be
 larger than in traditional SESPH, so particles travel much farther and therefore
