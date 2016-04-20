@@ -99,25 +99,32 @@ The right mouse button pans the camera. This changes both the camera's and its
 focus point's position. Right-click and drag to move the camera in the opposite
 direction of the mouse. It will look like you're dragging the scene with you.
 
-### Neighbor Search Query Performance ###
-CPU: Intel i7-4800MQ limited to 2.4GHz<br />
+### IISPH Simulation Performance ###
+CPU: Intel i7-4800MQ limited to 2.7GHz<br />
 GPU: NVIDIA GeForce GTX 765M
+Compiler: GCC 5.3.0
 
-![Graph of the performance for different neighbor search types](images/nsPerfGraph1.png?raw=true "Index sorting dramatically improves neighbor search performance.")
+![Graph of the simulation performance for different neighbor search types](images/nsPerfGraph2.png?raw=true "Index sorting improves performance without forced insertion sort.")
 
-- Index Sorted Uniform Grid search dramatically improves on the uniform grid,
-likely because access to the particles is very simple without memory offsets
-due to other grid cells.
-- However, Z Index Sorted Uniform Grid search appears to suffer from its
-computation of the Z index, which takes a number of operations. My system also
-may not have enough cache to take advantage of the spatial locality. Caching of
-the Z indices was attempted, but proved to be about the same.
-- Insertion sort significantly improves query time, however, compared to the
-standard std::sort, as particles don't change cells frequently.
+- The performance gain from index sorting is a signficant improvement over a
+standard uniform grid, especially when insertion sort is not forced.
+- The fact that the uniform grid uses the Y axis last (i.e.: change in the
+Y-coordinate causes the greatest index change) may play a role in making uniform
+grids comparable to Z-indexed grids, as fluids tend to stay within the XZ-plane.
+It would be interesting to explore this further.
+- Z-indexing may be more beneficial in cases where the XZ-plane is large (i.e.:
+when there are larger index changes in the uniform grid), as it is in the Cube
+in Cube scene.
+- Index sorted grids sort every frame with std::sort, which is a hybrid of
+introsort and insertion sort in [GCC](https://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-4.4/a01027.html#).
+This likely explains the deficiencies of using insertion sort only.
+- Insertion sort may also be less effective in IISPH where timesteps can be
+larger than in traditional SESPH, so particles travel much farther and therefore
+change indices much more frequently.
 
 ### Missing Required Features ###
 
-- Performance Analysis
+- Fix single particles causing crashes
 - Test Partio point export
 - OpenVDB level set export
 - Optional: Update derivatives
