@@ -7,7 +7,7 @@
 	"particleTexture": "texture/particle.dds",
 	"sph": {
 		"kStiffness": 1000,
-		"muViscosity": 0.005,
+		"muViscosity": 1e-6,
 		"mMass": 0.125,
 		"dRestDensity": 1000,
 		"dtTimestep": 0.004,
@@ -15,7 +15,7 @@
 		"neighborSearchType": "indexSortedUniformInsertionSort"
 	},
 	"visualization": {
-		"type": "velocity",
+		"type": "density",
 		"maxDensityDifference": 150,
 		"maxPressure": 40000,
 		"maxVelocity": 4,

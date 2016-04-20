@@ -30,6 +30,11 @@ public:
   inline glm::vec3 position() const;
   inline glm::vec3 velocity() const;
 
+  #if MFluidSolver_PARTICLE_STATS
+  unsigned int ID;
+  static unsigned int lastParticleID;
+  #endif
+
 protected:
   float _mass;
   glm::vec3 _position;
