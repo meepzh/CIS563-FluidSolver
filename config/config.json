@@ -12,10 +12,11 @@
 		"dRestDensity": 1000,
 		"dtTimestep": 0.004,
 		"kernelRadius": 0.100001,
-		"neighborSearchType": "indexSortedUniformInsertionSort"
+		"neighborSearchType": "indexSortedUniformInsertionSort",
+		"pressureSolveIterations": 1e6
 	},
 	"visualization": {
-		"type": "density",
+		"type": "pressure",
 		"maxDensityDifference": 150,
 		"maxPressure": 40000,
 		"maxVelocity": 4,

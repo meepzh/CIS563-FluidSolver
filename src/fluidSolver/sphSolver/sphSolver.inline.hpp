@@ -127,7 +127,13 @@ inline void SPHSolver::visualizeParticle(SPHParticle &p) {
       {
         float pressureNormalized = p.pressure() / visualizationMaxPressure;
         if (pressureNormalized > 1.f) pressureNormalized = 1.f;
-        p.color = pressureNormalized * glm::vec3(1.f);
+        if (pressureNormalized < -1.f) pressureNormalized = -1.f;
+        if (pressureNormalized >= 0) {
+          p.color = (1.f - pressureNormalized) * glm::vec3(1.f) + pressureNormalized * glm::vec3(0, 1, 0);
+        } else {
+          pressureNormalized *= -1;
+          p.color = (1.f - pressureNormalized) * glm::vec3(1.f) + pressureNormalized * glm::vec3(1, 0, 0);
+        }
         break;
       }
     case FluidVisualizationType::Velocity:

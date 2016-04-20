@@ -126,6 +126,8 @@ change indices much more frequently.
 
 ### Missing Required Features ###
 
+- Check closest neighbors stats at spawn
+- Limit iterations from config
 - Fix single particles causing crashes
 - Test Partio point export
 - OpenVDB level set export

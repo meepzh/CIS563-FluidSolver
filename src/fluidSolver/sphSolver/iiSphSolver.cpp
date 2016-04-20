@@ -236,11 +236,13 @@ void IISPHSolver::update(double deltaT) {
 
   // Procedure: Pressure Solve
   unsigned int iteration = 0;
+  unsigned int validParticles;
   float averageDensity = 0;
   const float tolerance = 0.01f * kernelRadius;
   std::vector<float> nextPressures(_particles.size());
-  while (((averageDensity - dRestDensity) > tolerance || iteration < 2) && iteration < 50) {
+  while (((averageDensity - dRestDensity) > tolerance || iteration < 2) && iteration < 1e6) {
     averageDensity = 0;
+    validParticles = _particles.size();
 
     iter_all_sphparticles_start
       // Calculate pressure displacement due to neighbors
@@ -263,6 +265,7 @@ void IISPHSolver::update(double deltaT) {
           if (MUtils::fequal<float>(p.advectionDiagonal(), 0.f, 0.001f)) {
             // We want to disable the pressure force and reset its values
             nextPressures[i] = 0;
+            --validParticles;
             continue;
           }
 
@@ -328,13 +331,14 @@ void IISPHSolver::update(double deltaT) {
       p.setPressure(nextPressures[i]);
     iter_all_sphparticles_end
 
-    averageDensity /= (float)_particles.size();
+    averageDensity /= (float)validParticles;
     ++iteration;
   } // end while
 
-  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
+  // #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
   std::cout << "TRACE: Iterated pressure solve " << iteration << " times" << std::endl;
-  #endif
+  std::cout << "TRACE: Density error: " << (averageDensity - dRestDensity) << std::endl;
+  // #endif
 
   // Procedure: Iteration
   iter_all_sphparticles_start
