@@ -40,13 +40,14 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
   // Initialize neighbor search
   // Note: Neighbor search assumes grid cell size is equal to kernelRadius
   switch (nSearchType) {
-    case NeighborSearchType::Naive:
+    case NeighborSearchType::Naive: {
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
       std::cout << "INFO: SPH Solver using naive neighbor search" << std::endl;
       #endif
       nSearch = new NaiveNeighborSearch();
       break;
-    case NeighborSearchType::IndexSortedUniformGrid:
+    }
+    case NeighborSearchType::IndexSortedUniformGrid: {
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
       std::cout <<
         "INFO: SPH Solver using index sorted uniform grid neighbor search" <<
@@ -57,7 +58,8 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
                                                          kernelRadius,
                                                          &_particles, false);
       break;
-    case NeighborSearchType::ZIndexSortedUniformGrid:
+    }
+    case NeighborSearchType::ZIndexSortedUniformGrid: {
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
       std::cout << "INFO: SPH Solver using " <<
         "Z-curve index sorted uniform grid neighbor search" << std::endl;
@@ -67,7 +69,8 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
                                                          kernelRadius,
                                                          &_particles, true);
       break;
-    case NeighborSearchType::ZIndexSortedUniformGridWithInsertion:
+    }
+    case NeighborSearchType::ZIndexSortedUniformGridWithInsertion: {
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
       std::cout << "INFO: SPH Solver using " <<
         "Z-curve index sorted uniform grid neighbor search " <<
@@ -78,7 +81,8 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
                                                          kernelRadius,
                                                          &_particles, true);
       break;
-    case NeighborSearchType::UniformGrid:
+    }
+    case NeighborSearchType::UniformGrid: {
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
       std::cout << "INFO: SPH Solver using uniform grid neighbor search" <<
         std::endl;
@@ -86,7 +90,8 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
       nSearch = new UniformGridNeighborSearch(kernelRadius,
                                               gridMin, gridMax, kernelRadius);
       break;
-    case NeighborSearchType::IndexSortedUniformGridWithInsertion:
+    }
+    case NeighborSearchType::IndexSortedUniformGridWithInsertion: {
     default:
       #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
       std::cout <<
@@ -99,41 +104,51 @@ void SPHSolver::init(const glm::vec3 &gridMin, const glm::vec3 &gridMax) {
                                                          kernelRadius,
                                                          &_particles, false);
       break;
+    }
   }
 
   // Print useful parameter info
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   switch (visualizationType) {
-    case FluidVisualizationType::Density:
+    case FluidVisualizationType::Density: {
       std::cout <<
         "INFO: Now visualizing density difference from rest density" <<
         std::endl;
       break;
-    case FluidVisualizationType::Index:
+    }
+    case FluidVisualizationType::Index: {
       std::cout <<
         "INFO: Now visualizing index within particle array" <<
         std::endl;
       break;
-    case FluidVisualizationType::Neighbors:
+    }
+    case FluidVisualizationType::Neighbors: {
       std::cout << "INFO: Now visualizing neighbors" << std::endl;
       break;
-    case FluidVisualizationType::None:
-      std::cout << "INFO: Visualization disabled" << std::endl;
-      break;
-    case FluidVisualizationType::Particle:
+    }
+    case FluidVisualizationType::Particle: {
       std::cout <<
         "INFO: Now highlighting particle ID " << targetParticle << std::endl;
       break;
-    case FluidVisualizationType::Pressure:
+    }
+    case FluidVisualizationType::Pressure: {
       std::cout << "INFO: Now visualizing pressure" << std::endl;
       break;
-    case FluidVisualizationType::Velocity:
+    }
+    case FluidVisualizationType::Velocity: {
       std::cout << "INFO: Now visualizing scalar velocity" << std::endl;
       break;
-    case FluidVisualizationType::VelocityDir:
+    }
+    case FluidVisualizationType::VelocityDir: {
       std::cout <<
         "INFO: Now visualizing normalized velocity direction" << std::endl;
       break;
+    }
+    case FluidVisualizationType::None:
+    default: {
+      std::cout << "INFO: Visualization disabled" << std::endl;
+      break;
+    }
   }
   if (muViscosity <= 0) {
     std::cout << "INFO: As per config, viscosity is disabled" << std::endl;

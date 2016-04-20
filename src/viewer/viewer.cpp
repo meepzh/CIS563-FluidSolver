@@ -29,50 +29,60 @@ void APIENTRY openglDebugCallbackFunction(GLenum source, GLenum type, GLuint id,
   std::ostream *outStream = &std::cout;
 
   switch (type) {
-    case GL_DEBUG_TYPE_ERROR:
+    case GL_DEBUG_TYPE_ERROR: {
       sType = "ERROR";
       outStream = &std::cerr;
       break;
-    case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+    }
+    case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: {
       sType = "DEPRECATED";
       break;
-    case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+    }
+    case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: {
       sType = "UNDEFINED";
       break;
-    case GL_DEBUG_TYPE_PORTABILITY:
+    }
+    case GL_DEBUG_TYPE_PORTABILITY: {
       sType = "PORTABILITY";
       break;
-    case GL_DEBUG_TYPE_PERFORMANCE:
+    }
+    case GL_DEBUG_TYPE_PERFORMANCE: {
       sType = "PERFORMANCE";
       break;
-    case GL_DEBUG_TYPE_OTHER:
+    }
+    case GL_DEBUG_TYPE_OTHER: {
       sType = "OTHER";
       break;
+    }
   }
   switch (severity) {
-    case GL_DEBUG_SEVERITY_LOW:
+    case GL_DEBUG_SEVERITY_LOW: {
       sSeverity = "LOW";
       #if MFluidSolver_LOG_LEVEL > MFluidSolver_LOG_WARN
       return;
       #endif
       break;
-    case GL_DEBUG_SEVERITY_MEDIUM:
+    }
+    case GL_DEBUG_SEVERITY_MEDIUM: {
       sSeverity = "MEDIUM";
       #if MFluidSolver_LOG_LEVEL > MFluidSolver_LOG_ERROR
       return;
       #endif
       break;
-    case GL_DEBUG_SEVERITY_HIGH:
+    }
+    case GL_DEBUG_SEVERITY_HIGH: {
       sSeverity = "HIGH";
       #if MFluidSolver_LOG_LEVEL > MFluidSolver_LOG_ERROR
       return;
       #endif
       break;
-    default:
+    }
+    default: {
       sSeverity = "OTHER";
       #if MFluidSolver_LOG_LEVEL > MFluidSolver_LOG_INFO
       return;
       #endif
+    }
   }
   *outStream << "GL:" << sType <<
     "(" << sSeverity << "): " << message << std::endl;
