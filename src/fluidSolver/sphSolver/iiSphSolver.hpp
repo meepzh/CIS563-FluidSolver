@@ -7,12 +7,21 @@
 
 #include "sphSolver.hpp"
 
+#if MFluidSolver_PARTICLE_STATS
+#include <mutex>
+#endif
+
 class IISPHSolver : public SPHSolver {
 public:
   virtual void update(double deltaT);
 
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
+  unsigned int numFlyaways;
+  #endif
+
 protected:
   #if MFluidSolver_PARTICLE_STATS
+  std::mutex statsCoutMutex;
   glm::vec3 averagePosition;
   float averageVelocityMagnitude;
   float averageDensity;
@@ -25,9 +34,6 @@ protected:
   float averageSumPressureDisplacementFromNeighborsMagnitude;
   float averageVelocityIntermediateMagnitude;
   float averageNumNeighbors;
-  #endif
-  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
-  unsigned int totalFlyaways;
   #endif
 };
 

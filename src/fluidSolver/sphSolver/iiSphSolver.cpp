@@ -33,7 +33,7 @@ void IISPHSolver::update(double deltaT) {
   averageNumNeighbors = 0;
   #endif
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
-  totalFlyaways = 0;
+  numFlyaways = 0;
   #endif
 
   // Procedure: Predict Advection
@@ -41,10 +41,21 @@ void IISPHSolver::update(double deltaT) {
     calculateDensity(p);
     calculateNonPressureForce(p);
 
+    // Check if flyaway is affecting other particles
+    #if MFluidSolver_PARTICLE_STATS
+    if (p.flyaway && !p.neighbors()->empty()) {
+      for (SPHParticle *q : *(p.neighbors())) {
+        std::cout << "STAT: Particle ID " << q->ID << " is now neighbors with flyaway ID " << p.ID << std::endl;
+      }
+    }
+    #endif
+
     // Flyaway particle detection (no neighbors, too much free will)
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
     if (p.neighbors()->empty()) {
       #if MFluidSolver_PARTICLE_STATS
+      std::lock_guard<std::mutex> guard(statsCoutMutex);
+      p.flyaway = true;
       const glm::vec3 position = p.position();
       const glm::vec3 velocity = p.velocity();
       const glm::vec3 nonPressureForce = p.nonPressureForce();
@@ -66,7 +77,7 @@ void IISPHSolver::update(double deltaT) {
                 << "WARN: - Sum Pressure Displacement From Neighbors: (" << sumPressureDisplacementFromNeighbors.x << ", " << sumPressureDisplacementFromNeighbors.y << ", " << sumPressureDisplacementFromNeighbors.z << ") with magnitude " << glm::length(sumPressureDisplacementFromNeighbors) << std::endl
                 << "WARN: - Velocity Intermediate: (" << velocityIntermediate.x << ", " << velocityIntermediate.y << ", " << velocityIntermediate.z << ") with magnitude " << glm::length(velocityIntermediate) << std::endl;
       #endif
-      ++totalFlyaways;
+      ++numFlyaways;
     }
     #endif
 
@@ -156,8 +167,8 @@ void IISPHSolver::update(double deltaT) {
   // Print number of flyaways (use WARN channel if enabled)
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
   // WARN, >0, any STAT
-  if (totalFlyaways > 0) {
-    std::cout << "WARN: We have " << totalFlyaways << " flyaway particles that could potentially crash the simulation" << std::endl;
+  if (numFlyaways > 0) {
+    std::cout << "WARN: We have " << numFlyaways << " flyaway particle(s) that could potentially crash the simulation" << std::endl;
   }
   #if MFluidSolver_PARTICLE_STATS
   else {
@@ -167,7 +178,7 @@ void IISPHSolver::update(double deltaT) {
   #endif
   #elif MFluidSolver_PARTICLE_STATS
   // !WARN, any #, STAT
-  std::cout << "STAT: We have " << totalFlyaways << " flyaway particles!" << std::endl;
+  std::cout << "STAT: We have " << numFlyaways << " flyaway particle(s)!" << std::endl;
   #endif
 
   // Procedure: Pressure Solve

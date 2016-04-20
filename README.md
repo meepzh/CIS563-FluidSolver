@@ -135,6 +135,7 @@ change indices much more frequently.
 - Optional: Better seeding (poisson distribution)
 - Optional: Test bicubic spline kernel
 - Optional: Solid body coupling
+- Optional: Headless mode
 
 ### Extra Features ###
 None

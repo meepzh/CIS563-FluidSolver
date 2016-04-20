@@ -185,6 +185,13 @@ void Viewer::run() {
       }
     }
 
+    // Convenience method for stopping before blowing up
+    #if MFluidSolver_PARTICLE_STATS
+    if (scene.solver.numFlyaways > 0) {
+      paused = true;
+    }
+    #endif
+
     // Render particles
     particleShader->setViewProjectionMat(scene.camera.getViewProjection());
     particleShader->setCameraVectors(scene.camera.right(), scene.camera.up());
