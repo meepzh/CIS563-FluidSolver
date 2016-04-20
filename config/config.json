@@ -13,7 +13,7 @@
 		"dtTimestep": 0.004,
 		"kernelRadius": 0.100001,
 		"neighborSearchType": "indexSortedUniformInsertionSort",
-		"pressureSolveIterations": 1e6
+		"maxPressureSolveIterations": 1e6
 	},
 	"visualization": {
 		"type": "pressure",

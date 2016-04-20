@@ -5,16 +5,49 @@
 
 #include "iiSphSolver.hpp"
 
+#include <fstream>
 #include <functional>
+#include <iostream>
 #include <vector>
 
 #if MFluidSolver_PARTICLE_STATS_FILES
-#include <fstream>
 #include <sstream>
 #include <string>
 #endif
 
+#include <json/json.h>
+
 #include "utils.hpp"
+
+IISPHSolver::IISPHSolver()
+    : maxIterations(1e6) {
+}
+
+// TODO: Clean this up
+void IISPHSolver::loadConfig(const std::string &file) {
+  if (checkInited()) return;
+  SPHSolver::loadConfig(file);
+
+  // Parse JSON file
+  Json::Reader reader;
+  Json::Value root;
+  std::ifstream sceneStream(file, std::ifstream::binary);
+  bool success = reader.parse(sceneStream, root, false);
+  if (!success) {
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
+    std::cerr << "ERROR: Failed to parse config file " << file << std::endl;
+    #endif
+    return;
+  }
+
+  maxIterations = root["sph"].get(
+    "maxPressureSolveIterations", 1e6).asInt();
+
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+  std::cout << "INFO: - Max Pressure Solve Iterations: " <<
+    maxIterations << std::endl;
+  #endif
+}
 
 void IISPHSolver::update(double deltaT) {
   if (checkIfEnded()) return;

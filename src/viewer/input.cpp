@@ -54,6 +54,6 @@ void Input::checkKeys(
         viewer->scene.solver.updateStep();
         break;
       }
-    }
-  }
+    }  // end switch
+  }  // end if RELEASE
 }

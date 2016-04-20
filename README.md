@@ -126,7 +126,6 @@ change indices much more frequently.
 
 ### Missing Required Features ###
 
-- Limit iterations from config
 - Test Partio point export
 - OpenVDB level set export
 - Optional: Update derivatives
