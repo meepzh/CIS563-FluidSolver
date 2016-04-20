@@ -126,9 +126,7 @@ change indices much more frequently.
 
 ### Missing Required Features ###
 
-- Check closest neighbors stats at spawn
 - Limit iterations from config
-- Fix single particles causing crashes
 - Test Partio point export
 - OpenVDB level set export
 - Optional: Update derivatives
@@ -138,6 +136,8 @@ change indices much more frequently.
 - Optional: Test bicubic spline kernel
 - Optional: Solid body coupling
 - Optional: Headless mode
+- Optional: Refactor IISPH because update() is way too hard to read
+- Optional: Flyaway prevention
 
 ### Extra Features ###
 None

@@ -9,6 +9,10 @@
 #include <iostream>
 #include <json/json.h>
 
+#if MFluidSolver_PARTICLE_STATS
+#include <limits>
+#endif
+
 #include "utils.hpp"
 
 // Constructor / Destructor
@@ -328,7 +332,7 @@ void SPHSolver::visualizeParticleNeighbors(SPHParticle *target) {
 }
 
 void SPHSolver::visualizeRandomParticlesNeighbors() {
-  if (_particles.size() > 0) {
+  if (!_particles.empty()) {
     visualizeParticleNeighbors(&(_particles[rand() % _particles.size()]));
   }
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
@@ -341,7 +345,7 @@ void SPHSolver::visualizeRandomParticlesNeighbors() {
 // Misc
 void SPHSolver::initVisualization() {
   if (visualizationType == FluidVisualizationType::Neighbors) {
-    if (_particles.size() > 0) {
+    if (!_particles.empty()) {
       visualizeParticleNeighbors(&(_particles[0]));
     }
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
@@ -369,6 +373,44 @@ void SPHSolver::printPerformanceStats() {
 void SPHSolver::sceneLoaded() {
   initVisualization();
   prepNeighborSearchAfterSceneLoad();
+
+  // Gather stats concerning proximity (could lead to explosive pressures)
+  #if MFluidSolver_PARTICLE_STATS
+  prepNeighborSearch();
+  runNeighborSearch();
+  if (!_particles.empty()) {
+    float minDist = std::numeric_limits<float>::infinity();
+    float distSum = 0;
+    float minDistSum = 0;
+    unsigned int numPairs = 0;
+
+    for (SPHParticle &p : _particles) {
+      float minDistParticle = std::numeric_limits<float>::infinity();
+      if (!p.neighbors()->empty()) {
+        for (SPHParticle *n : *(p.neighbors())) {
+          ++numPairs;
+          const float dist = glm::length(p.position() - n->position());
+          if (dist < minDistParticle) {
+            minDistParticle = dist;
+          }
+          distSum += dist;
+        } // end for neighbors
+
+        minDistSum += minDistParticle;
+        if (minDistParticle < minDist) {
+          minDist = minDistParticle;
+        }
+      }
+    } // end for particles
+
+    distSum /= (float)numPairs;
+    minDistSum /= (float)_particles.size();
+
+    std::cout << "STAT: Average particle distance to neighbor: " << distSum << std::endl;
+    std::cout << "STAT: Average particle distance to nearest neighbor: " << minDistSum << std::endl;
+    std::cout << "STAT: Smallest particle distance to neighbor: " << minDist << std::endl;
+  }
+  #endif
 }
 
 #if MFluidSolver_USE_PARTIO
