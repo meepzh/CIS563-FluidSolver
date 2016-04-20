@@ -145,8 +145,7 @@ void SPHIndexSortedUniformGrid::sortParticles(bool initialSort) {
     // Insertion sort is faster for minimal changes in cell indices
     MUtils::insertionSort(master->begin(), master->end(), SPHParticle::indexCompare);
   }
-  //endParticle = &((*master)[master->size() - 1]);
-  endParticle = &(master->back()); // TODO: Check if this works
+  endParticle = &(master->back());
 }
 
 #if MFluidSolver_USE_OPENVDB

@@ -101,7 +101,7 @@ direction of the mouse. It will look like you're dragging the scene with you.
 
 ### IISPH Simulation Performance ###
 CPU: Intel i7-4800MQ limited to 2.7GHz<br />
-GPU: NVIDIA GeForce GTX 765M
+GPU: NVIDIA GeForce GTX 765M<br />
 Compiler: GCC 5.3.0
 
 ![Graph of the simulation performance for different neighbor search types](images/nsPerfGraph2.png?raw=true "Index sorting improves performance without forced insertion sort.")
