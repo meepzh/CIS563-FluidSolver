@@ -464,12 +464,12 @@ void IISPHSolver::update(double deltaT) {
     ++iteration;
   }  // end while
 
-  // #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
   std::cout << "TRACE: Iterated pressure solve " <<
                 iteration << " times" << std::endl;
   std::cout << "TRACE: Density error: " <<
                 (averageDensity - dRestDensity) << std::endl;
-  // #endif
+  #endif
 
   // Procedure: Iteration
   iter_all_sphparticles_start

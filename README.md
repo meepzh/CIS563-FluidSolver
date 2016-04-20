@@ -1,4 +1,9 @@
 # MFluidSolver #
+
+IISPH Demo: [Vimeo](https://vimeo.com/163562648)
+
+![IISPH Cube in Cube Snapshot](images/cube-iisph-sprint1_0.png?raw=true "IISPH Cube in Cube snapshot.")
+
 ### How Does It Work ###
 This fluid solver uses GLFW, GLM, and GLEW. It reads a JSON configuration file
 and a JSON scene file, creating a fluid container and a scene container. The
