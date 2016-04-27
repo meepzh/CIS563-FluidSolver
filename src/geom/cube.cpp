@@ -128,8 +128,9 @@ void Cube::spawnParticlesInVolume(
           const float xOffset = unifDist(gen) - halfSeparation;
           const float yOffset = unifDist(gen) - halfSeparation;
           const float zOffset = unifDist(gen) - halfSeparation;
+          const float factor = 0.27f;
           solver->addParticleAt(glm::vec3(
-            i + xOffset, j + yOffset, k + zOffset));
+            i + xOffset * factor, j + yOffset * factor, k + zOffset * factor));
           ++count;
           if (count > particlesLeft) break;
         }

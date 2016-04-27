@@ -441,6 +441,11 @@ void SPHSolver::initVisualization() {
     }
     #endif
   }
+
+  largestIndex = _particles.back().index;
+  iter_all_sphparticles_start
+    visualizeParticle(&p);
+  iter_all_sphparticles_end
 }
 
 void SPHSolver::printPerformanceStats() {
