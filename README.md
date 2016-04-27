@@ -1,6 +1,6 @@
 # MFluidSolver #
 
-IISPH Demo: [Vimeo](https://vimeo.com/163562648)
+IISPH Demo: [Vimeo](https://vimeo.com/groups/cis563/videos/164437486)
 
 ![IISPH Cube in Cube Snapshot](images/cube-iisph-sprint1_0.png?raw=true "IISPH Cube in Cube snapshot.")
 
