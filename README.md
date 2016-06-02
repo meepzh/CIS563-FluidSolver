@@ -147,5 +147,6 @@ change indices much more frequently.
 None
 
 ### Credits ###
+- [Original Class Repository from Debanshu and Akshay! Compiled the base Nuparu, CMakeLists.txt, and source structure.](https://github.com/debanshusingh/CIS563-FluidSolver)
 - [Nuparu Dependency and Foundation Libraries](https://github.com/betajippity/Nuparu)
 - DDS File Loader adapted from [opengl-tutorial.org](http://www.opengl-tutorial.org/beginners-tutorials/tutorial-5-a-textured-cube/) [(WTF Public License)](http://www.wtfpl.net/).
