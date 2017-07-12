@@ -101,7 +101,7 @@ void Cube::spawnParticlesInVolume(
   glm::vec3 padding = maxBound - minBound;
   glm::ivec3 numParticlesOnAxis = (glm::ivec3) (padding / particleSeparation);
   padding -= (glm::vec3)numParticlesOnAxis * particleSeparation;
-  minBound += padding;
+  minBound += padding / 2.0f;
 
   // Create particles
   if (spawnMethod == ParticleSpawnMethod::Uniform) {
@@ -120,14 +120,13 @@ void Cube::spawnParticlesInVolume(
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> unifDist(0, particleSeparation);
-    const float halfSeparation = particleSeparation * 0.5f;
 
-    for (float i = minBound.x; i <= maxBound.x; i += particleSeparation) {
-      for (float j = minBound.y; j <= maxBound.y; j += particleSeparation) {
-        for (float k = minBound.z; k <= maxBound.z; k += particleSeparation) {
-          const float xOffset = unifDist(gen) - halfSeparation;
-          const float yOffset = unifDist(gen) - halfSeparation;
-          const float zOffset = unifDist(gen) - halfSeparation;
+    for (float i = minBound.x; i <= maxBound.x - particleSeparation; i += particleSeparation) {
+      for (float j = minBound.y; j <= maxBound.y - particleSeparation; j += particleSeparation) {
+        for (float k = minBound.z; k <= maxBound.z - particleSeparation; k += particleSeparation) {
+          const float xOffset = unifDist(gen);
+          const float yOffset = unifDist(gen);
+          const float zOffset = unifDist(gen);
           const float factor = 0.27f;
           solver->addParticleAt(glm::vec3(
             i + xOffset * factor, j + yOffset * factor, k + zOffset * factor));
