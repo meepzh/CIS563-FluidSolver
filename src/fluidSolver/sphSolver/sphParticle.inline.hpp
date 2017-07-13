@@ -50,6 +50,8 @@ inline void SPHParticle::setNonPressureForce(const glm::vec3 &force) {
 }
 
 inline void SPHParticle::setPressure(float pressure) {
+  if (pressure > MFluidSolver_DEFAULT_MAX_PRESSURE)
+    pressure = MFluidSolver_DEFAULT_MAX_PRESSURE;
   _pressure = pressure;
 }
 
