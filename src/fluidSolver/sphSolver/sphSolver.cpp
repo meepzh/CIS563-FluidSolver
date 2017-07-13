@@ -506,19 +506,31 @@ void SPHSolver::exportBgeo() {
   Partio::ParticlesDataMutable *particleData = Partio::create();
   Partio::ParticlesDataMutable::iterator iterator =
     particleData->addParticles(_particles.size());
+
   Partio::ParticleAttribute posAttr =
     particleData->addAttribute(
       "position", Partio::ParticleAttributeType::VECTOR, 3);
+  Partio::ParticleAttribute velAttr =
+    particleData->addAttribute(
+      "velocity", Partio::ParticleAttributeType::VECTOR, 3);
   Partio::ParticleAccessor posAcc(posAttr);
+  Partio::ParticleAccessor velAcc(velAttr);
   iterator.addAccessor(posAcc);
+  iterator.addAccessor(velAcc);
 
   unsigned int idx = 0;
   for (Partio::ParticlesDataMutable::iterator it =
       particleData->begin(); it != particleData->end(); ++it) {
-    float *vectorData = posAcc.raw<float>(it);
+    float *posData = posAcc.raw<float>(it);
     const glm::vec3 position = _particles.at(idx).position();
     for (unsigned int i = 0; i < 3; ++i) {
-      vectorData[i] = position[i];
+      posData[i] = position[i];
+    }
+
+    float *velData = posAcc.raw<float>(it);
+    const glm::vec3 velocity = _particles.at(idx).velocity();
+    for (unsigned int i = 0; i < 3; ++i) {
+      velData[i] = velocity[i];
     }
     ++idx;
   }
