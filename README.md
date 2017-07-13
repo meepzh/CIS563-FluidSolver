@@ -20,8 +20,8 @@ the VDB format. The solver runs both SESPH and IISPH.
 - OpenVDB 2.3.0
 
 ### Build Instructions (*nix) ###
-By default, the program is set to default debugging mode as set in
-`src/MFluidSolverConfig.hpp.in`. There are many other options there including
+By default, the program is set to INFO level logging mode as set in
+`src/MFluidSolverConfig.hpp.in`. There are many other options there, including
 logging settings and defaults, but note that defaults will be overwritten by
 the configuration file `config/config.json`.
 

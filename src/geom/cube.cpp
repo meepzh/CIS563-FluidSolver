@@ -84,8 +84,10 @@ void Cube::spawnParticlesInVolume(
   // Store old particle count for number of particles we added and max particle check
   unsigned int oldParticleCount = solver->numParticles();
   if (oldParticleCount == solver->maxParticles()) {
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
     std::cout << "INFO: Reached max number of particles (" <<
       solver->maxParticles() << ")!" << std::endl;
+    #endif
     return;
   }
 
@@ -105,11 +107,25 @@ void Cube::spawnParticlesInVolume(
 
   // Create particles
   if (spawnMethod == ParticleSpawnMethod::Uniform) {
-    for (float i = minBound.x; i <= maxBound.x; i += particleSeparation) {
-      for (float j = minBound.y; j <= maxBound.y; j += particleSeparation) {
-        for (float k = minBound.z; k <= maxBound.z; k += particleSeparation) {
+    float i = 0.f;
+    float j = 0.f;
+    float k = 0.f;
+    // X-loop
+    for (unsigned int iIdx = 0; ; ++iIdx) {
+      i = minBound.x + iIdx * particleSeparation;
+      if (i > maxBound.x) break;
+      // Y-loop
+      for (unsigned int jIdx = 0; ; ++jIdx) {
+        j = minBound.y + jIdx * particleSeparation;
+        if (j > maxBound.y) break;
+        // Z-loop
+        for (unsigned int kIdx = 0; ; ++kIdx) {
+          k = minBound.z + kIdx * particleSeparation;
+          if (k > maxBound.z) break;
+          // Loop body
           solver->addParticleAt(glm::vec3(i, j, k));
           ++count;
+          // Loop exit
           if (count > particlesLeft) break;
         }
         if (count > particlesLeft) break;
