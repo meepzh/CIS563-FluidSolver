@@ -23,7 +23,7 @@ class Cube : public Geometry {
   virtual bool intersects(const glm::vec3 &point) const;
   virtual bool intersects(const glm::vec3 &point, glm::ivec3 *violations) const;
   virtual void spawnParticlesInVolume(
-    FluidSolver *solver, ParticleSpawnMethod spawnMethod) const;
+    FluidSolver *solver, ParticleSpawnMethod spawnMethod);
 
  private:
   glm::vec3 _color;

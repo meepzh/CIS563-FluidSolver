@@ -53,6 +53,7 @@ int main() {
   std::time_t seed = std::time(NULL);
   std::srand(seed);
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+  // Only affects particle visualization selection
   std::cout << "INFO: std::rand seed: " << seed << std::endl;
   #endif
 

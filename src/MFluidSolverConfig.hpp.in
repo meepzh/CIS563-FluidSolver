@@ -25,6 +25,7 @@
 #define MFluidSolver_USE_TBB 1
 
 // Misc
+#define MFluidSolver_MTRNG_SEED_SIZE 5
 #define MFluidSolver_ZCURVE_CACHING 1
 
 // Defaults
