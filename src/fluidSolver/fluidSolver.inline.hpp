@@ -6,6 +6,10 @@
 #ifndef MFLUIDSOLVER_FLUIDSOLVER_INLINE_HPP_
 #define MFLUIDSOLVER_FLUIDSOLVER_INLINE_HPP_
 
+#if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
+#include <iostream>
+#endif
+
 // Simulation End
 inline bool FluidSolver::checkIfEnded() {
   // Record times and updates
@@ -32,7 +36,7 @@ inline bool FluidSolver::hasEndedSimulation() {
 // Helpers
 inline void FluidSolver::logTimestep() {
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
-  std::cout << "DEBUG: Updating by " << deltaT << " seconds" << std::endl;
+  std::cout << "DEBUG: Updating by " << _fixedTimestep << " seconds" << std::endl;
   #endif
 }
 
