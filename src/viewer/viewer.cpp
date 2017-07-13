@@ -36,6 +36,9 @@ void APIENTRY openglDebugCallbackFunction(GLenum source, GLenum type, GLuint id,
     }
     case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: {
       sType = "DEPRECATED";
+      #if MFluidSolver_LOG_LEVEL > MFluidSolver_LOG_WARN
+      return;
+      #endif
       break;
     }
     case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: {
@@ -44,10 +47,16 @@ void APIENTRY openglDebugCallbackFunction(GLenum source, GLenum type, GLuint id,
     }
     case GL_DEBUG_TYPE_PORTABILITY: {
       sType = "PORTABILITY";
+      #if MFluidSolver_LOG_LEVEL > MFluidSolver_LOG_DEBUG
+      return;
+      #endif
       break;
     }
     case GL_DEBUG_TYPE_PERFORMANCE: {
       sType = "PERFORMANCE";
+      #if MFluidSolver_LOG_LEVEL > MFluidSolver_LOG_DEBUG
+      return;
+      #endif
       break;
     }
     case GL_DEBUG_TYPE_OTHER: {

@@ -13,8 +13,8 @@ ParticleShaderProgram::ParticleShaderProgram(SPHSolver *solver,
   const std::string &vertexShader, const std::string &fragmentShader,
   const std::string &billboardDDS)
     : ShaderProgram(vertexShader, fragmentShader), solver(solver),
-    aBillboardVertexArrID(-1), billboardVertexArrBufferID(-1),
-    uCameraRightVecID(-1), uCameraUpVecID(-1) {
+      aBillboardVertexArrID(-1), billboardVertexArrBufferID(-1),
+      uCameraRightVecID(-1), uCameraUpVecID(-1), inited(false) {
   // Get vertex buffer IDs
   aBillboardVertexArrID = glGetAttribLocation(programID, "avs_Billboard");
 
@@ -42,7 +42,21 @@ ParticleShaderProgram::ParticleShaderProgram(SPHSolver *solver,
   glBindBuffer(GL_ARRAY_BUFFER, billboardVertexArrBufferID);
   glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(glm::vec3), billboardData,
     GL_STATIC_DRAW);
+}
 
+ParticleShaderProgram::~ParticleShaderProgram() {
+  if (billboardVertexArrBufferID != -1)
+    glDeleteBuffers(1, &billboardVertexArrBufferID);
+  if (particleColorArrBufferID != -1)
+    glDeleteBuffers(1, &particleColorArrBufferID);
+  if (particlePositionArrBufferID != -1)
+    glDeleteBuffers(1, &particlePositionArrBufferID);
+
+  delete[] particleColorArray;
+  delete[] particlePositionArray;
+}
+
+void ParticleShaderProgram::init() {
   // Pre-allocate particle buffers
   glGenBuffers(1, &particleColorArrBufferID);
   glBindBuffer(GL_ARRAY_BUFFER, particleColorArrBufferID);
@@ -54,7 +68,7 @@ ParticleShaderProgram::ParticleShaderProgram(SPHSolver *solver,
   glBufferData(GL_ARRAY_BUFFER, solver->maxParticles() * sizeof(glm::vec3),
     NULL, GL_STREAM_DRAW);
 
-  // Allocate particle space on RAM
+  // Allocate particle space
   particleColorArray = new glm::vec3[solver->maxParticles()];
   particlePositionArray = new glm::vec3[solver->maxParticles()];
 
@@ -85,18 +99,8 @@ ParticleShaderProgram::ParticleShaderProgram(SPHSolver *solver,
       programID << std::endl;
   }
   #endif
-}
 
-ParticleShaderProgram::~ParticleShaderProgram() {
-  if (billboardVertexArrBufferID != -1)
-    glDeleteBuffers(1, &billboardVertexArrBufferID);
-  if (particleColorArrBufferID != -1)
-    glDeleteBuffers(1, &particleColorArrBufferID);
-  if (particlePositionArrBufferID != -1)
-    glDeleteBuffers(1, &particlePositionArrBufferID);
-
-  delete particleColorArray;
-  delete particlePositionArray;
+  inited = true;
 }
 
 void ParticleShaderProgram::setCameraVectors(
@@ -122,6 +126,13 @@ void ParticleShaderProgram::setParticleSize(float size) {
 }
 
 void ParticleShaderProgram::draw() {
+  if (!inited) {
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
+    std::cout << "WARN: Particle shader program not initialized" << std::endl;
+    #endif
+    return;
+  }
+
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

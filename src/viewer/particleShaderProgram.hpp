@@ -21,12 +21,16 @@ class ParticleShaderProgram : public ShaderProgram {
     const std::string &vertexShader, const std::string &fragmentShader,
     const std::string &billboardDDS);
   ~ParticleShaderProgram();
+  void init();
   void draw();
   void setCameraVectors(const glm::vec3 &right, const glm::vec3 &up);
   void setParticleSize(float size);
 
   glm::vec3 *particleColorArray;
   glm::vec3 *particlePositionArray;
+
+ protected:
+  bool inited;
 
  private:
   SPHSolver *solver;
