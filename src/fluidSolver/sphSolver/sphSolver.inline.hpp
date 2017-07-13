@@ -23,8 +23,12 @@ inline void SPHSolver::calculateDensity(SPHParticle *p) {
   float densitySum = p->mass() * kernelFunctions.computePoly6(glm::vec3(0));
   if (p->neighbors()->size() > 0) {
     for (SPHParticle *n : *(p->neighbors())) {
-      densitySum += n->mass() *
+      double poly6FromNeighbor =
         kernelFunctions.computePoly6(p->position() - n->position());
+      densitySum += n->mass() * poly6FromNeighbor;
+      #if MFluidSolver_USE_ASSERTS
+      assert(!std::isnan(densitySum));
+      #endif
     }
   }
   p->setDensity(densitySum);
@@ -51,10 +55,13 @@ inline void SPHSolver::calculatePressureForce(SPHParticle *p) {
   glm::vec3 pressureForce(0);
   float pDensity2 = p->density() * p->density();
   for (SPHParticle *n : *(p->neighbors())) {
+    glm::vec3 spikyGradientFromNeighbor =
+      kernelFunctions.computeSpikyGradient(p->position() - n->position());
     pressureForce += n->mass() * (
         p->pressure() / pDensity2 +
         n->pressure() / (n->density() * n->density())) *
-        kernelFunctions.computeSpikyGradient(p->position() - n->position());
+        spikyGradientFromNeighbor;
+    assert(!std::isnan(pressureForce.x));
   }
   pressureForce *= -1 * p->mass();
   p->setPressureForce(pressureForce);

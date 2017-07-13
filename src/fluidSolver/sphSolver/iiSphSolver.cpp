@@ -364,9 +364,14 @@ void IISPHSolver::update(double deltaT) {
       // Calculate pressure displacement due to neighbors
       glm::vec3 pressureDisplacementFromNeighbors(0);
       for (SPHParticle *n : *(p.neighbors())) {
+        glm::vec3 spikyGradientFromNeighbor =
+          kernelFunctions.computeSpikyGradient(p.position() - n->position());
         pressureDisplacementFromNeighbors -=
           n->mass() * n->pressure() / (n->density() * n->density()) *
-          kernelFunctions.computeSpikyGradient(p.position() - n->position());
+          spikyGradientFromNeighbor;
+        #if MFluidSolver_USE_ASSERTS
+        assert(!std::isnan(pressureDisplacementFromNeighbors.x));
+        #endif
       }
       p.setSumPressureDisplacementFromNeighbors(
         pressureDisplacementFromNeighbors * deltaTF2);
@@ -415,6 +420,9 @@ void IISPHSolver::update(double deltaT) {
               n->advectionDisplacementEstimate() * n->pressure() -
               n->sumPressureDisplacementFromNeighbors() +
               displacementToNeighbor * p.pressure(), spikyGradientFromNeighbor);
+            #if MFluidSolver_USE_ASSERTS
+            assert(!std::isnan(densityDifferenceByNeighborsPressure));
+            #endif
           }
           // Sum for average density
           // Note that density depends on old pressure
@@ -444,6 +452,10 @@ void IISPHSolver::update(double deltaT) {
                               densityDifferenceByNeighborsPressure;
           newPressure *= omega / p.advectionDiagonal();
           newPressure += (1.f - omega) * p.pressure();
+          #if MFluidSolver_USE_ASSERTS
+          assert(!std::isnan(newPressure));
+          assert(!std::isinf(newPressure));
+          #endif
           nextPressures[i] = newPressure;
     #if MFluidSolver_USE_TBB
         }  // end particle for
@@ -478,10 +490,20 @@ void IISPHSolver::update(double deltaT) {
 
   iter_all_sphparticles_start
     // Update
+    #if MFluidSolver_USE_ASSERTS
+    assert(!std::isnan(p.pressureForce().x));
+    #endif
+
     glm::vec3 newVel = p.velocityIntermediate() +
       p.pressureForce() / p.mass() * deltaTF;
     glm::vec3 newPos = p.position() + newVel * deltaTF;
     p.update(newVel, newPos);
+
+    #if MFluidSolver_USE_ASSERTS
+    assert(!std::isnan(p.position().x) &&
+           !std::isnan(p.position().y) &&
+           !std::isnan(p.position().z));
+    #endif
 
     enforceBounds(&p);
     visualizeParticle(&p);
