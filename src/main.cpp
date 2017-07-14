@@ -49,8 +49,15 @@ int main() {
     return -1;
   }
 
+  // Seed randomness
+  std::time_t seed = std::time(NULL);
+  std::srand(seed);
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+  // Only affects particle visualization selection
+  std::cout << "INFO: std::rand seed: " << seed << std::endl;
+  #endif
+
   // Initialize non-OpenGL
-  std::srand(std::time(NULL));
   #if MFluidSolver_USE_OPENVDB
   openvdb::initialize();
   #endif
@@ -67,8 +74,8 @@ int main() {
   // Open JSON file
   Json::Reader reader;
   Json::Value root;
-  std::ifstream sceneStream(configJSON, std::ifstream::binary);
-  bool success = reader.parse(sceneStream, root, false);
+  std::ifstream configStream(configJSON, std::ifstream::binary);
+  bool success = reader.parse(configStream, root, false);
   if (!success) {
     #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_ERROR
     std::cerr << "ERROR: Failed to parse config file " <<
@@ -147,6 +154,7 @@ int main() {
   try {
   #endif
     viewer.scene.loadJSON(sceneJSON);
+    viewer.particleShader->init();
     viewer.run();
   #if MFluidSolver_MAIN_CATCH_EXCEPTIONS
   } catch (std::exception &e) {

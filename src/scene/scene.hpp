@@ -26,6 +26,7 @@ class Scene {
   void loadJSON(const std::string &file);
   void seedScene();
 
+  // TODO: Generalize to all solvers
   IISPHSolver solver;
   std::vector<Geometry *> objects;
   Camera camera;

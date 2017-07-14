@@ -52,10 +52,6 @@ class SPHParticle : public Particle {
   uint32_t index;
   static bool indexCompare(const SPHParticle &a, const SPHParticle &b);
 
-  #if MFluidSolver_PARTICLE_STATS
-  bool flyaway;
-  #endif
-
  protected:
   float _density;
   float _pressure;

@@ -40,6 +40,7 @@ class SPHSolver : public FluidSolver {
 
   // Particles
   virtual void addParticleAt(const glm::vec3 &position);
+  virtual void calculateParticleMass(float particleSeparation);
   virtual unsigned int numParticles() const;
   virtual std::vector<SPHParticle> &particles();
   virtual void setMaxParticles(int mp);
@@ -91,6 +92,8 @@ class SPHSolver : public FluidSolver {
   float mMass;
   float dRestDensity;
   float dtTimestep;
+  float dInitialDensity;
+  bool calculateMass;
 
   unsigned int largestIndex;
 };

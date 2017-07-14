@@ -3,10 +3,37 @@
 //  geom.cpp
 //  MFluidSolver
 
+#include <algorithm>
+#include <iomanip>
+#include <iostream>
 #include <limits>
+#include <sstream>
 #include <vector>
 
 #include "geom.hpp"
+
+Geometry::Geometry()
+  : rng(nullptr) {
+}
+
+void Geometry::initRNG() {
+  // Seed the Mersenne-Twister RNG
+  std::array<int, MFluidSolver_MTRNG_SEED_SIZE> seedData;
+  std::random_device rd;
+  std::generate_n(seedData.data(), seedData.size(), std::ref(rd));
+  std::seed_seq seedSeq(std::begin(seedData), std::end(seedData));
+  rng = new std::mt19937(seedSeq);
+
+  // Serialize the seed
+  std::stringstream seedStream;
+  for (auto it = seedData.begin(); it != seedData.end(); ++it) {
+    seedStream << std::setfill ('0') << std::setw(sizeof(int) * 2)
+      << std::hex << *it;
+  }
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+  std::cout << "INFO: Particle RNG Seed: " << seedStream.str() << std::endl;
+  #endif
+}
 
 void Geometry::getBoundsByTransformedMinMax(
     const glm::vec3 &min, const glm::vec3 &max,

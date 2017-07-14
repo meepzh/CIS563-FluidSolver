@@ -8,6 +8,10 @@
 
 #include <vector>
 
+#if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
+#include <iostream>
+#endif
+
 inline void SPHParticle::update(
     const glm::vec3 &newVel, const glm::vec3 &newPos) {
   _oldPosition = _position;
@@ -50,6 +54,12 @@ inline void SPHParticle::setNonPressureForce(const glm::vec3 &force) {
 }
 
 inline void SPHParticle::setPressure(float pressure) {
+  if (pressure > MFluidSolver_DEFAULT_MAX_PRESSURE) {
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
+    std::cout << "TRACE: Exceeded max pressure for particle " << this << std::endl;
+    #endif
+    pressure = MFluidSolver_DEFAULT_MAX_PRESSURE;
+  }
   _pressure = pressure;
 }
 

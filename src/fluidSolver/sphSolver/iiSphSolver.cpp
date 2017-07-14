@@ -15,12 +15,18 @@
 #include <string>
 #endif
 
+#if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
+#include <limits>
+#endif
+
 #include <json/json.h>
 
 #include "utils.hpp"
 
 IISPHSolver::IISPHSolver()
-    : maxIterations(1e6) {
+    : diverging(false),
+      densityTolerance(MFluidSolver_DEFAULT_DENSITY_TOLERANCE),
+      maxIterations(MFluidSolver_DEFAULT_MAX_PRESSURE_SOLVES) {
 }
 
 // TODO: Clean this up
@@ -41,18 +47,51 @@ void IISPHSolver::loadConfig(const std::string &file) {
   }
 
   maxIterations = root["sph"].get(
-    "maxPressureSolveIterations", 1e6).asInt();
+    "maxPressureSolveIterations",
+    MFluidSolver_DEFAULT_MAX_PRESSURE_SOLVES).asInt();
+  densityTolerance = root["sph"].get(
+    "densityTolerance",
+    MFluidSolver_DEFAULT_MAX_PRESSURE_SOLVES).asInt();
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   std::cout << "INFO: - Max Pressure Solve Iterations: " <<
     maxIterations << std::endl;
+  std::cout << "INFO: - Density Tolerance: " <<
+    densityTolerance << std::endl;
   #endif
+}
+
+virtual void IISPHSolver::calculateParticleMass(float particleSeparation) {
+  // Calculate expected density
+  float densitySum = kernelFunctions.computePoly6(glm::vec3(0));
+  glm::vec3 neighborPos(0);
+  for (neighborPos.x = -1 * kernelRadius;
+      neighborPos.x <= kernelRadius; neighborPos.x += particleSeparation) {
+    for (neighborPos.y = -1 * kernelRadius;
+        neighborPos.y <= kernelRadius; neighborPos.y += particleSeparation) {
+      for (neighborPos.z = -1 * kernelRadius;
+          neighborPos.z <= kernelRadius; neighborPos.z += particleSeparation) {
+        densitySum += kernelFunctions.computePoly6(glm::vec3(0) - neighborPos);
+      }
+    }
+  }
+
+  if (calculateMass) {
+    mMass = dInitialDensity / densitySum;
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+    std::cout << "INFO: Readjusted particle mass to " << mMass << std::endl;
+    #endif
+  } else {
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
+    std::cout << "INFO: Expected initial density is " <<
+      (mMass * densitySum) << std::endl;
+    #endif
+  }
 }
 
 void IISPHSolver::update(double deltaT) {
   if (checkIfEnded()) return;
 
-  // NOTE: TIMESTEP IS OVERWRITTEN HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   deltaT = _fixedTimestep;
   const float deltaTF = static_cast<float>(deltaT);
   const float deltaTF2 = static_cast<float>(deltaT * deltaT);
@@ -60,6 +99,10 @@ void IISPHSolver::update(double deltaT) {
   logTimestep();
   prepNeighborSearch();
   runNeighborSearch();
+
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
+  lastDensityDifference = std::numeric_limits<float>::infinity();
+  #endif
 
   #if MFluidSolver_PARTICLE_STATS
   averagePosition = glm::vec3(0);
@@ -116,93 +159,10 @@ void IISPHSolver::update(double deltaT) {
   #endif
   #endif
 
-  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
-  numFlyaways = 0;
-  #endif
-
   // Procedure: Predict Advection
   iter_all_sphparticles_start
     calculateDensity(&p);
     calculateNonPressureForce(&p);
-
-    #if MFluidSolver_PARTICLE_STATS
-    // Check if flyaway is affecting other particles
-    if (p.flyaway && !p.neighbors()->empty()) {
-      for (SPHParticle *q : *(p.neighbors())) {
-        std::cout << "STAT: Particle ID " << q->ID <<
-          " is now neighbors with flyaway ID " << p.ID << std::endl;
-      }
-    }
-    #endif
-
-    // Flyaway particle detection (no neighbors, too much free will)
-    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN || MFluidSolver_PARTICLE_STATS
-    if (p.neighbors()->empty()) {
-      #if MFluidSolver_PARTICLE_STATS
-      std::lock_guard<std::mutex> guard(statsCoutMutex);
-      p.flyaway = true;
-      const glm::vec3 position = p.position();
-      const glm::vec3 velocity = p.velocity();
-      const glm::vec3 nonPressureForce = p.nonPressureForce();
-      const glm::vec3 pressureForce = p.pressureForce();
-      const glm::vec3 advectionDisplacementEstimate =
-        p.advectionDisplacementEstimate();
-      const glm::vec3 sumPressureDisplacementFromNeighbors =
-        p.sumPressureDisplacementFromNeighbors();
-      const glm::vec3 velocityIntermediate = p.velocityIntermediate();
-
-      std::cout << "WARN: Flyaway particle ID " <<
-                          p.ID << " detected! Printing information:" <<
-                          std::endl
-                << "WARN: - Position: (" <<
-                            position.x << ", " <<
-                            position.y << ", " <<
-                            position.z << ") with magnitude " <<
-                            glm::length(position) << std::endl
-                << "WARN: - Velocity: (" <<
-                            velocity.x << ", " <<
-                            velocity.y << ", " <<
-                            velocity.z << ") with magnitude " <<
-                            glm::length(velocity) << std::endl
-                << "WARN: - Density: " << p.density() << std::endl
-                << "WARN: - Pressure: " << p.pressure() << std::endl
-                << "WARN: - Non-pressure Force: (" <<
-                            nonPressureForce.x << ", " <<
-                            nonPressureForce.y << ", " <<
-                            nonPressureForce.z << ") with magnitude " <<
-                            glm::length(nonPressureForce) << std::endl
-                << "WARN: - Pressure Force: (" <<
-                            pressureForce.x << ", " <<
-                            pressureForce.y << ", " <<
-                            pressureForce.z << ") with magnitude " <<
-                            glm::length(pressureForce) << std::endl
-                << "WARN: - Advection Diagonal: " <<
-                            p.advectionDiagonal() << std::endl
-                << "WARN: - Advection Displacement Estimate: (" <<
-                            advectionDisplacementEstimate.x << ", " <<
-                            advectionDisplacementEstimate.y << ", " <<
-                            advectionDisplacementEstimate.z <<
-                            ") with magnitude " <<
-                            glm::length(advectionDisplacementEstimate) <<
-                            std::endl
-                << "WARN: - Density Intermediate: " <<
-                            p.densityIntermediate() << std::endl
-                << "WARN: - Sum Pressure Displacement From Neighbors: (" <<
-                            sumPressureDisplacementFromNeighbors.x << ", " <<
-                            sumPressureDisplacementFromNeighbors.y << ", " <<
-                            sumPressureDisplacementFromNeighbors.z <<
-                            ") with magnitude " <<
-                            glm::length(sumPressureDisplacementFromNeighbors) <<
-                            std::endl
-                << "WARN: - Velocity Intermediate: (" <<
-                            velocityIntermediate.x << ", " <<
-                            velocityIntermediate.y << ", " <<
-                            velocityIntermediate.z << ") with magnitude " <<
-                            glm::length(velocityIntermediate) << std::endl;
-      #endif
-      ++numFlyaways;
-    }
-    #endif
 
     // Particle statistics (TODO: Save to file for complex statistics)
     #if MFluidSolver_PARTICLE_STATS
@@ -329,34 +289,15 @@ void IISPHSolver::update(double deltaT) {
             << "STAT: Average number of neighbors: " <<
                       averageNumNeighbors << std::endl;
   #endif
-  // Print number of flyaways (use WARN channel if enabled)
-  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
-  // WARN, >0, any STAT
-  if (numFlyaways > 0) {
-    std::cout << "WARN: We have " << numFlyaways <<
-      " flyaway particle(s) that could potentially crash the simulation" <<
-      std::endl;
-  }
-  #if MFluidSolver_PARTICLE_STATS
-  else {
-    // WARN, =0, STAT
-    std::cout << "STAT: We have 0 flyaway particles!" << std::endl;
-  }
-  #endif
-  #elif MFluidSolver_PARTICLE_STATS
-  // !WARN, any #, STAT
-  std::cout << "STAT: We have " << numFlyaways <<
-    " flyaway particle(s)!" << std::endl;
-  #endif
 
   // Procedure: Pressure Solve
   unsigned int iteration = 0;
   unsigned int validParticles;
   float averageDensity = 0;
-  const float tolerance = 0.01f * kernelRadius;
+  const float tolerance = densityTolerance * kernelRadius;
   std::vector<float> nextPressures(_particles.size());
   while (((averageDensity - dRestDensity) > tolerance || iteration < 2)
-      && iteration < 1e6) {
+      && iteration < maxIterations) {
     averageDensity = 0;
     validParticles = _particles.size();
 
@@ -462,12 +403,31 @@ void IISPHSolver::update(double deltaT) {
 
     averageDensity /= static_cast<float>(validParticles);
     ++iteration;
+
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
+    if (iteration % 50 == 0) {
+      #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
+      std::cout << "DEBUG: On pressure solve iteration " << iteration <<
+        " with density difference " << (averageDensity - dRestDensity) << std::endl;
+      #endif
+
+      if (lastDensityDifference < averageDensity - dRestDensity && lastDensityDifference > 1.f) {
+        std::cout << "WARN: Density difference is rising! Explosion imminent." << std::endl;
+        diverging = true;
+        _shouldPauseSimulation = true;
+      } else {
+        diverging = false;
+        _shouldPauseSimulation = false;
+      }
+      lastDensityDifference = averageDensity - dRestDensity;
+    }
+    #endif
   }  // end while
 
-  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_TRACE
-  std::cout << "TRACE: Iterated pressure solve " <<
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
+  std::cout << "DEBUG: Iterated pressure solve " <<
                 iteration << " times" << std::endl;
-  std::cout << "TRACE: Density error: " <<
+  std::cout << "DEBUG: Density error: " <<
                 (averageDensity - dRestDensity) << std::endl;
   #endif
 
@@ -486,4 +446,8 @@ void IISPHSolver::update(double deltaT) {
     enforceBounds(&p);
     visualizeParticle(&p);
   iter_all_sphparticles_end
+
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
+  std::cout << "DEBUG: Finished one timestep" << std::endl;
+  #endif
 }

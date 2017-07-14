@@ -12,19 +12,20 @@
 
 // Logging/Debug
 #define MFluidSolver_LOG_LEVEL 2
-#define MFluidSolver_OPENGL_DEBUG 1
+#define MFluidSolver_OPENGL_DEBUG 0
 #define MFluidSolver_PARTICLE_STATS 0
 #define MFluidSolver_PARTICLE_STATS_FILES 0
 #define MFluidSolver_USE_ASSERTS 0
 
-#define MFluidSolver_RECORD_PERFORMANCE 1
+#define MFluidSolver_RECORD_PERFORMANCE 0
 
 // Libraries
-#define MFluidSolver_USE_OPENVDB 1
-#define MFluidSolver_USE_PARTIO 1
+#define MFluidSolver_USE_OPENVDB 0
+#define MFluidSolver_USE_PARTIO 0
 #define MFluidSolver_USE_TBB 1
 
 // Misc
+#define MFluidSolver_MTRNG_SEED_SIZE 5
 #define MFluidSolver_ZCURVE_CACHING 1
 
 // Defaults
@@ -41,12 +42,16 @@
 #define MFluidSolver_DEFAULT_BG_COLOR_R 0.3f
 #define MFluidSolver_DEFAULT_BG_COLOR_G 0.3f
 #define MFluidSolver_DEFAULT_BG_COLOR_B 0.3f
+#define MFluidSolver_DEFAULT_DENSITY_TOLERANCE 0.001
 #define MFluidSolver_DEFAULT_GEOMETRY_COLOR_R 1
 #define MFluidSolver_DEFAULT_GEOMETRY_COLOR_G 1
 #define MFluidSolver_DEFAULT_GEOMETRY_COLOR_B 1
 #define MFluidSolver_DEFAULT_GRAVITY -9.8
+#define MFluidSolver_DEFAULT_INITIAL_DENSITY 1180
 #define MFluidSolver_DEFAULT_LIMIT_UPDATES false
 #define MFluidSolver_DEFAULT_MAX_PARTICLES 10000
+#define MFluidSolver_DEFAULT_MAX_PRESSURE 1e10
+#define MFluidSolver_DEFAULT_MAX_PRESSURE_SOLVES 2000
 #define MFluidSolver_DEFAULT_MAX_UPDATES 1000
 #define MFluidSolver_DEFAULT_PARTICLE_BOUNCE 0.1f
 #define MFluidSolver_DEFAULT_PARTICLE_COLOR_R 0

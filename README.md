@@ -20,8 +20,8 @@ the VDB format. The solver runs both SESPH and IISPH.
 - OpenVDB 2.3.0
 
 ### Build Instructions (*nix) ###
-By default, the program is set to default debugging mode as set in
-`src/MFluidSolverConfig.hpp.in`. There are many other options there including
+By default, the program is set to INFO level logging mode as set in
+`src/MFluidSolverConfig.hpp.in`. There are many other options there, including
 logging settings and defaults, but note that defaults will be overwritten by
 the configuration file `config/config.json`.
 
@@ -83,6 +83,12 @@ visualization
 - particleId
 - velocityColor (8-bit rgb array)
 
+sph
+- maxPressureSolveIterations
+- densityTolerance
+- calculateMass (boolean, solver calculates based on initial density)
+- dInitialDensity (when calculating mass)
+
 The `numUpdates` parameter can be used to set the number of frames to simulate
 in order to get accurate and comparable performance ratings.
 
@@ -131,17 +137,15 @@ change indices much more frequently.
 
 ### Missing Required Features ###
 
-- Test Partio point export
+- Partio point export
 - OpenVDB level set export
 - Optional: Update derivatives
 - Optional: Ihmsen boundary conditions
 - Optional: Cache neighbor distances
-- Optional: Better seeding (poisson distribution)
+- Optional: Poisson distribution seeding
 - Optional: Test bicubic spline kernel
 - Optional: Solid body coupling
 - Optional: Headless mode
-- Optional: Refactor IISPH because update() is way too hard to read
-- Optional: Flyaway prevention
 
 ### Extra Features ###
 None
