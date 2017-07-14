@@ -108,23 +108,21 @@ void Cube::spawnParticlesInVolume(
 
   // Create particles
   if (spawnMethod == ParticleSpawnMethod::Uniform) {
-    float i = 0.f;
-    float j = 0.f;
-    float k = 0.f;
+    glm::vec3 spawnPos(0);
     // X-loop
     for (unsigned int iIdx = 0; ; ++iIdx) {
-      i = minBound.x + iIdx * particleSeparation;
-      if (i > maxBound.x) break;
+      spawnPos.x = minBound.x + iIdx * particleSeparation;
+      if (spawnPos.x > maxBound.x) break;
       // Y-loop
       for (unsigned int jIdx = 0; ; ++jIdx) {
-        j = minBound.y + jIdx * particleSeparation;
-        if (j > maxBound.y) break;
+        spawnPos.y = minBound.y + jIdx * particleSeparation;
+        if (spawnPos.y > maxBound.y) break;
         // Z-loop
         for (unsigned int kIdx = 0; ; ++kIdx) {
-          k = minBound.z + kIdx * particleSeparation;
-          if (k > maxBound.z) break;
+          spawnPos.z = minBound.z + kIdx * particleSeparation;
+          if (spawnPos.z > maxBound.z) break;
           // Loop body
-          solver->addParticleAt(glm::vec3(i, j, k));
+          solver->addParticleAt(spawnPos);
           ++count;
           // Loop exit
           if (count > particlesLeft) break;

@@ -21,11 +21,14 @@ class IISPHSolver : public SPHSolver {
   virtual void update(double deltaT);
   virtual void loadConfig(const std::string &file);
 
+  virtual void calculateParticleMass(float particleSeparation);
+
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
-  unsigned int numFlyaways;
+  bool diverging;
   #endif
 
  protected:
+  float densityTolerance;
   unsigned int maxIterations;
 
   #if MFluidSolver_PARTICLE_STATS
@@ -42,6 +45,10 @@ class IISPHSolver : public SPHSolver {
   float averageSumPressureDisplacementFromNeighborsMagnitude;
   float averageVelocityIntermediateMagnitude;
   float averageNumNeighbors;
+  #endif
+
+  #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
+  float lastDensityDifference;
   #endif
 };
 

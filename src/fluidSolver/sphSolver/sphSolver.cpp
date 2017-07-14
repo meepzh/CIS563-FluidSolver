@@ -200,6 +200,10 @@ void SPHSolver::loadConfig(const std::string &file) {
     "dtTimestep", MFluidSolver_DEFAULT_SPH_TIMESTEP).asFloat();
   kernelRadius = root["sph"].get(
     "kernelRadius", MFluidSolver_DEFAULT_SPH_KERNELRADIUS).asFloat();
+  calculateMass = root["sph"].get(
+    "calculateMass", false).asBool();
+  dInitialDensity = root["sph"].get(
+    "dInitialDensity", MFluidSolver_DEFAULT_INITIAL_DENSITY).asFloat();
   setFixedTimestep(dtTimestep);
 
   // Read simulation time limits
@@ -347,6 +351,10 @@ void SPHSolver::addParticleAt(const glm::vec3 &position) {
     pList->index = _particles.size() - 1;
     nSearch->addParticle(pList);
   }
+}
+
+virtual void SPHSolver::calculateParticleMass(float particleSeparation) {
+  // TODO:
 }
 
 unsigned int SPHSolver::numParticles() const {

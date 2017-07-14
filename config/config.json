@@ -13,7 +13,8 @@
 		"dtTimestep": 0.004,
 		"kernelRadius": 0.100001,
 		"neighborSearchType": "indexSortedUniformInsertionSort",
-		"maxPressureSolveIterations": 1e6
+		"maxPressureSolveIterations": 2000,
+		"densityTolerance": 0.001
 	},
 	"visualization": {
 		"type": "pressure",
@@ -25,5 +26,5 @@
 	},
 	"numUpdates": -1,
 	"autoRender": false,
-	"renderSkip": 10
+	"renderSkip": 4
 }

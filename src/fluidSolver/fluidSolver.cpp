@@ -25,6 +25,7 @@ FluidSolver::FluidSolver()
           MFluidSolver_DEFAULT_VISUALIZATION_VELOCITYCOLOR_B / 255.f)),
       _fixedTimestep(MFluidSolver_DEFAULT_UPDATE_STEP),
       computeTime(0), numUpdates(0), firstRun(true), endedSimulation(false),
+      _shouldPauseSimulation(false),
       maxUpdates(MFluidSolver_DEFAULT_MAX_UPDATES),
       limitNumUpdates(MFluidSolver_DEFAULT_LIMIT_UPDATES),
       fluidSource(nullptr), fluidContainer(nullptr) {

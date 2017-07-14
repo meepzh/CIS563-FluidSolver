@@ -136,12 +136,10 @@ change indices much more frequently.
 - Optional: Update derivatives
 - Optional: Ihmsen boundary conditions
 - Optional: Cache neighbor distances
-- Optional: Better seeding (poisson distribution)
+- Optional: Poisson distribution seeding
 - Optional: Test bicubic spline kernel
 - Optional: Solid body coupling
 - Optional: Headless mode
-- Optional: Refactor IISPH because update() is way too hard to read
-- Optional: Flyaway prevention
 
 ### Extra Features ###
 None

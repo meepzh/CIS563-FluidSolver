@@ -28,6 +28,7 @@ class FluidSolver {
 
   // Particles
   virtual void addParticleAt(const glm::vec3 &position) = 0;
+  virtual void calculateParticleMass(float particleSeparation) = 0;
   virtual unsigned int numParticles() const = 0;
 
   // Getters
@@ -45,6 +46,7 @@ class FluidSolver {
   inline bool checkIfEnded();
   inline bool hasEndedSimulation();
   void endSimulation();
+  inline bool shouldPauseSimulation();
 
   // Misc
   virtual void printPerformanceStats();
@@ -80,6 +82,9 @@ class FluidSolver {
   unsigned int maxUpdates;
   bool limitNumUpdates;
   bool firstRun, endedSimulation;
+
+  // Misc
+  bool _shouldPauseSimulation;
 };
 
 #include "fluidSolver/fluidSolver.inline.hpp"

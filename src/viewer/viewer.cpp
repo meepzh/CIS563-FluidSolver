@@ -202,6 +202,8 @@ void Viewer::init(int width, int height) {
 }
 
 void Viewer::run() {
+  bool initialBuffersSwapped = false;
+  unsigned int lastAutoRender = 1;
   double oldTime = glfwGetTime();
   double currTime, deltaT;
   GLenum glErrorCode;
@@ -224,8 +226,9 @@ void Viewer::run() {
     }
 
     // Convenience method for stopping before blowing up
-    #if MFluidSolver_PARTICLE_STATS
-    if (scene.solver.numFlyaways > 0) {
+    #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_WARN
+    if (scene.solver.shouldPauseSimulation() && !paused) {
+      std::cout << "WARN: Simulation paused due to solver warnings." << std::endl;
       paused = true;
     }
     #endif
@@ -271,11 +274,14 @@ void Viewer::run() {
     glfwSwapBuffers(window);
 
     // Render
-    if (autoRender) {
-      if (renderSkip > 1 && scene.solver.updateNumber() % renderSkip == 0) {
+    if (autoRender && initialBuffersSwapped) {
+      if (renderSkip > 0 && scene.solver.updateNumber() % renderSkip == 0 &&
+          scene.solver.updateNumber() != lastAutoRender) {
         screenshot(false);
+        lastAutoRender = scene.solver.updateNumber();
       }
     }
+    initialBuffersSwapped = true;
 
     glfwPollEvents();
 
@@ -369,7 +375,7 @@ void Viewer::configureScreenshot(bool render, unsigned int skip) {
 
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_INFO
   if (autoRender) {
-    if (renderSkip > 1) {
+    if (renderSkip > 0) {
       std::cout << "INFO: Rendering 1 frame for every " <<
         renderSkip << " to file!" << std::endl;
     } else {

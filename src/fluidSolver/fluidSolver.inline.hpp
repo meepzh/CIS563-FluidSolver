@@ -33,6 +33,10 @@ inline bool FluidSolver::hasEndedSimulation() {
   return endedSimulation;
 }
 
+inline bool FluidSolver::shouldPauseSimulation() {
+  return _shouldPauseSimulation;
+}
+
 // Helpers
 inline void FluidSolver::logTimestep() {
   #if MFluidSolver_LOG_LEVEL <= MFluidSolver_LOG_DEBUG
