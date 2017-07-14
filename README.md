@@ -83,6 +83,12 @@ visualization
 - particleId
 - velocityColor (8-bit rgb array)
 
+sph
+- maxPressureSolveIterations
+- densityTolerance
+- calculateMass (boolean, solver calculates based on initial density)
+- dInitialDensity (when calculating mass)
+
 The `numUpdates` parameter can be used to set the number of frames to simulate
 in order to get accurate and comparable performance ratings.
 
@@ -131,7 +137,7 @@ change indices much more frequently.
 
 ### Missing Required Features ###
 
-- Test Partio point export
+- Partio point export
 - OpenVDB level set export
 - Optional: Update derivatives
 - Optional: Ihmsen boundary conditions
